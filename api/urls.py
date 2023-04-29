@@ -1,8 +1,8 @@
 # URLs inside the local app
 
 from django.urls import path
-from .views import UserView
+from .views import MusicDepositView, CreateMusicDepositView
 
 urlpatterns = [
-   path('', UserView.as_view())
+   path('', CreateMusicDepositView.as_view())
 ]
