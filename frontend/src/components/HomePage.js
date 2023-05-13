@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Menu from "./Menu";
 
 export default function HomePage() {
+  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+
+  const handleButtonClick = () => {
+    console.log("Connect button clicked!");
+    authenticateSpotify();
+  };
+
+  function authenticateSpotify() {
+    fetch("/spotify/is-authenticated")
+      .then((response) => response.json())
+      .then((data) => {
+        setSpotifyAuthenticated(data.status);
+        if (!data.status) {
+          fetch("/spotify/get-auth-url")
+            .then((response) => response.json())
+            .then((data) => {
+              window.location.replace(data.url);
+            });
+        }
+      });
+  }
+
   return (
     <Box
       sx={{
@@ -15,6 +38,9 @@ export default function HomePage() {
       }}
     >
       <Menu />
+      <Button variant="contained" onClick={handleButtonClick}>
+        Connect
+      </Button>
     </Box>
   );
 }
