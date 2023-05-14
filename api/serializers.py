@@ -5,9 +5,10 @@ from .models import MusicDeposit
 
 # Ingoing serializers
 
+
 class MusicDepositSerializer(serializers.ModelSerializer):
-    class Meta: # Defines metadata options for the UserSerializer class
-        model = MusicDeposit # Model we want to serialize
+    class Meta:  # Defines metadata options for the UserSerializer class
+        model = MusicDeposit  # Model we want to serialize
         fields = ('host', 'music_id', 'time')
 
 
