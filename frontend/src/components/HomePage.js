@@ -8,10 +8,10 @@ export default function HomePage() {
 
   const handleButtonClick = () => {
     console.log("Connect button clicked!");
-    authenticateSpotify();
+    authenticateSpotifyUser();
   };
 
-  function authenticateSpotify() {
+  /* function authenticateSpotify() {
     fetch("/spotify/is-authenticated")
       .then((response) => response.json())
       .then((data) => {
@@ -24,7 +24,24 @@ export default function HomePage() {
             });
         }
       });
-  }
+  } */
+
+  const authenticateSpotifyUser = async () => {
+    try {
+      const response = await fetch("/spotify/is-authenticated");
+      console.log(response.ok);
+      const data = await response.json();
+      setSpotifyAuthenticated(data.status);
+      console.log("Authenticated ?" + spotifyAuthenticated);
+      if (!data.status) {
+        const response = await fetch("/spotify/get-auth-url");
+        const data = await response.json();
+        window.location.replace(data.url);
+      }
+    } catch (error) {
+      console.error(err);
+    }
+  };
 
   return (
     <Box

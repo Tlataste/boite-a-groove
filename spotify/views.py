@@ -69,6 +69,6 @@ class IsAuthenticated(APIView):
     
 class GetRecentlyPlayedTracks(APIView):
     def get(self, request, format=None):
-        response = execute_spotify_api_request(request.session.session_key, 'player/recently-played')
-        print(response)
+        response = execute_spotify_api_request(self.request.session.session_key, 'player/recently-played')
+        # print(response)
         return Response(response, status=status.HTTP_200_OK)
