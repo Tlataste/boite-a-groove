@@ -44,8 +44,8 @@ def is_spotify_authenticated(session_id):
             refresh_spotify_token(session_id)
 
         return True
-
-    return False
+    else:
+        return False
 
 # the access token is used to access the user's resources for a limited period of time,
 # while the refresh token is used to obtain a new access token once the current token has expired.
@@ -75,10 +75,10 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
 
     if post_:
         post(BASE_URL + endpoint, headers=headers)
-    if put_:
+    elif put_:
         put(BASE_URL + endpoint, headers=headers)
-
-    response = get(BASE_URL + endpoint, {}, headers=headers)
+    else:
+        response = get(BASE_URL + endpoint, {}, headers=headers)
 
     try:
         return response.json()

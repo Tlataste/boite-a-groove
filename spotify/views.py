@@ -84,5 +84,15 @@ class GetRecentlyPlayedTracks(APIView):
         response = execute_spotify_api_request(
             self.request.session.session_key,
             'player/recently-played')
-        # print(response)
-        return Response(response, status=status.HTTP_200_OK)
+
+        if 'error' in response or 'items' not in response:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        items = response.get('items')
+
+        result = {}
+        for item in items:
+            track = item.get('track')
+            result[track.get("name")] = track.get('album').get('images')[0].get('url')
+
+        return Response(result, status=status.HTTP_200_OK)

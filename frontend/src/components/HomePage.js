@@ -4,11 +4,47 @@ import Button from "@mui/material/Button";
 import Menu from "./Menu";
 
 export default function HomePage() {
+  // States
   const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+  const [recentlyPlayedTracks, setRecentlyPlayedTracks] = useState({});
+
+  const authenticateSpotifyUser = async () => {
+    try {
+      const response = await fetch("/spotify/is-authenticated");
+      // console.log(response.ok);
+      const data = await response.json();
+      setSpotifyAuthenticated(data.status);
+      console.log("Authenticated ?" + spotifyAuthenticated);
+      if (!data.status) {
+        const response = await fetch("/spotify/get-auth-url");
+        const data = await response.json();
+        window.location.replace(data.url);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getRecentlyPlayedTracks = async () => {
+    try {
+      const response = await fetch("/spotify/get-recently-played-tracks");
+      if (!response.ok) {
+        return {};
+      } else {
+        const data = await response.json();
+        setRecentlyPlayedTracks(data);
+        console.log(recentlyPlayedTracks)
+        return data;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleButtonClick = () => {
     console.log("Connect button clicked!");
     authenticateSpotifyUser();
+    getRecentlyPlayedTracks();
   };
 
   /* function authenticateSpotify() {
@@ -25,23 +61,6 @@ export default function HomePage() {
         }
       });
   } */
-
-  const authenticateSpotifyUser = async () => {
-    try {
-      const response = await fetch("/spotify/is-authenticated");
-      console.log(response.ok);
-      const data = await response.json();
-      setSpotifyAuthenticated(data.status);
-      console.log("Authenticated ?" + spotifyAuthenticated);
-      if (!data.status) {
-        const response = await fetch("/spotify/get-auth-url");
-        const data = await response.json();
-        window.location.replace(data.url);
-      }
-    } catch (error) {
-      console.error(err);
-    }
-  };
 
   return (
     <Box
