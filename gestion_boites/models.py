@@ -5,8 +5,8 @@ from django.utils.text import slugify
 class Box(models.Model):
     id_boite = models.AutoField(primary_key=True)
     nom_boite = models.CharField(max_length=50, unique=True)
-    url_image = models.URLField(max_length=200)
-    description_boite = models.CharField(max_length=150)
+    url_image = models.URLField(max_length=200, blank=True)
+    description_boite = models.CharField(max_length=150, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     location_lat = models.CharField(max_length=50, unique=True)
