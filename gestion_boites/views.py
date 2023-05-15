@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 
 from .serializers import BoxSerializer
@@ -6,9 +6,9 @@ from .models import Box
 
 
 # Create your views here.
-class BoxView(generics.CreateAPIView):
-    query_set = Box.objects.all()
-    serializer_class = BoxSerializer
+def boite_detail(request, slug):
+    boite = get_object_or_404(Box, slug=slug)
+    return render(request, 'frontend/index.html', {'boite': boite})
 
 
 def index1(request, *args, **kwargs):

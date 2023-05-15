@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import index1
+from .views import boite_detail
 
 urlpatterns = [
-    path('', index1, name=''),
-    path('register', index1)
+    path('<url_box>/', boite_detail, name='boite_detail')
                 ]
