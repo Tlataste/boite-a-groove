@@ -6,10 +6,6 @@ from .models import Box
 
 
 # Create your views here.
-def boite_detail(request, slug):
-    boite = get_object_or_404(Box, slug=slug)
+def boite_detail(request, url):
+    boite = get_object_or_404(Box, url_box=url)
     return render(request, 'frontend/index.html', {'boite': boite})
-
-
-def index1(request, *args, **kwargs):
-    return render(request, 'frontend/index.html') #changer url pour le template
