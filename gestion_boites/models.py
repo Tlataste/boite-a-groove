@@ -27,4 +27,4 @@ class Deposit(models.Model):
     id_song = models.IntegerField()
     id_boite = models.IntegerField()
     deposited_at = models.DateTimeField(auto_now_add=True)
-    user = models.CharField()
+    user = models.CharField(max_length=50)
