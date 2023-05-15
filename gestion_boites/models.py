@@ -12,7 +12,7 @@ class Box(models.Model):
     location_lat = models.CharField(max_length=50, unique=True)
     location_long = models.CharField(max_length=50, unique=True)
     client = models.CharField(max_length=50, unique=True)
-    url_box = models.SlugField(unique=True,blank=True)
+    url_box = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.url_box:
@@ -20,7 +20,7 @@ class Box(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.nom_boite
+        return str(self.id_boite) + " - " + self.nom_boite
 
 
 class Song(models.Model):
@@ -32,7 +32,7 @@ class Song(models.Model):
     n_deposits = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name_song + " - " + self.name_artist
+        return str(self.id_song) + " - " + self.name_song + " - " + self.name_artist
 
 
 class Deposit(models.Model):
@@ -43,4 +43,4 @@ class Deposit(models.Model):
     user = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.user + " - " + self.id_song + " - " + self.id_boite
+        return self.user + " - " + str(self.id_song) + " - " + str(self.id_boite)
