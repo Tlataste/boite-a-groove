@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import BoxView
+from .views import index1
 
-url_patterns = [
-    path('home', BoxView.as_view())
+urlpatterns = [
+    path('', index1, name=''),
+    path('register', index1)
                 ]
