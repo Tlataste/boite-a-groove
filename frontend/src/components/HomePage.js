@@ -44,7 +44,7 @@ export default function HomePage() {
   const handleButtonClick = () => {
     console.log("Connect button clicked!");
     authenticateSpotifyUser();
-    getRecentlyPlayedTracks();
+    // getRecentlyPlayedTracks();
   };
 
   /* function authenticateSpotify() {

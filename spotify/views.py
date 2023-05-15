@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from .credentials import REDIRECT_URI, CLIENT_ID, CLIENT_SECRET
 from rest_framework.views import APIView
-from requests import Request, post
 from rest_framework import status
 from rest_framework.response import Response
 from .util import *
+import base64
+from urllib.parse import urlencode
+import requests
+import webbrowser
 
 
 # To authenticate the application (first step in the diagram):
@@ -14,14 +17,13 @@ class AuthURL(APIView):
         # Defines what information we wanna access
         scopes = 'user-read-recently-played'
 
-        url = Request('GET', 'https://accounts.spotify.com/authorize', params={
-            'scope': scopes,
-            "response_type": 'code',
-            'redirect_uri': REDIRECT_URI,
-            'client_id': CLIENT_ID
-        }).prepare().url
-
-        return Response({'url': url}, status=status.HTTP_200_OK)
+        auth_headers = {
+            "client_id": CLIENT_ID,
+            "response_type": "code",
+            "redirect_uri": REDIRECT_URI,
+            "scope": scopes
+        }
+        return Response({'url': "https://accounts.spotify.com/authorize?" + urlencode(auth_headers)}, status=status.HTTP_200_OK)
 
 
 # After the user has logged in (see diagram)
@@ -37,12 +39,18 @@ def spotify_callback(request, format=None):
     # and we convert that into JSON
     # It's different from the above because in the first one, we only just
     # want to generate the URL
-    response = post('https://accounts.spotify.com/api/token', data={
+
+    encoded_credentials = base64.b64encode(CLIENT_ID.encode() + b':' + CLIENT_SECRET.encode()).decode("utf-8")
+
+    headers = {
+        "Authorization": "Basic " + encoded_credentials,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data={
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': REDIRECT_URI,
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET
+        'redirect_uri': REDIRECT_URI
     }).json()
 
     access_token = response.get('access_token')
@@ -85,14 +93,6 @@ class GetRecentlyPlayedTracks(APIView):
             self.request.session.session_key,
             'player/recently-played')
 
-        if 'error' in response or 'items' not in response:
-            return Response({}, status=status.HTTP_204_NO_CONTENT)
+        print(self.request.session.session_key)
 
-        items = response.get('items')
-
-        result = {}
-        for item in items:
-            track = item.get('track')
-            result[track.get("name")] = track.get('album').get('images')[0].get('url')
-
-        return Response(result, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
