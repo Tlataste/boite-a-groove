@@ -22,3 +22,9 @@ class Song(models.Model):
     n_deposits = models.IntegerField(default=0)
 
 
+class Deposit(models.Model):
+    id_deposit = models.AutoField(primary_key=True)
+    id_song = models.IntegerField()
+    id_boite = models.IntegerField()
+    deposited_at = models.DateTimeField(auto_now_add=True)
+    user = models.CharField()
