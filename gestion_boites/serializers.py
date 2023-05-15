@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Boites, Song, Deposit
+from .models import Box, Song, Deposit
 
 
-class BoitesSerializer(serializers.ModelSerializer):
+class BoxSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Boites
+        model = Box
         fields = ('id_boite', 'nom_boite', 'url_image', 'description_boite', 'created_at', 'updated_at', 'location_lat',
                   'location_long', 'client')
 
