@@ -190,4 +190,4 @@ sketch
 
 # Others
 .vscode/settings.json
-spotify/credentials.py
+credential.json
