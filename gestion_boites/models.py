@@ -28,7 +28,7 @@ class Song(models.Model):
     name_song = models.CharField(max_length=50, unique=True)
     name_artist = models.CharField(max_length=50, unique=True)
     url_song = models.URLField(max_length=200)
-    url_image = models.URLField(max_length=200)
+    url_image = models.URLField(max_length=200,blank=True)
     n_deposits = models.IntegerField(default=0)
 
     def __str__(self):
