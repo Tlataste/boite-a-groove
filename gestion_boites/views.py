@@ -9,7 +9,7 @@ from .models import Box
 # Create your views here.
 def boite_detail(request, url):
     boite = get_object_or_404(Box, url_box=url)
-    return render(request, 'frontend/index.html', {'boite': boite})
+    return render(request, 'frontend/affichage_boite.html', {'boite': boite})
 
 # def boite_detail(request, url):
 #     boite = get_object_or_404(Box, url_box=url)
