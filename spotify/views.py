@@ -115,8 +115,10 @@ class Search(APIView):
 
         # Extract the track data from the results and create a list of tracks
         tracks = []
+        id = 0
         for item in results['tracks']['items']:
             track = {
+                'id': id + 1,
                 'name': item['name'],
                 'artist': item['artists'][0]['name'],
                 'album': item['album']['name'],
@@ -125,6 +127,7 @@ class Search(APIView):
                 # 'spotify_url': item['external_urls']['spotify'],
             }
             tracks.append(track)
+            id += 1
 
         # Return the list of tracks as a response
-        return Response(tracks)
+        return Response(tracks, status=status.HTTP_200_OK)

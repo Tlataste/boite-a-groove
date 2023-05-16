@@ -10,18 +10,22 @@ export default function LiveSearch() {
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          search_query: searchValue,
-        }),
-      };
+      if (searchValue != "") {
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            search_query: searchValue,
+          }),
+        };
 
-      fetch("/spotify/search", requestOptions)
-        .then((response) => response.json())
-        .then((json) => setJsonResults(json.data));
-      console.log("requête");
+        fetch("/spotify/search", requestOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            setJsonResults(data);
+            console.log(data);
+          });
+      }
     }, 2000);
 
     return () => clearTimeout(getData);
@@ -30,17 +34,14 @@ export default function LiveSearch() {
   return (
     <Stack sx={{ width: 300, margin: "auto" }}>
       <Autocomplete
-        freeSolo
         options={jsonResults}
-        getOptionLabel={(option) => `${option.first_name} ${option.last_name}`}
+        getOptionLabel={(option) => `${option.name}`}
         sx={{ width: 300 }}
-        isOptionEqualToValue={(option, value) =>
-          option.first_name === value.first_name
-        }
+        isOptionEqualToValue={(option, value) => option.name === value.name}
         noOptionsText={"No songs available"}
         renderOption={(props, option) => (
           <Box component="li" {...props} key={option.id}>
-            {option.first_name} {option.last_name}
+            {option.name}
           </Box>
         )}
         renderInput={(params) => (
