@@ -12,8 +12,10 @@ export default function LiveSearch() {
     const getData = setTimeout(() => {
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: searchValue,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          search_query: searchValue,
+        }),
       };
 
       fetch("/spotify/search", requestOptions)
