@@ -25,10 +25,10 @@ class Box(models.Model):
 
 class Song(models.Model):
     id_song = models.AutoField(primary_key=True)
-    name_song = models.CharField(max_length=50, unique=True)
-    name_artist = models.CharField(max_length=50, unique=True)
+    name_song = models.CharField(max_length=50)
+    name_artist = models.CharField(max_length=50)
     url_song = models.URLField(max_length=200)
-    url_image = models.URLField(max_length=200,blank=True)
+    url_image = models.URLField(max_length=200, blank=True)
     n_deposits = models.IntegerField(default=0)
 
     def __str__(self):

@@ -1,8 +1,5 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
-from rest_framework import generics
+from django.shortcuts import render, get_object_or_404, redirect
 
-from .serializers import BoxSerializer
 from .models import Box, Deposit, Song
 
 
@@ -13,8 +10,6 @@ def boite_detail(request, url):
     derniers_depots = Deposit.objects.filter(id_boite=boite.id_boite).order_by('-deposited_at')[:2]
     # Récupérer les noms des chansons correspondantes aux dépôts
     chansons = Song.objects.filter(id_song__in=derniers_depots.values('id_song'))
-    print(derniers_depots)
-    print(chansons)
     return render(request, 'frontend/affichage_boite.html', {'boite': boite, 'chansons': chansons})
 
 
