@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "./Menu";
+import LiveSearch from "./LiveSearch";
 
 export default function HomePage() {
   // States
@@ -33,7 +34,7 @@ export default function HomePage() {
       } else {
         const data = await response.json();
         setRecentlyPlayedTracks(data);
-        console.log(recentlyPlayedTracks)
+        console.log(recentlyPlayedTracks);
         return data;
       }
     } catch (error) {
@@ -77,6 +78,7 @@ export default function HomePage() {
       <Button variant="contained" onClick={handleButtonClick}>
         Connect
       </Button>
+      <LiveSearch />
     </Box>
   );
 }
