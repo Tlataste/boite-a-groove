@@ -18,6 +18,7 @@ export default function LiveSearch() {
   return (
     <Stack sx={{ width: 300, margin: "auto" }}>
       <Autocomplete
+        freeSolo
         options={jsonResults} // Options for the autocomplete = content
         getOptionLabel={(
           jsonResults // Defines how to extract the label for each option
