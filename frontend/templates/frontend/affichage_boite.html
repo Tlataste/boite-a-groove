@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Boîte à son</title>
+</head>
+<body>
+    <h1>{{ boite.nom_boite }}</h1>
+    <h2>{{ boite.client }}</h2>
+    <p>{{ boite.description_boite }}</p>
+
+    <h3>Derniers dépôts :</h3>
+    <ul>
+        -{% for chanson in chansons %}-
+        <li> ??? </li>
+        {% endfor %}
+    </ul>
+    <button onclick = "window.location.href = '{{ request.get_full_path }}'+'ajouter/';">Ajouter ma chanson</button>
+</body>
+</html>

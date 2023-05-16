@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'frontend.apps.FrontendConfig',
     'rest_framework',
     'django_extensions',
-    'spotify.apps.SpotifyConfig'
+    'spotify.apps.SpotifyConfig',
+    'gestion_boites.apps.GestionBoitesConfig'
 ]
 
 MIDDLEWARE = [
