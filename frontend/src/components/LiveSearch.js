@@ -10,7 +10,21 @@ export default function LiveSearch() {
 
   useEffect(() => {
     const getData = setTimeout(() => {
-      if (searchValue != "") {
+      if (searchValue === "")
+      {
+        const requestOptions = {
+          method: "POST"
+        };
+
+        fetch("/spotify/recent-tracks", requestOptions)
+          .then((response) => response.json())
+          .then((data) => {
+            setJsonResults(data);
+            console.log(data);
+          });
+      }
+      else
+      {
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -26,7 +40,7 @@ export default function LiveSearch() {
             console.log(data);
           });
       }
-    }, 2000);
+    }, 400);
 
     return () => clearTimeout(getData);
   }, [searchValue]);

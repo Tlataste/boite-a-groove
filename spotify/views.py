@@ -105,6 +105,37 @@ class GetRecentlyPlayedTracks(APIView):
 
         return Response(result, status=status.HTTP_200_OK)
 
+    def post(self, request, format=None):
+        try:
+            response = execute_spotify_api_request(
+                self.request.session.session_key,
+                'player/recently-played')
+        except Exception:
+            track = [{
+                'id': 0,
+                'name': 'Connect to unlock recent tracks!',
+                'artist': '',
+                'album': '',
+            }]
+            return Response(track, status=status.HTTP_206_PARTIAL_CONTENT)
+
+        if 'error' in response or 'items' not in response:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        tracks = []
+        id = 0
+        for item in response.get('items'):
+            track = {
+                'id': id + 1,
+                'name': item['track']['name'],
+                'artist': item['track']['artists'][0]['name'],
+                'album': item['track']['album']['name']
+            }
+            tracks.append(track)
+            id += 1
+
+        return Response(tracks, status=status.HTTP_200_OK)
+
 
 class Search(APIView):
     def post(self, request, format=None):
