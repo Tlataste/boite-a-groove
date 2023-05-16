@@ -3,11 +3,11 @@ from .credentials import REDIRECT_URI, CLIENT_ID, CLIENT_SECRET
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from spotify.spotipy_client import sp
 from .util import *
 import base64
 from urllib.parse import urlencode
 import requests
-import webbrowser
 
 
 # To authenticate the application (first step in the diagram):
@@ -104,3 +104,27 @@ class GetRecentlyPlayedTracks(APIView):
             result[track.get("name")] = track.get('album').get('images')[0].get('url')
 
         return Response(result, status=status.HTTP_200_OK)
+
+
+class Search(APIView):
+    def post(self, request, format=None):
+        search_query = request.data.get('search_query')
+
+        # Search for tracks using the Spotipy client
+        results = sp.search(q=search_query, type='track')
+
+        # Extract the track data from the results and create a list of tracks
+        tracks = []
+        for item in results['tracks']['items']:
+            track = {
+                'name': item['name'],
+                'artist': item['artists'][0]['name'],
+                'album': item['album']['name'],
+                # 'image_url': item['album']['images'][0]['url'],
+                # 'preview_url': item['preview_url'],
+                # 'spotify_url': item['external_urls']['spotify'],
+            }
+            tracks.append(track)
+
+        # Return the list of tracks as a response
+        return Response(tracks)
