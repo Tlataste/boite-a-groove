@@ -3,6 +3,7 @@ from django.utils import timezone
 from datetime import timedelta
 from requests import post, put, get
 from .credentials import CLIENT_ID, CLIENT_SECRET
+import requests
 
 BASE_URL = "https://api.spotify.com/v1/me/"
 
@@ -64,23 +65,28 @@ def refresh_spotify_token(session_id):
     access_token = response.get('access_token')
     token_type = response.get('token_type')  # Not truly necessary because it will never change it's allways Bearer
     expires_in = response.get('expires_in')
-    refresh_token = response.get('refresh_token')
 
     update_or_create_user_tokens(session_id, access_token, token_type, expires_in, refresh_token)
 
 
 def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
     tokens = get_user_tokens(session_id)
-    headers = {'Content-Type': 'application/json', 'Authorization': "Bearer " + tokens.access_token}
+    print(tokens.user)
+    print(tokens.access_token)
+    headers = {
+        "Authorization": "Bearer " + tokens.access_token,
+        "Content-Type": "application/json"
+    }
+
+    user_params = {
+        "limit": 50
+    }
 
     if post_:
         post(BASE_URL + endpoint, headers=headers)
     elif put_:
         put(BASE_URL + endpoint, headers=headers)
     else:
-        response = get(BASE_URL + endpoint, {}, headers=headers)
+        response = requests.get(BASE_URL + endpoint, params=user_params, headers=headers)
 
-    try:
-        return response.json()
-    except BaseException:
-        return {'Error': 'Issue with this request'}
+    return response.json()

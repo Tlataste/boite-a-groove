@@ -1,3 +1,12 @@
-CLIENT_ID = "87ebae8e01c343979da01a7110dab088"
-CLIENT_SECRET = "965040a2e8c640f1ade20c3e2a5fd57d"
-REDIRECT_URI = "http://127.0.0.1:8000/spotify/redirect"
+import json
+
+try:
+    with open("credential.json") as json_data_file:
+        data = json.load(json_data_file)
+
+        CLIENT_ID = data['Credentials'][0]['client_id']
+        CLIENT_SECRET = data['Credentials'][0]['client_secret']
+        REDIRECT_URI = data['Credentials'][0]['redirect_uri']
+except FileNotFoundError as fnfe:
+    print(f'\'credential.json\' not found.')
+    exit()
