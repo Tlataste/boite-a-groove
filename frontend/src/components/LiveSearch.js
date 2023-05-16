@@ -47,7 +47,7 @@ export default function LiveSearch() {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Search for a player"
+            label="Search for a song"
             onChange={(e) => setSearchValue(e.target.value)}
           />
         )}
