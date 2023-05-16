@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 import re
+
+import gestion_boites
 from .models import Box, Deposit, Song
 from django.template import *
 
@@ -24,7 +26,7 @@ def normalize_string(input_string):
     return normalized_string
 
 
-def ajouter_chanson(request, url, nom_chanson='Signals', auteur='FELOWER'):
+def ajouter_chanson(request, url, nom_chanson='Europe', auteur='FELOWER'):
     # Récupérer la boîte correspondante
     boite = get_object_or_404(Box, url_box=url)
     # Normaliser les noms de chanson et d'auteur
@@ -36,7 +38,7 @@ def ajouter_chanson(request, url, nom_chanson='Signals', auteur='FELOWER'):
         id_chanson = chanson.id_song
         chanson.n_deposits += 1
         chanson.save()
-    except:
+    except Song.DoesNotExist:
         # Créer une nouvelle chanson
         nouvelle_chanson = Song(name_song=nom_chanson, name_artist=auteur, n_deposits=1)
         nouvelle_chanson.save()
