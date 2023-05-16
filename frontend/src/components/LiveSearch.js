@@ -9,14 +9,20 @@ export default function LiveSearch() {
   const [jsonResults, setJsonResults] = useState([]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      fetch(`https://www.balldontlie.io/api/v1/players?search=${searchValue}`)
+    const getData = setTimeout(() => {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: searchValue,
+      };
+
+      fetch("/spotify/search", requestOptions)
         .then((response) => response.json())
         .then((json) => setJsonResults(json.data));
+      console.log("requête");
     }, 2000);
-    console.log(jsonResults);
 
-    return () => clearTimeout(delayDebounceFn);
+    return () => clearTimeout(getData);
   }, [searchValue]);
 
   return (
