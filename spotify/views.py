@@ -93,6 +93,14 @@ class GetRecentlyPlayedTracks(APIView):
             self.request.session.session_key,
             'player/recently-played')
 
-        print(self.request.session.session_key)
+        if 'error' in response or 'items' not in response:
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
 
-        return Response(response, status=status.HTTP_200_OK)
+        items = response.get('items')
+
+        result = {}
+        for item in items:
+            track = item.get('track')
+            result[track.get("name")] = track.get('album').get('images')[0].get('url')
+
+        return Response(result, status=status.HTTP_200_OK)

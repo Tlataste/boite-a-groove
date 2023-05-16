@@ -16,7 +16,7 @@ export default function HomePage() {
       setSpotifyAuthenticated(data.status);
       console.log("Authenticated ?" + spotifyAuthenticated);
       if (!data.status) {
-        const response = await fetch("/spotify/get-auth-url");
+        const response = await fetch("/spotify/auth-redirection");
         const data = await response.json();
         window.location.replace(data.url);
       }
