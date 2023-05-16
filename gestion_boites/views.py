@@ -24,7 +24,7 @@ def normalize_string(input_string):
     return normalized_string
 
 
-def ajouter_chanson(request, url, nom_chanson='Pompeii', auteur='Bastille'):
+def ajouter_chanson(request, url, nom_chanson='Signals', auteur='FELOWER'):
     # Récupérer la boîte correspondante
     boite = get_object_or_404(Box, url_box=url)
     # Normaliser les noms de chanson et d'auteur
