@@ -37,8 +37,10 @@ class Song(models.Model):
 
 class Deposit(models.Model):
     id_deposit = models.AutoField(primary_key=True)
-    id_song = models.IntegerField()
-    id_boite = models.IntegerField()
+    id_song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='deposits')
+    # If the box is deleted, then all the deposits will also be deleted
+    # Thanks to 'related_names', we can get all the deposits of a Box with box.deposits.all()
+    id_boite = models.ForeignKey(Box, on_delete=models.CASCADE, related_name='deposits')
     deposited_at = models.DateTimeField(auto_now_add=True)
     user = models.CharField(max_length=50)
 
