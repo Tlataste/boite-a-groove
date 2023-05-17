@@ -3,18 +3,40 @@ from .credentials import REDIRECT_URI, CLIENT_ID, CLIENT_SECRET
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from spotify.spotipy_client import sp
 from .util import *
 import base64
 from urllib.parse import urlencode
 import requests
-import webbrowser
 
 
 # To authenticate the application (first step in the diagram):
 # We generate a URL that the frontend can GET in order to send it to Spotify
 class AuthURL(APIView):
+    """
+    Class goal:
+    This class represents an API view for generating an authentication URL for Spotify.
+
+    Methods:
     def get(self, request, format=None):
-        # Defines what information we wanna access
+        Retrieves the authentication URL.
+
+    """
+
+    def get(self, request, format=None):
+        """
+        Method goal:
+        Retrieves the authentication URL for Spotify.
+
+        Arguments:
+        self    : The instance of the class.
+        request : The request object.
+        format  : The desired format of the response. Defaults to None.
+
+        Returns:
+        dict: A dictionary containing the authentication URL.
+
+        """
         scopes = 'user-read-recently-played'
 
         auth_headers = {
@@ -89,6 +111,7 @@ class IsAuthenticated(APIView):
 
 class GetRecentlyPlayedTracks(APIView):
     def get(self, request, format=None):
+        '''Request via util.py'''
         response = execute_spotify_api_request(
             self.request.session.session_key,
             'player/recently-played')
@@ -96,11 +119,40 @@ class GetRecentlyPlayedTracks(APIView):
         if 'error' in response or 'items' not in response:
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
-        items = response.get('items')
+        tracks = []
+        for item in response.get('items'):
+            track = {
+                'id': item['track']['id'],
+                'name': item['track']['name'],
+                'artist': item['track']['artists'][0]['name'],
+                'album': item['track']['album']['name']
+            }
+            tracks.append(track)
 
-        result = {}
-        for item in items:
-            track = item.get('track')
-            result[track.get("name")] = track.get('album').get('images')[0].get('url')
+        return Response(tracks, status=status.HTTP_200_OK)
 
-        return Response(result, status=status.HTTP_200_OK)
+
+class Search(APIView):
+    def post(self, request, format=None):
+        '''Request via Spotipy'''
+        search_query = request.data.get('search_query')
+
+        # Search for tracks using the Spotipy client
+        results = sp.search(q=search_query, type='track')
+
+        # Extract the track data from the results and create a list of tracks
+        tracks = []
+        for item in results['tracks']['items']:
+            track = {
+                'id': item['id'],
+                'name': item['name'],
+                'artist': item['artists'][0]['name'],
+                'album': item['album']['name'],
+                # 'image_url': item['album']['images'][0]['url'],
+                # 'preview_url': item['preview_url'],
+                # 'spotify_url': item['external_urls']['spotify'],
+            }
+            tracks.append(track)
+
+        # Return the list of tracks as a response
+        return Response(tracks, status=status.HTTP_200_OK)

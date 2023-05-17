@@ -2,20 +2,38 @@ import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "./Menu";
+import LiveSearch from "./LiveSearch";
 
 export default function HomePage() {
   // States
-  const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
-  const [recentlyPlayedTracks, setRecentlyPlayedTracks] = useState({});
+  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
 
-  const authenticateSpotifyUser = async () => {
+  /**
+   * Checks if the user is authenticated with Spotify.
+   * Makes an asynchronous request to the server to fetch the authentication status.
+   * Updates the state variable 'isSpotifyAuthenticated' based on the response.
+   */
+  const checkSpotifyAuthentication = async () => {
     try {
       const response = await fetch("/spotify/is-authenticated");
-      // console.log(response.ok);
       const data = await response.json();
-      setSpotifyAuthenticated(data.status);
-      console.log("Authenticated ?" + spotifyAuthenticated);
-      if (!data.status) {
+      setIsSpotifyAuthenticated(data.status);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  /**
+   * Authenticates the user with Spotify.
+   *
+   * - Checks if the user is already authenticated.
+   * - If not authenticated, performs the necessary steps to redirect the user to Spotify's authentication page.
+   * - After authentication, the user will be redirected back to the application.
+   */
+  const authenticateSpotifyUser = async () => {
+    try {
+      checkSpotifyAuthentication();
+      if (!isSpotifyAuthenticated) {
         const response = await fetch("/spotify/auth-redirection");
         const data = await response.json();
         window.location.replace(data.url);
@@ -25,42 +43,10 @@ export default function HomePage() {
     }
   };
 
-  const getRecentlyPlayedTracks = async () => {
-    try {
-      const response = await fetch("/spotify/get-recently-played-tracks");
-      if (!response.ok) {
-        return {};
-      } else {
-        const data = await response.json();
-        setRecentlyPlayedTracks(data);
-        console.log(recentlyPlayedTracks)
-        return data;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleButtonClick = () => {
-    console.log("Connect button clicked!");
+    // console.log("Connect button clicked!");
     authenticateSpotifyUser();
-    // getRecentlyPlayedTracks();
   };
-
-  /* function authenticateSpotify() {
-    fetch("/spotify/is-authenticated")
-      .then((response) => response.json())
-      .then((data) => {
-        setSpotifyAuthenticated(data.status);
-        if (!data.status) {
-          fetch("/spotify/get-auth-url")
-            .then((response) => response.json())
-            .then((data) => {
-              window.location.replace(data.url);
-            });
-        }
-      });
-  } */
 
   return (
     <Box
@@ -77,6 +63,10 @@ export default function HomePage() {
       <Button variant="contained" onClick={handleButtonClick}>
         Connect
       </Button>
+      <LiveSearch
+        isSpotifyAuthenticated={isSpotifyAuthenticated}
+        checkSpotifyAuthentication={checkSpotifyAuthentication}
+      />
     </Box>
   );
 }
