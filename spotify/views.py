@@ -13,8 +13,30 @@ import requests
 # To authenticate the application (first step in the diagram):
 # We generate a URL that the frontend can GET in order to send it to Spotify
 class AuthURL(APIView):
+    """
+    Class goal:
+    This class represents an API view for generating an authentication URL for Spotify.
+
+    Methods:
     def get(self, request, format=None):
-        # Defines what information we wanna access
+        Retrieves the authentication URL.
+
+    """
+
+    def get(self, request, format=None):
+        """
+        Method goal:
+        Retrieves the authentication URL for Spotify.
+
+        Arguments:
+        self    : The instance of the class.
+        request : The request object.
+        format  : The desired format of the response. Defaults to None.
+
+        Returns:
+        dict: A dictionary containing the authentication URL.
+
+        """
         scopes = 'user-read-recently-played'
 
         auth_headers = {
@@ -92,32 +114,6 @@ class GetRecentlyPlayedTracks(APIView):
         response = execute_spotify_api_request(
             self.request.session.session_key,
             'player/recently-played')
-
-        if 'error' in response or 'items' not in response:
-            return Response({}, status=status.HTTP_204_NO_CONTENT)
-
-        items = response.get('items')
-
-        result = {}
-        for item in items:
-            track = item.get('track')
-            result[track.get("name")] = track.get('album').get('images')[0].get('url')
-
-        return Response(result, status=status.HTTP_200_OK)
-
-    def post(self, request, format=None):
-        try:
-            response = execute_spotify_api_request(
-                self.request.session.session_key,
-                'player/recently-played')
-        except Exception:
-            track = [{
-                'id': 0,
-                'name': 'Connect to unlock recent tracks!',
-                'artist': '',
-                'album': '',
-            }]
-            return Response(track, status=status.HTTP_206_PARTIAL_CONTENT)
 
         if 'error' in response or 'items' not in response:
             return Response({}, status=status.HTTP_204_NO_CONTENT)

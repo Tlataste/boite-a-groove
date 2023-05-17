@@ -4,27 +4,34 @@ import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 
-export default function LiveSearch() {
+export default function LiveSearch({
+  isSpotifyAuthenticated,
+  checkSpotifyAuthentication,
+}) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
 
+  /**
+   * useEffect hook that executes when the component mounts or when the 'searchValue' or 'isSpotifyAuthenticated' dependencies change.
+   *
+   * - Retrieves data based on certain conditions:
+   *   - If 'searchValue' is empty and the user is authenticated with Spotify, fetches recent tracks.
+   *   - If 'searchValue' is not empty, performs a search using the 'searchValue'.
+   * - Sets the retrieved data to the 'jsonResults' state variable.
+   * - Clears the timeout when the component unmounts or when the 'searchValue' or 'isSpotifyAuthenticated' dependencies change.
+   */
   useEffect(() => {
     const getData = setTimeout(() => {
-      if (searchValue === "")
-      {
-        const requestOptions = {
-          method: "POST"
-        };
-
-        fetch("/spotify/recent-tracks", requestOptions)
+      checkSpotifyAuthentication();
+      console.log(isSpotifyAuthenticated);
+      if (searchValue === "" && isSpotifyAuthenticated) {
+        fetch("/spotify/recent-tracks")
           .then((response) => response.json())
           .then((data) => {
             setJsonResults(data);
             console.log(data);
           });
-      }
-      else
-      {
+      } else if (searchValue != "") {
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -43,7 +50,7 @@ export default function LiveSearch() {
     }, 400);
 
     return () => clearTimeout(getData);
-  }, [searchValue]);
+  }, [searchValue, isSpotifyAuthenticated]);
 
   return (
     <Stack sx={{ width: 300, margin: "auto" }}>
