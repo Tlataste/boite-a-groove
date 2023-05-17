@@ -121,13 +121,15 @@ class GetRecentlyPlayedTracks(APIView):
 
         tracks = []
         for item in response.get('items'):
-            track = {
-                'id': item['track']['id'],
-                'name': item['track']['name'],
-                'artist': item['track']['artists'][0]['name'],
-                'album': item['track']['album']['name']
-            }
-            tracks.append(track)
+            # Check if the list doesn't already contain the song
+            if not any(existing_track['id'] == item['track']['id'] for existing_track in tracks):
+                track = {
+                    'id': item['track']['id'],
+                    'name': item['track']['name'],
+                    'artist': item['track']['artists'][0]['name'],
+                    'album': item['track']['album']['name']
+                }
+                tracks.append(track)
 
         return Response(tracks, status=status.HTTP_200_OK)
 
