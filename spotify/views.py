@@ -111,6 +111,7 @@ class IsAuthenticated(APIView):
 
 class GetRecentlyPlayedTracks(APIView):
     def get(self, request, format=None):
+        '''Request via util.py'''
         response = execute_spotify_api_request(
             self.request.session.session_key,
             'player/recently-played')
@@ -119,22 +120,21 @@ class GetRecentlyPlayedTracks(APIView):
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
         tracks = []
-        id = 0
         for item in response.get('items'):
             track = {
-                'id': id + 1,
+                'id': item['track']['id'],
                 'name': item['track']['name'],
                 'artist': item['track']['artists'][0]['name'],
                 'album': item['track']['album']['name']
             }
             tracks.append(track)
-            id += 1
 
         return Response(tracks, status=status.HTTP_200_OK)
 
 
 class Search(APIView):
     def post(self, request, format=None):
+        '''Request via Spotipy'''
         search_query = request.data.get('search_query')
 
         # Search for tracks using the Spotipy client
@@ -142,10 +142,9 @@ class Search(APIView):
 
         # Extract the track data from the results and create a list of tracks
         tracks = []
-        id = 0
         for item in results['tracks']['items']:
             track = {
-                'id': id + 1,
+                'id': item['id'],
                 'name': item['name'],
                 'artist': item['artists'][0]['name'],
                 'album': item['album']['name'],
@@ -154,7 +153,6 @@ class Search(APIView):
                 # 'spotify_url': item['external_urls']['spotify'],
             }
             tracks.append(track)
-            id += 1
 
         # Return the list of tracks as a response
         return Response(tracks, status=status.HTTP_200_OK)

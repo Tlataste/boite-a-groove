@@ -24,14 +24,33 @@ export default function LiveSearch({
     const getData = setTimeout(() => {
       checkSpotifyAuthentication();
       console.log(isSpotifyAuthenticated);
-      if (searchValue === "" && isSpotifyAuthenticated) {
-        fetch("/spotify/recent-tracks")
+      if (searchValue === "") {
+        if(isSpotifyAuthenticated)
+        {
+          fetch("/spotify/recent-tracks")
           .then((response) => response.json())
           .then((data) => {
             setJsonResults(data);
             console.log(data);
           });
-      } else if (searchValue != "") {
+        }
+        else
+        {
+          const data = [
+            {
+                "id": "connect",
+                "name": "Connect to unlock recent tracks!",
+                "artist": "",
+                "album": ""
+            }
+          ] 
+          
+          setJsonResults(data);
+          console.log(data);
+        }
+      }
+      else
+      {
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
