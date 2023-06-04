@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "./Menu";
@@ -7,6 +7,14 @@ import LiveSearch from "./LiveSearch";
 export default function HomePage() {
   // States
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
+
+  /**
+   * Function to be executed when the component is mounted and the page is loaded
+   * Check on page load (only) if the user is authenticated with spotify
+   */
+  useEffect(() => {
+    checkSpotifyAuthentication();
+  }, []); // Empty dependency array ensures the effect is only run once
 
   /**
    * Checks if the user is authenticated with Spotify.
