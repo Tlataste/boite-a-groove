@@ -10,8 +10,6 @@ from urllib.parse import urlencode
 import requests
 
 
-# To authenticate the application (first step in the diagram):
-# We generate a URL that the frontend can GET in order to send it to Spotify
 class AuthURL(APIView):
     """
     Class goal:
@@ -48,45 +46,52 @@ class AuthURL(APIView):
         return Response({'url': "https://accounts.spotify.com/authorize?" + urlencode(auth_headers)}, status=status.HTTP_200_OK)
 
 
-# After the user has logged in (see diagram)
-# We have to create a callback so that we can get the code returned by Spotify
-# after our first request
-# We get that response and then send a new request to get the tokens
-
 def spotify_callback(request, format=None):
+    """
+    Callback function for handling the Spotify authorization code flow.
+    This function exchanges the authorization code received from Spotify for access and refresh tokens,
+    and stores the user tokens in the database.
+
+    Args:
+        request: The HTTP request object containing the callback parameters.
+        format: Optional format parameter for specifying the response format.
+
+    Returns:
+        A redirect response to the home page.
+    """
+
+    # Extract the authorization code and error from the callback parameters
     code = request.GET.get('code')
     error = request.GET.get('error')
 
-    # This post method automatically sends the request and get the response
-    # and we convert that into JSON
-    # It's different from the above because in the first one, we only just
-    # want to generate the URL
-
+    # Encode client credentials to be sent in the request header
     encoded_credentials = base64.b64encode(CLIENT_ID.encode() + b':' + CLIENT_SECRET.encode()).decode("utf-8")
 
+    # Set the request headers
     headers = {
         "Authorization": "Basic " + encoded_credentials,
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
+    # Send a POST request to Spotify's token endpoint to exchange the authorization code for tokens
     response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data={
         'grant_type': 'authorization_code',
         'code': code,
         'redirect_uri': REDIRECT_URI
     }).json()
 
+    # Extract the fields from the response
     access_token = response.get('access_token')
     token_type = response.get('token_type')
     refresh_token = response.get('refresh_token')
     expires_in = response.get('expires_in')
     error = response.get('error')
 
-    # All this for a single user in the database
-    # For now we will use session keys, but later we will have to use user
-    # accounts
+    # Create a session if it doesn't exist
     if not request.session.exists(request.session.session_key):
         request.session.create()
 
+    # Update or create the user tokens in the database
     update_or_create_user_tokens(
         request.session.session_key,
         access_token,
@@ -95,32 +100,78 @@ def spotify_callback(request, format=None):
         refresh_token)
 
     # Redirect back to the home page
-    # If we want to redirect to the register page for example we write
-    # frontend:register
+    # If we want to redirect to the register page for example we should write frontend:register
     return redirect('frontend:')
 
 
-# Checks if the user is authenticated
 class IsAuthenticated(APIView):
+    """
+    API view class for checking if the user is authenticated with Spotify.
+
+    Methods:
+        get(request, format=None): Retrieves the authentication status of the user.
+    """
+
     def get(self, request, format=None):
+        """
+        Retrieves the authentication status (true if authentifcated, false if not) of the user.
+
+        Args:
+            request: The HTTP request object.
+            format: Optional format parameter for specifying the response format.
+
+        Returns:
+            A Response object containing the authentication status of the user.
+
+        Raises:
+            None
+        """
+
+        # Check if the user is authenticated with Spotify
         is_authenticated = is_spotify_authenticated(
             self.request.session.session_key)
+
+        # Return the authentication status in the response
         return Response({'status': is_authenticated},
                         status=status.HTTP_200_OK)
 
 
 class GetRecentlyPlayedTracks(APIView):
+    """
+    API view class for retrieving the recently played tracks of the user from Spotify.
+
+    Methods:
+        get(request, format=None): Retrieves the recently played tracks of the user.
+
+    Attributes:
+        None
+    """
+
     def get(self, request, format=None):
-        '''Request via util.py'''
+        """
+        Retrieves the recently played tracks of the user from Spotify.
+
+        Args:
+            request: The HTTP request object.
+            format: Optional format parameter for specifying the response format.
+
+        Returns:
+            A Response object containing the recently played tracks of the user.
+        """
+
+        # Execute the Spotify API request to retrieve the recently played tracks
         response = execute_spotify_api_request(
             self.request.session.session_key,
             'player/recently-played')
 
+        # Check if there is an error in the response or if the 'items' key is missing
         if 'error' in response or 'items' not in response:
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
+        # Parse and filter the response to extract relevant track information
         tracks = []
         for item in response.get('items'):
+
             # Check if the list doesn't already contain the song
             if not any(existing_track['id'] == item['track']['id'] for existing_track in tracks):
                 track = {
@@ -131,12 +182,31 @@ class GetRecentlyPlayedTracks(APIView):
                 }
                 tracks.append(track)
 
+        # Return the list of recently played tracks in the response
         return Response(tracks, status=status.HTTP_200_OK)
 
 
 class Search(APIView):
+    """
+    API view class for searching tracks using the Spotify API.
+
+    Methods:
+        post(request, format=None): Searches for tracks based on the provided search query.
+    """
+
     def post(self, request, format=None):
-        '''Request via Spotipy'''
+        """
+        Searches for tracks based on the provided search query.
+
+        Args:
+            request: The HTTP request object.
+            format: Optional format parameter for specifying the response format.
+
+        Returns:
+            A Response object containing the search results as a list of tracks.
+        """
+
+        # Extract the search query from the request data
         search_query = request.data.get('search_query')
 
         # Search for tracks using the Spotipy client
