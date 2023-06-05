@@ -8,14 +8,15 @@ from django.template import *
 
 # Create your views here.
 def boite_detail(request, url):
-    boite = get_object_or_404(Box, url_box=url)
+    boite = get_object_or_404(Box, url=url)
     # Récupérer les deux derniers dépôts liés à la boîte
-    derniers_depots = Deposit.objects.filter(id_boite=boite.id_boite).order_by('-deposited_at')[1:3]
+    derniers_depots = Deposit.objects.filter(box_id=boite.id).order_by('-deposited_at')[1:3]
     # Récupérer les noms des chansons correspondantes aux dépôts
-    chansons = Song.objects.filter(id_song__in=derniers_depots.values('id_song'))
-    mon_depot = Deposit.objects.filter(id_boite=boite.id_boite).order_by('-deposited_at')[0]
-    ma_chanson = Song.objects.filter(id_song=mon_depot.id_song.id_song)[0]
-    return render(request, 'frontend/detail_boite.html', {'boite': boite, 'chansons': chansons, 'ma_chanson': ma_chanson})
+    chansons = Song.objects.filter(id__in=derniers_depots.values('song_id'))
+    mon_depot = Deposit.objects.filter(box_id=boite.id).order_by('-deposited_at')[0]
+    ma_chanson = Song.objects.filter(id=mon_depot.song_id)[0]
+    return render(request, 'frontend/detail_boite.html',
+                  {'boite': boite, 'chansons': chansons, 'ma_chanson': ma_chanson})
 
 
 def normalize_string(input_string):
@@ -26,36 +27,37 @@ def normalize_string(input_string):
     return normalized_string
 
 
-def ajouter_chanson(request, url, nom_chanson='Final Countdown', auteur='Europe'):
+def ajouter_chanson(request, url, nom_chanson='Europe', auteur='FELOWER'):
     # Récupérer la boîte correspondante
-    boite = get_object_or_404(Box, url_box=url)
+    boite = get_object_or_404(Box, url=url)
     # Normaliser les noms de chanson et d'auteur
     nom_chanson = normalize_string(nom_chanson)
     auteur = normalize_string(auteur)
     # Vérifier si la chanson existe déjà
     try:
-        chanson = Song.objects.filter(name_song=nom_chanson, name_artist=auteur).get()
-        id_chanson = chanson.id_song
+        chanson = Song.objects.filter(title=nom_chanson, artist=auteur).get()
+        id_chanson = chanson.id
         chanson.n_deposits += 1
         chanson.save()
+
     except Song.DoesNotExist:
         # Créer une nouvelle chanson
-        chanson = Song(name_song=nom_chanson, name_artist=auteur, n_deposits=1)
-        chanson.save()
-        id_chanson = chanson.id_song
+        nouvelle_chanson = Song(title=nom_chanson, artist=auteur, n_deposits=1)
+        nouvelle_chanson.save()
+        id_chanson = nouvelle_chanson.id
 
     # Créer un nouveau dépôt de musique
-    nouveau_depot = Deposit(id_song=chanson, id_boite=boite, user=request.user.username)
+    nouveau_depot = Deposit(song_id=id_chanson, box_id=boite.id, user_id=request.user.id)
     nouveau_depot.save()
 
     # Rediriger vers la page de détails de la boîte
-    return redirect('../decouvrir/', url_boite=url)
+    return redirect('../decouvrir/', url=url)
 
 
 def boite_accueil(request, url):
-    boite = get_object_or_404(Box, url_box=url)
+    boite = get_object_or_404(Box, url=url)
     # Récupérer les deux derniers dépôts liés à la boîte
-    derniers_depots = Deposit.objects.filter(id_boite=boite.id_boite).order_by('-deposited_at')[:2]
+    derniers_depots = Deposit.objects.filter(box_id=boite.id).order_by('-deposited_at')[:2]
     # Récupérer les noms des chansons correspondantes aux dépôts
-    chansons = Song.objects.filter(id_song__in=derniers_depots.values('id_song'))
+    chansons = Song.objects.filter(id__in=derniers_depots.values('song_id'))
     return render(request, 'frontend/affichage_boite.html', {'boite': boite, 'chansons': chansons})
