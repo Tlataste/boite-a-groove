@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { render } from "react-dom";
 import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
+import MusicBox from "./MusicBox";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,6 +24,7 @@ export default class App extends Component {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/box/:boxName" Component={MusicBox} />
         </Routes>
       </Router>
     );
