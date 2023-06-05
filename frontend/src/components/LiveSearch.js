@@ -5,6 +5,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
+import Button from "@mui/material/Button";
 
 export default function LiveSearch({
   isSpotifyAuthenticated,
@@ -57,8 +58,12 @@ export default function LiveSearch({
     return () => clearTimeout(getData);
   }, [searchValue, isSpotifyAuthenticated]);
 
+  function handleButtonClick(option) {
+    console.log(option);
+  }
+
   return (
-    <Stack sx={{ width: 300, margin: "auto", marginTop: "20px" }}>
+    <Stack sx={{ width: 350, margin: "auto", marginTop: "20px" }}>
       <Autocomplete
         options={jsonResults}
         getOptionLabel={(option) => `${option.name}`}
@@ -70,7 +75,7 @@ export default function LiveSearch({
         }
         renderOption={(props, option) => (
           <Box component="li" {...props} key={option.id}>
-            <Grid container alignItems="center" spacing={2}>
+            <Grid container alignItems="center" spacing={1}>
               <Grid item xs={3}>
                 <img
                   src={option.image_url}
@@ -78,10 +83,20 @@ export default function LiveSearch({
                   style={{ width: "100%" }}
                 />
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={5}>
                 <Box>
                   <Typography variant="h6">{option.name}</Typography>
                   <Typography variant="subtitle2">{option.artist}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Box>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleButtonClick(option)}
+                  >
+                    Déposer
+                  </Button>
                 </Box>
               </Grid>
             </Grid>
