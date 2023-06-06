@@ -223,7 +223,7 @@ class Search(APIView):
                 'album': item['album']['name'],
                 'image_url': item['album']['images'][0]['url'],
                 # 'preview_url': item['preview_url'],
-                # 'spotify_url': item['external_urls']['spotify'],
+                'spotify_url': item['external_urls']['spotify'],
             }
             tracks.append(track)
 
