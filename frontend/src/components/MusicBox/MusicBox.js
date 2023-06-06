@@ -10,10 +10,12 @@ import {
   authenticateSpotifyUser,
 } from "./SpotifyUtils";
 import { getBoxDetails } from "./BoxUtils";
+import SongCard from "./SongCard";
 
 export default function MusicBox() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
+  const [deposits, setDeposits] = useState([]);
   const { boxName } = useParams();
   const navigate = useNavigate();
 
@@ -23,7 +25,15 @@ export default function MusicBox() {
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
-    getBoxDetails(boxName, navigate);
+    getBoxDetails(boxName, navigate)
+      .then((data) => {
+        setDeposits(data);
+        // console.log(data[0].title);
+        //console.log(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []); // Empty dependency array ensures the effect is only run once
 
   const handleButtonClick = () => {
@@ -43,14 +53,17 @@ export default function MusicBox() {
       }}
     >
       <Menu />
-      <Button variant="contained" onClick={handleButtonClick}>
-        Connect
-      </Button>
-      <LiveSearch isSpotifyAuthenticated={isSpotifyAuthenticated}
-       boxName = {boxName}/>
       <div>
         <h3>{boxName}</h3>
       </div>
+      <Button variant="contained" onClick={handleButtonClick}>
+        Connect
+      </Button>
+      <SongCard deposits={deposits} />
+      <LiveSearch
+        isSpotifyAuthenticated={isSpotifyAuthenticated}
+        boxName={boxName}
+      />
     </Box>
   );
 }
