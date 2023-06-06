@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'spotify.apps.SpotifyConfig',
-    'gestion_boites.apps.GestionBoitesConfig'
+    'box_management.apps.BoxManagementConfig'
 ]
 
 MIDDLEWARE = [
