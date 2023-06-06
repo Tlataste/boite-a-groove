@@ -9,6 +9,7 @@ import {
   checkSpotifyAuthentication,
   authenticateSpotifyUser,
 } from "./SpotifyUtils";
+import { getBoxDetails } from "./BoxUtils";
 
 export default function MusicBox() {
   // States & Variables
@@ -22,21 +23,8 @@ export default function MusicBox() {
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
-    getBoxDetails();
+    getBoxDetails(boxName, navigate);
   }, []); // Empty dependency array ensures the effect is only run once
-
-  const getBoxDetails = async () => {
-    try {
-      const response = await fetch("/box-management/get-box?name=" + boxName);
-      if (!response.ok) {
-        navigate("/");
-      }
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleButtonClick = () => {
     // console.log("Connect button clicked!");
