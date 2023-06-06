@@ -22,15 +22,13 @@ export default function MusicBox() {
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
-   * Check on page load (only) if the user is authenticated with spotify
+   * Check at page load (only) if user is authenticated with spotify and get the box's last deposits.
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
     getBoxDetails(boxName, navigate)
       .then((data) => {
         setDeposits(data);
-        // console.log(data[0].title);
-        //console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -38,7 +36,6 @@ export default function MusicBox() {
   }, []); // Empty dependency array ensures the effect is only run once
 
   const handleButtonClick = () => {
-    // console.log("Connect button clicked!");
     authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
   };
 

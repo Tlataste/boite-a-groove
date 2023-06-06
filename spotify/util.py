@@ -141,8 +141,8 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
 
     # Retrieve the Spotify tokens associated with the user session
     tokens = get_user_tokens(session_id)
-    print(tokens.user)
-    print(tokens.access_token)
+    # print(tokens.user)
+    # print(tokens.access_token)
 
     # Prepare the headers for the API request
     headers = {
