@@ -57,7 +57,7 @@ class GetBox(APIView):
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
 
-    def normalize_string (self, input_string):
+    def normalize_string(self, input_string):
         # Remove special characters and convert to lowercase
         normalized_string = re.sub(r'[^a-zA-Z0-9\s]', '', input_string).lower()
         # Replace multiple spaces with a single space
