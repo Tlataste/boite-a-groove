@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'spotify.apps.SpotifyConfig',
     'deezer.apps.DeezerConfig',
-    'box_management.apps.BoxManagementConfig'
+    'box_management.apps.BoxManagementConfig',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,7 @@ ROOT_URLCONF = 'la_boîte_à_son.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "frontend/templates/frontend"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
