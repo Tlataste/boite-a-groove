@@ -7,10 +7,9 @@ import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 
-export default function LiveSearch({ isSpotifyAuthenticated }) {
+export default function LiveSearch({ isSpotifyAuthenticated, boxName }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
-
   /**
    * useEffect hook that executes when the component mounts or when the 'searchValue' or 'isSpotifyAuthenticated' dependencies change.
    *
@@ -55,10 +54,23 @@ export default function LiveSearch({ isSpotifyAuthenticated }) {
     return () => clearTimeout(getData);
   }, [searchValue, isSpotifyAuthenticated]);
 
-  function handleButtonClick(option) {
-    console.log(option);
+  function handleButtonClick(option,boxName) {
+   const data = {option, boxName};
+   const jsonData = JSON.stringify(data);
+   const csrftoken = getCookie('csrftoken');
+   fetch('/box-management/get-box?name='+boxName, {
+     method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: jsonData,
+   })
   }
-
+function getCookie(name) {
+  const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return cookieValue ? cookieValue.pop() : '';
+}
   return (
     <Stack sx={{ width: 350, margin: "auto", marginTop: "20px" }}>
       <Autocomplete
@@ -90,7 +102,7 @@ export default function LiveSearch({ isSpotifyAuthenticated }) {
                 <Box>
                   <Button
                     variant="contained"
-                    onClick={() => handleButtonClick(option)}
+                    onClick={() => handleButtonClick(option,boxName)}
                   >
                     Déposer
                   </Button>
