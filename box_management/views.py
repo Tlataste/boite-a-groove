@@ -31,7 +31,7 @@ class GetBox(APIView):
         # Récupérer la boîte correspondante
         song_name = request.data.get('song_name')
         song_author = request.data.get('song_author')
-        box = request.data.get('box')
+        box_name = request.data.get('boxName')
 
         # Normaliser les noms de chanson et d'auteur
         song_name = self.normalize_string(song_name)
@@ -51,7 +51,7 @@ class GetBox(APIView):
             song_id = new_song.id
 
         # Créer un nouveau dépôt de musique
-        new_deposit = Deposit(song_id=song_id, box_id=box.id, user_id=request.user.id)
+        new_deposit = Deposit(song_id=song_id, box_name=box_name, user_id=request.user.id)
         new_deposit.save()
 
         # Rediriger vers la page de détails de la boîte
