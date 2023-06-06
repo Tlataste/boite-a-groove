@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/', include('api.urls')),  # Any address with /api/...
     path('', include('frontend.urls')),
     path('spotify/', include('spotify.urls')),  # Any address with /spotify/...
-    path('box-management/', include('box_management.urls'))
+    path('box-management/', include('box_management.urls')),
+    path('deezer/',include('deezer.urls'))
 ]
