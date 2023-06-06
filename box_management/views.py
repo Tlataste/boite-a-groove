@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
-from .serializers import BoxSerializer
+from .serializers import BoxSerializer, SongSerializer
 from .models import *
 
 
@@ -16,7 +16,11 @@ class GetBox(APIView):
             box = Box.objects.filter(name=name)
             if len(box) > 0:
                 data = BoxSerializer(box[0]).data  # Gets in json the data from the database corresponding to the Box
-                return Response(data, status=status.HTTP_200_OK)
+                last_deposit = Deposit.objects.filter(box_id=data.get('id')).order_by('-deposited_at')[0:2]
+                # Récupérer les noms des chansons correspondantes aux dépôts
+                songs = Song.objects.filter(id__in=last_deposit.values('song_id'))
+                songs = SongSerializer(songs, many=True).data
+                return Response(songs, status=status.HTTP_200_OK)
             else:
                 return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
         else:
