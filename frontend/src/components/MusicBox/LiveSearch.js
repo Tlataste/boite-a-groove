@@ -7,10 +7,7 @@ import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 
-export default function LiveSearch({
-  isSpotifyAuthenticated,
-  checkSpotifyAuthentication,
-}) {
+export default function LiveSearch({ isSpotifyAuthenticated }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
 

@@ -46,10 +46,7 @@ export default function MusicBox() {
       <Button variant="contained" onClick={handleButtonClick}>
         Connect
       </Button>
-      <LiveSearch
-        isSpotifyAuthenticated={isSpotifyAuthenticated}
-        checkSpotifyAuthentication={checkSpotifyAuthentication}
-      />
+      <LiveSearch isSpotifyAuthenticated={isSpotifyAuthenticated} />
       <div>
         <h3>{boxName}</h3>
       </div>
