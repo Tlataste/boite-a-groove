@@ -1,7 +1,7 @@
 /**
  * Checks if the user is authenticated with Spotify.
  * Makes an asynchronous request to the server to fetch the authentication status.
- * Updates the state variable 'isSpotifyAuthenticated' based on the response.
+ * @param {function} setIsSpotifyAuthenticated - A function to set the Spotify authentication status of a user.
  */
 export const checkSpotifyAuthentication = async (setIsSpotifyAuthenticated) => {
   try {
@@ -14,11 +14,9 @@ export const checkSpotifyAuthentication = async (setIsSpotifyAuthenticated) => {
 };
 
 /**
- * Authenticates the user with Spotify.
- *
- * - Checks if the user is already authenticated.
- * - If not authenticated, performs the necessary steps to redirect the user to Spotify's authentication page.
- * - After authentication, the user will be redirected back to the application.
+ * Authenticates the user with Spotify if not already authenticated.
+ * @param {boolean} isSpotifyAuthenticated - A boolean indicating if the user is already authenticated with Spotify.
+ * @param {function} setIsSpotifyAuthenticated - A function to set the Spotify authentication status of the user.
  */
 export const authenticateSpotifyUser = async (
   isSpotifyAuthenticated,

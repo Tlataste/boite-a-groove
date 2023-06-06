@@ -10,24 +10,32 @@ import {
   authenticateSpotifyUser,
 } from "./SpotifyUtils";
 import { getBoxDetails } from "./BoxUtils";
+import SongCard from "./SongCard";
 
 export default function MusicBox() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
+  const [deposits, setDeposits] = useState([]);
+  const [isDeposited, setIsDeposited] = useState(false);
   const { boxName } = useParams();
   const navigate = useNavigate();
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
-   * Check on page load (only) if the user is authenticated with spotify
+   * Check at page load (only) if user is authenticated with spotify and get the box's last deposits.
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
-    getBoxDetails(boxName, navigate);
+    getBoxDetails(boxName, navigate)
+      .then((data) => {
+        setDeposits(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []); // Empty dependency array ensures the effect is only run once
 
   const handleButtonClick = () => {
-    // console.log("Connect button clicked!");
     authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
   };
 
@@ -43,14 +51,18 @@ export default function MusicBox() {
       }}
     >
       <Menu />
-      <Button variant="contained" onClick={handleButtonClick}>
-        Connect
-      </Button>
-      <LiveSearch isSpotifyAuthenticated={isSpotifyAuthenticated}
-       boxName = {boxName}/>
       <div>
         <h3>{boxName}</h3>
       </div>
+      <Button variant="contained" onClick={handleButtonClick}>
+        Connect
+      </Button>
+      <SongCard deposits={deposits} isDeposited={isDeposited} />
+      <LiveSearch
+        isSpotifyAuthenticated={isSpotifyAuthenticated}
+        boxName={boxName}
+        setIsDeposited={setIsDeposited}
+      />
     </Box>
   );
 }
