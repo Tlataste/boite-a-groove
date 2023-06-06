@@ -50,10 +50,7 @@ export default function MusicBox() {
         background: "linear-gradient(to right, #F59225, #F8431D)",
       }}
     >
-      <Menu />
-      <div>
-        <h3>{boxName}</h3>
-      </div>
+      <Menu boxName={boxName} />
       <Button variant="contained" onClick={handleButtonClick}>
         Connect
       </Button>
