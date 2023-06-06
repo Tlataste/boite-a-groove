@@ -51,7 +51,7 @@ export default function SongCard({ deposits, isDeposited }) {
             filter: isDeposited ? "none" : "blur(4px)",
           }}
         >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box sx={{ display: "flex", flexDirection: "column", width: 200 }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">
                 {deposits[depositIndex].title}
@@ -65,24 +65,24 @@ export default function SongCard({ deposits, isDeposited }) {
               </Typography>
             </CardContent>
             <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-              <IconButton aria-label="play/pause" onClick={prev}>
+              <IconButton aria-label="previous" onClick={prev}>
                 <NavigateBeforeIcon sx={{ height: 38, width: 38 }} />
               </IconButton>
-              <IconButton aria-label="play/pause" onClick={next}>
+              <IconButton aria-label="next" onClick={next}>
                 <NavigateNextIcon sx={{ height: 38, width: 38 }} />
               </IconButton>
             </Box>
           </Box>
           <CardMedia
             component="img"
-            sx={{ width: 151 }}
+            sx={{ width: 150 }}
             image={deposits[depositIndex].image_url}
-            alt="Live from space album cover"
+            alt="Track cover"
           />
         </Card>
       ) : (
-        // Afficher un indicateur de chargement ou un message d'erreur lorsque deposits est null ou vide
-        <div>Loading...</div> // Par exemple, un message d'indication de chargement
+        // Display a loading indicator when deposits is null or empty
+        <div>Loading...</div>
       )}
     </>
   );

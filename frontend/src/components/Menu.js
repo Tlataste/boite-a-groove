@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 
-export default function MenuAppBar() {
+export default function MenuAppBar({ boxName }) {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -35,9 +35,12 @@ export default function MenuAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            La Boîte à Groove
-          </Typography>
+          <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+            <Typography variant="h6" component="div">
+              La Boîte à Groove
+            </Typography>
+            <Typography variant="subtitle1">{boxName}</Typography>
+          </Box>
           {auth && (
             <div>
               <IconButton
