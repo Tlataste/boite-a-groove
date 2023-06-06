@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 
-export default function SongCard({ deposits }) {
+export default function SongCard({ deposits, isDeposited }) {
   const [depositIndex, setdepositIndex] = useState(0);
 
   const theme = useTheme();
@@ -30,7 +30,14 @@ export default function SongCard({ deposits }) {
   return (
     <>
       {Object.keys(deposits).length > 0 ? (
-        <Card sx={{ display: "flex", margin: "auto", maxWidth: "fit-content" }}>
+        <Card
+          sx={{
+            display: "flex",
+            margin: "auto",
+            maxWidth: "fit-content",
+            filter: isDeposited ? "none" : "blur(4px)",
+          }}
+        >
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">

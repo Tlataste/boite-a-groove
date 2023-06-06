@@ -7,7 +7,11 @@ import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 
-export default function LiveSearch({ isSpotifyAuthenticated, boxName }) {
+export default function LiveSearch({
+  isSpotifyAuthenticated,
+  boxName,
+  setIsDeposited,
+}) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
   /**
@@ -54,23 +58,26 @@ export default function LiveSearch({ isSpotifyAuthenticated, boxName }) {
     return () => clearTimeout(getData);
   }, [searchValue, isSpotifyAuthenticated]);
 
-  function handleButtonClick(option,boxName) {
-   const data = {option, boxName};
-   const jsonData = JSON.stringify(data);
-   const csrftoken = getCookie('csrftoken');
-   fetch('/box-management/get-box?name='+boxName, {
-     method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken,
-        },
-        body: jsonData,
-   })
+  function handleButtonClick(option, boxName) {
+    const data = { option, boxName };
+    const jsonData = JSON.stringify(data);
+    const csrftoken = getCookie("csrftoken");
+    fetch("/box-management/get-box?name=" + boxName, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: jsonData,
+    });
+    setIsDeposited(true);
   }
-function getCookie(name) {
-  const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-  return cookieValue ? cookieValue.pop() : '';
-}
+  function getCookie(name) {
+    const cookieValue = document.cookie.match(
+      "(^|;)\\s*" + name + "\\s*=\\s*([^;]+)"
+    );
+    return cookieValue ? cookieValue.pop() : "";
+  }
   return (
     <Stack sx={{ width: 350, margin: "auto", marginTop: "20px" }}>
       <Autocomplete
@@ -102,7 +109,7 @@ function getCookie(name) {
                 <Box>
                   <Button
                     variant="contained"
-                    onClick={() => handleButtonClick(option,boxName)}
+                    onClick={() => handleButtonClick(option, boxName)}
                   >
                     Déposer
                   </Button>

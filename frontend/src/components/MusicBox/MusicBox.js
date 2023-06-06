@@ -16,6 +16,7 @@ export default function MusicBox() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
   const [deposits, setDeposits] = useState([]);
+  const [isDeposited, setIsDeposited] = useState(false);
   const { boxName } = useParams();
   const navigate = useNavigate();
 
@@ -59,10 +60,11 @@ export default function MusicBox() {
       <Button variant="contained" onClick={handleButtonClick}>
         Connect
       </Button>
-      <SongCard deposits={deposits} />
+      <SongCard deposits={deposits} isDeposited={isDeposited} />
       <LiveSearch
         isSpotifyAuthenticated={isSpotifyAuthenticated}
         boxName={boxName}
+        setIsDeposited={setIsDeposited}
       />
     </Box>
   );
