@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { render } from "react-dom";
 import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
-import MusicBox from "./MusicBox";
+import MusicBox from "./MusicBox/MusicBox";
 
 import {
   BrowserRouter as Router,
