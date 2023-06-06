@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
+import { json } from "react-router-dom";
 
 export default function LiveSearch({
   isSpotifyAuthenticated,
@@ -60,7 +61,9 @@ export default function LiveSearch({
 
   function handleButtonClick(option, boxName) {
     const data = { option, boxName };
+    // console.log(option);
     const jsonData = JSON.stringify(data);
+    // console.log(jsonData);
     const csrftoken = getCookie("csrftoken");
     fetch("/box-management/get-box?name=" + boxName, {
       method: "POST",
