@@ -6,7 +6,7 @@ import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-export default function HomePage() {
+export default function MusicBox() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
   const { boxName } = useParams();

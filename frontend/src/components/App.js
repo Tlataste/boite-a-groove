@@ -24,7 +24,7 @@ export default class App extends Component {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/box/:boxName" Component={MusicBox} />
+          <Route path="/box/:boxName" element={<MusicBox />} />
         </Routes>
       </Router>
     );
