@@ -1,8 +1,7 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
-from .serializers import BoxSerializer, SongSerializer
+from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
 import re
 
@@ -29,8 +28,9 @@ class GetBox(APIView):
 
     def post(self, request, format=None):
         # Récupérer la boîte correspondante
-        song_name = request.data.get('song_name')
-        song_author = request.data.get('song_author')
+        option = request.data.get('option')
+        song_name = option.get('name')
+        song_author = option.get('artist')
         box_name = request.data.get('boxName')
 
         # Normaliser les noms de chanson et d'auteur
@@ -40,24 +40,27 @@ class GetBox(APIView):
         # Vérifier si la chanson existe déjà
         try:
             song = Song.objects.filter(title=song_name, artist=song_author).get()
-            id_chanson = song.id
             song.n_deposits += 1
             song.save()
 
         except Song.DoesNotExist:
-            # Créer une nouvelle chanson
-            new_song = Song(title=song_name, artist=song_author, n_deposits=1)
-            new_song.save()
-            song_id = new_song.id
+            # Créer une nouvelle chanson,
+            song_url = option.get('spotify_url')
+            song_image = option.get('image_url')
+            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, n_deposits=1)
+
+            song.save()
 
         # Créer un nouveau dépôt de musique
-        new_deposit = Deposit(song_id=song_id, box_name=box_name, user_id=request.user.id)
+        box = Box.objects.filter(name=box_name).get()
+        new_deposit = Deposit(song_id=song, box_id=box)
         new_deposit.save()
-
+        new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
 
-    def normalize_string(self, input_string):
+    @staticmethod
+    def normalize_string(input_string):
         # Remove special characters and convert to lowercase
         normalized_string = re.sub(r'[^a-zA-Z0-9\s]', '', input_string).lower()
         # Replace multiple spaces with a single space
