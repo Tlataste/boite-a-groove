@@ -5,8 +5,7 @@ from .credentials import REDIRECT_URI, APP_ID, APP_SECRET
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-import base64
-from urllib.parse import urlencode
+from .util import *
 import requests
 
 
@@ -14,7 +13,7 @@ import requests
 class AuthURL(APIView):
     """
     Class goal:
-    This class represents an API view for generating an authentication URL for Spotify.
+    This class represents an API view for generating an authentication URL for Deezer.
 
     Methods:
     def get(self, request, format=None):
@@ -25,7 +24,7 @@ class AuthURL(APIView):
     def get(self, request, format=None):
         """
         Method goal:
-        Retrieves the authentication URL for Spotify.
+        Retrieves the authentication URL for Deezer.
 
         Arguments:
         self    : The instance of the class.
@@ -37,7 +36,7 @@ class AuthURL(APIView):
 
         """
         return Response({
-            'url': "https://connect.deezer.com/oauth/auth.php?app_id=" + APP_ID + "&redirect_uri=" + REDIRECT_URI + "&perms=email,basic_access"},
+            'url': "https://connect.deezer.com/oauth/auth.php?app_id=" + APP_ID + "&redirect_uri=" + REDIRECT_URI + "&perms=email,basic_access,offline_access"},
             status=status.HTTP_200_OK)
 
 
@@ -66,8 +65,16 @@ def deezer_callback(request, format=None):
     response = json.loads(response)
     # Extract the fields from the response
     access_token = response['access_token']
-    expires_in = response['expires']
 
+    # Check if the user has an active session
+    is_active = is_deezer_authenticated(request.session.session_key)
+
+    # If the user has an active session, update the user tokens in the database
+    if is_active:
+        update_or_create_user_tokens(request.session.session_key, access_token)
+    # If the user doesn't have an active session, create a new session and store the user tokens in the database
+    else:
+        update_or_create_user_tokens(request.session.session_key, access_token)
     # Create a session if it doesn't exist
     if not request.session.exists(request.session.session_key):
         request.session.create()
@@ -77,41 +84,42 @@ def deezer_callback(request, format=None):
     # If we want to redirect to the register page for example we should write frontend:register
     return redirect('frontend:')
 
-# class IsAuthenticated(APIView):
-#     """
-#     API view class for checking if the user is authenticated with Spotify.
-#
-#     Methods:
-#         get(request, format=None): Retrieves the authentication status of the user.
-#     """
-#
-#     def get(self, request, format=None):
-#         """
-#         Retrieves the authentication status (true if authentifcated, false if not) of the user.
-#
-#         Args:
-#             request: The HTTP request object.
-#             format: Optional format parameter for specifying the response format.
-#
-#         Returns:
-#             A Response object containing the authentication status of the user.
-#
-#         Raises:
-#             None
-#         """
-#
-#         # Check if the user is authenticated with Spotify
-#         is_authenticated = is_spotify_authenticated(
-#             self.request.session.session_key)
-#
-#         # Return the authentication status in the response
-#         return Response({'status': is_authenticated},
-#                         status=status.HTTP_200_OK)
-#
-#
+
+class IsAuthenticated(APIView):
+    """
+    API view class for checking if the user is authenticated with Deezer.
+
+    Methods:
+        get(request, format=None): Retrieves the authentication status of the user.
+    """
+
+    def get(self, request, format=None):
+        """
+        Retrieves the authentication status (true if authentifcated, false if not) of the user.
+
+        Args:
+            request: The HTTP request object.
+            format: Optional format parameter for specifying the response format.
+
+        Returns:
+            A Response object containing the authentication status of the user.
+
+        Raises:
+            None
+        """
+
+        # Check if the user is authenticated with Spotify
+        is_authenticated = is_deezer_authenticated(
+            self.request.session.session_key)
+
+        # Return the authentication status in the response
+        return Response({'status': is_authenticated},
+                        status=status.HTTP_200_OK)
+
+
 # class GetRecentlyPlayedTracks(APIView):
 #     """
-#     API view class for retrieving the recently played tracks of the user from Spotify.
+#     API view class for retrieving the recently played tracks of the user from Deezer.
 #
 #     Methods:
 #         get(request, format=None): Retrieves the recently played tracks of the user.
@@ -122,7 +130,7 @@ def deezer_callback(request, format=None):
 #
 #     def get(self, request, format=None):
 #         """
-#         Retrieves the recently played tracks of the user from Spotify.
+#         Retrieves the recently played tracks of the user from Deezer.
 #
 #         Args:
 #             request: The HTTP request object.
@@ -133,72 +141,75 @@ def deezer_callback(request, format=None):
 #         """
 #
 #         # Execute the Spotify API request to retrieve the recently played tracks
-#         response = execute_spotify_api_request(
+#         response = execute_deezer_api_request(
 #             self.request.session.session_key,
-#             'player/recently-played')
-#
+#             'user/me/id')
+#         print(response)
 #         # Check if there is an error in the response or if the 'items' key is missing
 #         if 'error' in response or 'items' not in response:
 #             return Response({}, status=status.HTTP_204_NO_CONTENT)
 #
 #         # Parse and filter the response to extract relevant track information
 #         tracks = []
-#         for item in response.get('items'):
-#
-#             # Check if the list doesn't already contain the song
-#             if not any(existing_track['id'] == item['track']['id'] for existing_track in tracks):
-#                 track = {
-#                     'id': item['track']['id'],
-#                     'name': item['track']['name'],
-#                     'artist': item['track']['artists'][0]['name'],
-#                     'album': item['track']['album']['name'],
-#                     'image_url': item['track']['album']['images'][0]['url']
-#                 }
-#                 tracks.append(track)
+#         # for item in response.get('items'):
+#         #
+#         #     # Check if the list doesn't already contain the song
+#         #     if not any(existing_track['id'] == item['track']['id'] for existing_track in tracks):
+#         #         track = {
+#         #                 'id': item['id'],
+#         #                 'name': item['title'],
+#         #                 'artist': item['artist']['name'],
+#         #                 'album': item['album']['title'],
+#         #                 'image_url': item['album']['cover_medium'],
+#         #                 'deezer_url': item['link'],
+#         #             }
+#         #         tracks.append(track)
 #
 #         # Return the list of recently played tracks in the response
 #         return Response(tracks, status=status.HTTP_200_OK)
 #
-#
-# class Search(APIView):
-#     """
-#     API view class for searching tracks using the Spotify API.
-#
-#     Methods:
-#         post(request, format=None): Searches for tracks based on the provided search query.
-#     """
-#
-#     def post(self, request, format=None):
-#         """
-#         Searches for tracks based on the provided search query.
-#
-#         Args:
-#             request: The HTTP request object.
-#             format: Optional format parameter for specifying the response format.
-#
-#         Returns:
-#             A Response object containing the search results as a list of tracks.
-#         """
-#
-#         # Extract the search query from the request data
-#         search_query = request.data.get('search_query')
-#
-#         # Search for tracks using the Spotipy client
-#         results = sp.search(q=search_query, type='track')
-#
-#         # Extract the track data from the results and create a list of tracks
-#         tracks = []
-#         for item in results['tracks']['items']:
-#             track = {
-#                 'id': item['id'],
-#                 'name': item['name'],
-#                 'artist': item['artists'][0]['name'],
-#                 'album': item['album']['name'],
-#                 'image_url': item['album']['images'][0]['url'],
-#                 # 'preview_url': item['preview_url'],
-#                 'spotify_url': item['external_urls']['spotify'],
-#             }
-#             tracks.append(track)
-#
-#         # Return the list of tracks as a response
-#         return Response(tracks, status=status.HTTP_200_OK)
+
+class Search(APIView):
+    """
+    API view class for searching tracks using the Deezer API.
+
+    Methods:
+        post(request, format=None): Searches for tracks based on the provided search query.
+    """
+
+    def get(self, request, format=None):
+        """
+        Searches for tracks based on the provided search query.
+
+        Args:
+            request: The HTTP request object.
+            format: Optional format parameter for specifying the response format.
+
+        Returns:
+            A Response object containing the search results as a list of tracks.
+        """
+
+        # Extract the search query from the request data
+        # search_query = request.data.get('search_query')
+        search_query = 'eminem'
+
+        # Search for tracks
+        results = execute_deezer_api_request(
+            self.request.session.session_key,
+            'search/track?q=' + search_query + '&output=json')
+        results = results.json()
+        # Extract the track data from the results and create a list of tracks
+        tracks = []
+        for item in results['data']:
+            track = {
+                'id': item['id'],
+                'name': item['title'],
+                'artist': item['artist']['name'],
+                'album': item['album']['title'],
+                'image_url': item['album']['cover_medium'],
+                'deezer_url': item['link'],
+            }
+            tracks.append(track)
+
+        # Return the list of tracks as a response
+        return Response(tracks, status=status.HTTP_200_OK)
