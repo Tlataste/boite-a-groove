@@ -171,7 +171,7 @@ class Search(APIView):
         post(request, format=None): Searches for tracks based on the provided search query.
     """
 
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         """
         Searches for tracks based on the provided search query.
 
