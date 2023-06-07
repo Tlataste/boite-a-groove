@@ -1,53 +1,91 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .forms import RegisterUserForm
 
 
-def login_user(request):
+class LoginUser(APIView):
     '''
+    Class goal:
+    This class represents an API view for logging an user in.
+
+    Methods:
+    def post(self, request, format=None):
+        Checks credentials and if match found, connect the user.
+
     Doc used : https://docs.djangoproject.com/en/4.2/topics/auth/default/
     '''
-    if request.method == "POST":  # if user posted sth
-        username = request.POST['username']
-        password = request.POST['password']
+    def post(self, request, format=None):
+        username = request.data.get('username')
+        password = request.data.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/box/barlz')
+            # Return the authentication status in the response
+            is_authenticated = True
+            return Response({'status': is_authenticated},
+                            status=status.HTTP_200_OK)
         else:
-            messages.success(request, ("Error logging in, try again."))
-            return redirect('login')
-
-    else:
-        return render(request, 'authentication/login.html', {})  # {} is the context dictionary
+            is_authenticated = False
+            return Response({'status': is_authenticated},
+                            status=status.HTTP_401_UNAUTHORIZED)
 
 
-def logout_user(request):
-    logout(request)
-    messages.success(request, ("You logged out with success."))
-    return redirect('/box/barlz')
+class LogoutUser(APIView):
+    '''
+    Class goal:
+    This class represents an API view for logging an user out.
+
+    Methods:
+    def get(self, request, format=None):
+        Checks if user is logged in, if so logs him out.
+
+    Doc used : https://docs.djangoproject.com/en/4.2/topics/auth/default/
+    '''
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            logout(request)
+            is_logged_out = True
+            return Response({'status': is_logged_out},
+                            status=status.HTTP_200_OK)
+        else:
+            is_logged_out = False
+            return Response({'status': is_logged_out},
+                            status=status.HTTP_401_UNAUTHORIZED)
 
 
-def register_user(request):
-    if request.method == "POST":  # if user filled the form
-        form = RegisterUserForm(request.POST)  # Imported form
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
+class RegisterUser(APIView):
+    '''
+    Class goal:
+    This class represents an API view for logging an user out.
 
-            # When someone creates an account, it logs them in at the same time
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, ("Inscription réussie!"))
-            return redirect('/box/barlz')
-    else:  # if GET request, show form
-        form = RegisterUserForm()
-    return render(request, 'authentication/register.html', {
-        'form': form,
-    })  # {} is the context dictionary
+    Methods:
+    def get(self, request, format=None):
+        Checks if user is logged in, if so logs him out.
+
+    Doc used : https://docs.djangoproject.com/en/4.2/topics/auth/default/
+    '''
+    def post(request):
+        if request.method == "POST":  # if user filled the form
+            form = RegisterUserForm(request.POST)  # Imported form
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
+
+                # When someone creates an account, it logs them in at the same time
+                user = authenticate(username=username, password=password)
+                login(request, user)
+                messages.success(request, ("Inscription réussie!"))
+                return redirect('/box/barlz')
+        else:  # if GET request, show form
+            form = RegisterUserForm()
+        return render(request, 'authentication/register.html', {
+            'form': form,
+        })  # {} is the context dictionary
 
 
 def example(request):
