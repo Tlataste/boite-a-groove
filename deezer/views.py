@@ -1,5 +1,3 @@
-import json
-
 from django.shortcuts import render, redirect
 from .credentials import REDIRECT_URI, APP_ID, APP_SECRET
 from rest_framework.views import APIView
