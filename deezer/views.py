@@ -34,7 +34,7 @@ class AuthURL(APIView):
 
         """
         return Response({
-            'url': "https://connect.deezer.com/oauth/auth.php?app_id=" + APP_ID + "&redirect_uri=" + REDIRECT_URI + "&perms=email,basic_access,offline_access"},
+            'url': "https://connect.deezer.com/oauth/auth.php?app_id=" + APP_ID + "&redirect_uri=" + REDIRECT_URI + "&perms=email,basic_access,offline_access,listening_history"},
             status=status.HTTP_200_OK)
 
 
@@ -63,7 +63,7 @@ def deezer_callback(request, format=None):
     response = json.loads(response)
     # Extract the fields from the response
     access_token = response['access_token']
-
+    print(response)
     # Check if the user has an active session
     is_active = is_deezer_authenticated(request.session.session_key)
 
@@ -115,57 +115,53 @@ class IsAuthenticated(APIView):
                         status=status.HTTP_200_OK)
 
 
-# class GetRecentlyPlayedTracks(APIView):
-#     """
-#     API view class for retrieving the recently played tracks of the user from Deezer.
-#
-#     Methods:
-#         get(request, format=None): Retrieves the recently played tracks of the user.
-#
-#     Attributes:
-#         None
-#     """
-#
-#     def get(self, request, format=None):
-#         """
-#         Retrieves the recently played tracks of the user from Deezer.
-#
-#         Args:
-#             request: The HTTP request object.
-#             format: Optional format parameter for specifying the response format.
-#
-#         Returns:
-#             A Response object containing the recently played tracks of the user.
-#         """
-#
-#         # Execute the Spotify API request to retrieve the recently played tracks
-#         response = execute_deezer_api_request(
-#             self.request.session.session_key,
-#             'user/me/id')
-#         print(response)
-#         # Check if there is an error in the response or if the 'items' key is missing
-#         if 'error' in response or 'items' not in response:
-#             return Response({}, status=status.HTTP_204_NO_CONTENT)
-#
-#         # Parse and filter the response to extract relevant track information
-#         tracks = []
-#         # for item in response.get('items'):
-#         #
-#         #     # Check if the list doesn't already contain the song
-#         #     if not any(existing_track['id'] == item['track']['id'] for existing_track in tracks):
-#         #         track = {
-#         #                 'id': item['id'],
-#         #                 'name': item['title'],
-#         #                 'artist': item['artist']['name'],
-#         #                 'album': item['album']['title'],
-#         #                 'image_url': item['album']['cover_medium'],
-#         #                 'deezer_url': item['link'],
-#         #             }
-#         #         tracks.append(track)
-#
-#         # Return the list of recently played tracks in the response
-#         return Response(tracks, status=status.HTTP_200_OK)
-#
+class GetRecentlyPlayedTracks(APIView):
+    """
+    API view class for retrieving the recently played tracks of the user from Deezer.
+
+    Methods:
+        get(request, format=None): Retrieves the recently played tracks of the user.
+
+    Attributes:
+        None
+    """
+
+    def get(self, request, format=None):
+        """
+        Retrieves the recently played tracks of the user from Deezer.
+
+        Args:
+            request: The HTTP request object.
+            format: Optional format parameter for specifying the response format.
+
+        Returns:
+            A Response object containing the recently played tracks of the user.
+        """
+
+        # Execute the Spotify API request to retrieve the recently played tracks
+        response = execute_deezer_api_request(
+            self.request.session.session_key,
+            '/user/me/history')
+        results = response.json()
+        # Check if there is an error in the response or if the 'items' key is missing
+        # if 'error' in response or 'items' not in response:
+        #     return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        # Parse and filter the response to extract relevant track information
+        tracks = []
+        for item in results['data']:
+            track = {
+                'id': item['id'],
+                'name': item['title'],
+                'artist': item['artist']['name'],
+                'album': item['album']['title'],
+                'image_url': item['album']['cover_medium'],
+                'deezer_url': item['link'],
+            }
+            tracks.append(track)
+        # Return the list of recently played tracks in the response
+        return Response(tracks, status=status.HTTP_200_OK)
+
 
 class Search(APIView):
     """

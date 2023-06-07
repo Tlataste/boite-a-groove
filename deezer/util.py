@@ -104,5 +104,5 @@ def execute_deezer_api_request(session_id, endpoint, post_=False, put_=False):
         put(BASE_URL + endpoint, headers=headers)
     else:
         # Send a GET request to the specified API endpoint with user params
-        response = requests.get(BASE_URL + endpoint, headers=headers, params=user_params)
+        response = requests.get(BASE_URL + endpoint + "&access_token=" + tokens.access_token, headers=headers, params=user_params)
     return response
