@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
+from django import forms
 
 
 class LoginUser(APIView):
@@ -60,32 +61,32 @@ class LogoutUser(APIView):
 class RegisterUser(APIView):
     '''
     Class goal:
-    This class represents an API view for logging an user out.
+    This class represents an API view for registering an user.
 
     Methods:
-    def get(self, request, format=None):
-        Checks if user is logged in, if so logs him out.
+    def post(self, request, format=None):
+        Registers an user.
 
     Doc used : https://docs.djangoproject.com/en/4.2/topics/auth/default/
     '''
-    def post(request):
-        if request.method == "POST":  # if user filled the form
-            form = RegisterUserForm(request.POST)  # Imported form
-            if form.is_valid():
-                form.save()
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
 
-                # When someone creates an account, it logs them in at the same time
-                user = authenticate(username=username, password=password)
-                login(request, user)
-                messages.success(request, ("Inscription réussie!"))
-                return redirect('/box/barlz')
-        else:  # if GET request, show form
-            form = RegisterUserForm()
-        return render(request, 'authentication/register.html', {
-            'form': form,
-        })  # {} is the context dictionary
+    def post(self, request, format=None):
+
+        form = RegisterUserForm(data=request.data)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
+
+            # When someone creates an account, it logs them in at the same time
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, ("Inscription réussie!"))
+            return Response({'status': True},
+                            status=status.HTTP_200_OK)
+        else:
+            errors = form.errors
+            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def example(request):
