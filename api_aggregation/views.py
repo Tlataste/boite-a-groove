@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from api_aggregation.util import find_matching_song
+import api_aggregation.util as ut
 from box_management.util import normalize_string
 from deezer.util import execute_deezer_api_request
 from spotify.spotipy_client import sp
@@ -40,7 +40,8 @@ class ApiAggregation(APIView):
                     'url': item['link'],
                 }
                 tracks.append(track)
-            final_song = find_matching_song(song['name'], song['artist'], song['duration'], tracks)
+            final_song = ut.find_matching_song_from_spotify_to_deezer(song['name'], song['artist'], song['duration'],
+                                                                      tracks)
             return Response(final_song, status=status.HTTP_200_OK)
 
         elif platform_id == 2:  # The streaming platform is Deezer
@@ -60,7 +61,8 @@ class ApiAggregation(APIView):
                     'url': item['external_urls']['spotify'],
                 }
                 tracks.append(track)
-                final_song = find_matching_song(song['name'], song['artist'], song['duration'] // 1000, tracks)
+                final_song = ut.find_matching_song_from_deezer_to_spotify(song['name'], song['artist'],
+                                                                          song['duration'] // 1000, tracks)
 
             return Response(final_song, status=status.HTTP_200_OK)
         else:
