@@ -10,7 +10,6 @@ from spotify.spotipy_client import sp
 
 
 class ApiAggregation(APIView):
-
     def post(self, request):
         # Extract the search query from the request data
         song = request.data.get('song')
