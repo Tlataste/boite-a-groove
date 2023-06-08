@@ -141,7 +141,7 @@ class GetRecentlyPlayedTracks(APIView):
         # Execute the Spotify API request to retrieve the recently played tracks
         response = execute_deezer_api_request(
             self.request.session.session_key,
-            '/user/me/history')
+            '/user/me/history', recent=True)
         results = response.json()
         # Check if there is an error in the response or if the 'items' key is missing
         # if 'error' in response or 'items' not in response:

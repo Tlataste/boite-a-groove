@@ -10,9 +10,15 @@ from spotify.spotipy_client import sp
 
 
 class ApiAggregation(APIView):
-    def post(self, request):
+    def get(self, request):
         # Extract the search query from the request data
-        song = request.data.get('song')
+        # song = request.data.get('song')
+        song = {
+            'name': 'Lose Yourself',
+            'artist': 'Eminem',
+            'duration': 326,
+            'platform_id': 1,
+        }
 
         # Extract the id of the streaming platform from the request data
         platform_id = song['platform_id']
