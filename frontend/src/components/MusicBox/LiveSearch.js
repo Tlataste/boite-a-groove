@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { json } from "react-router-dom";
+import { getCookie } from "../Security/TokensUtils";
 
 export default function LiveSearch({
   isSpotifyAuthenticated,
@@ -75,12 +75,7 @@ export default function LiveSearch({
     });
     setIsDeposited(true);
   }
-  function getCookie(name) {
-    const cookieValue = document.cookie.match(
-      "(^|;)\\s*" + name + "\\s*=\\s*([^;]+)"
-    );
-    return cookieValue ? cookieValue.pop() : "";
-  }
+
   return (
     <Stack sx={{ width: 350, margin: "auto", marginTop: "20px" }}>
       <Autocomplete

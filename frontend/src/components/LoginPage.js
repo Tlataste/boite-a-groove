@@ -12,8 +12,14 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+/**
+Copyright Component
+Renders a copyright statement with a link to the "La boite à son" website
+and the current year.
+@param {object} props - Additional properties to be spread onto the Typography component
+@returns {React.Element} - A Typography component displaying the copyright statement
+*/
 function Copyright(props) {
   return (
     <Typography
@@ -37,7 +43,13 @@ export default function LoginPage() {
   const [authenticationSuccess, setAuthenticationSuccess] = useState(false);
   const [errorMessages, setErrorMessages] = useState("");
 
-  // Methods
+  /**
+   * sendAndProcessData Function
+   * Sends a POST request with the data in JSON to "/users/login_user" endpoint,
+   * processes the response, and handles potential errors.
+   * @param {JSON} form - The data in JSON to be sent in the request body
+   * @returns {Promise<void>} - A Promise that resolves when the request is completed
+   */
   const sendAndProcessData = async (form) => {
     const requestOptions = {
       method: "POST",
@@ -63,6 +75,12 @@ export default function LoginPage() {
     }
   };
 
+  /**
+   * handleSubmit Function
+   * Handles the form submission event by preventing the default form submission behavior,
+   * extracting form data, converting it to JSON, and invoking the sendAndProcessData function.
+   * @param {Event} event - The form submission event
+   */
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
