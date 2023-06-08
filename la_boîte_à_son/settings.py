@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'spotify.apps.SpotifyConfig',
+    'deezer.apps.DeezerConfig',
     'box_management.apps.BoxManagementConfig',
     'users',
 ]
