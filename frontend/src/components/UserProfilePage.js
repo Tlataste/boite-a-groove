@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -18,6 +18,12 @@ const styles = {
 };
 
 const UserProfilePage = () => {
+  const [password, setPassword] = useState("********");
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
   return (
     <div style={styles.root}>
       <Grid container spacing={2} alignItems="center">
@@ -81,7 +87,8 @@ const UserProfilePage = () => {
         variant="outlined"
         fullWidth
         type="password"
-        value="********"
+        value={password}
+        onChange={handlePasswordChange}
       />
     </div>
   );
