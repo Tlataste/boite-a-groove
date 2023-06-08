@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
-import re
 
 
 class GetBox(APIView):
@@ -58,11 +57,3 @@ class GetBox(APIView):
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def normalize_string(input_string):
-        # Remove special characters and convert to lowercase
-        normalized_string = re.sub(r'[^a-zA-Z0-9\s]', '', input_string).lower()
-        # Replace multiple spaces with a single space
-        normalized_string = re.sub(r'\s+', ' ', normalized_string).strip()
-        return normalized_string
