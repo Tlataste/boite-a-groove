@@ -5,6 +5,7 @@ import HomePage from "./HomePage";
 import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
 import MusicBox from "./MusicBox/MusicBox";
+import UserProfilePage from "./UserProfilePage";
 
 import {
   BrowserRouter as Router,
@@ -26,6 +27,7 @@ export default class App extends Component {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/box/:boxName" element={<MusicBox />} />
         </Routes>
       </Router>

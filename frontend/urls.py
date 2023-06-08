@@ -12,5 +12,6 @@ urlpatterns = [
     path('', index, name=''),
     path('register', index),
     path('login', index),
+    path('profile', index),
     path('box/<str:boxName>', index)
 ]
