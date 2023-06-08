@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 from api_aggregation.util import find_matching_song
 from box_management.util import normalize_string
@@ -8,7 +9,7 @@ from deezer.util import execute_deezer_api_request
 from spotify.spotipy_client import sp
 
 
-class ApiAggregation:
+class ApiAggregation(APIView):
 
     def post(self, request):
         # Extract the search query from the request data
