@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 
+from api_aggregation.util import find_matching_song
 from box_management.util import normalize_string
 from deezer.util import execute_deezer_api_request
 from spotify.spotipy_client import sp
@@ -22,7 +23,7 @@ class ApiAggregation:
         tracks = []
 
         if platform_id == 1:  # The streaming platform is Spotify
-            # Search for tracks
+            # Search for tracks using the Deezer API
             results = execute_deezer_api_request(
                 self.request.session.session_key,
                 'search/track?q=' + search_query + '&output=json')
@@ -40,7 +41,8 @@ class ApiAggregation:
                     'url': item['link'],
                 }
                 tracks.append(track)
-            return Response(tracks, status=status.HTTP_200_OK)
+            final_song = find_matching_song(song['name'], song['duration'], tracks)
+            return Response(final_song, status=status.HTTP_200_OK)
 
         elif platform_id == 2:  # The streaming platform is Deezer
             # Search for tracks using the Spotipy client
@@ -59,7 +61,8 @@ class ApiAggregation:
                     'url': item['external_urls']['spotify'],
                 }
                 tracks.append(track)
-            return Response(tracks, status=status.HTTP_200_OK)
+                final_song = find_matching_song(song['name'], song['duration'] // 1000, tracks)
+            return Response(final_song, status=status.HTTP_200_OK)
         else:
             # Return an error response
             return Response({'error': 'Invalid platform ID.'}, status=status.HTTP_400_BAD_REQUEST)
