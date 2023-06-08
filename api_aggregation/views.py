@@ -20,7 +20,6 @@ class ApiAggregation(APIView):
 
         # Normalize the search query
         search_query = normalize_string(song['name'] + ' ' + song['artist'])
-
         tracks = []
 
         if platform_id == 1:  # The streaming platform is Spotify
@@ -42,7 +41,7 @@ class ApiAggregation(APIView):
                     'url': item['link'],
                 }
                 tracks.append(track)
-            final_song = find_matching_song(song['name'], song['duration'], tracks)
+            final_song = find_matching_song(song['name'], song['artist'], song['duration'], tracks)
             return Response(final_song, status=status.HTTP_200_OK)
 
         elif platform_id == 2:  # The streaming platform is Deezer
@@ -62,7 +61,8 @@ class ApiAggregation(APIView):
                     'url': item['external_urls']['spotify'],
                 }
                 tracks.append(track)
-                final_song = find_matching_song(song['name'], song['duration'] // 1000, tracks)
+                final_song = find_matching_song(song['name'], song['artist'], song['duration'] // 1000, tracks)
+
             return Response(final_song, status=status.HTTP_200_OK)
         else:
             # Return an error response
