@@ -24,5 +24,7 @@ urlpatterns = [
     path('', include('frontend.urls')),
     path('spotify/', include('spotify.urls')),  # Any address with /spotify/...
     path('box-management/', include('box_management.urls')),
-    path('deezer/', include('deezer.urls'))
+    path('deezer/', include('deezer.urls')),
+    path('users/', include('django.contrib.auth.urls')),  # Bundled Django auth URLs
+    path('users/', include('users.urls'))
 ]
