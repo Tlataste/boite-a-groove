@@ -20,7 +20,7 @@ class Song(models.Model):
     url = models.URLField(max_length=200)
     image_url = models.URLField(max_length=200, blank=True)
     duration = models.IntegerField(default=0)
-    n_platform = models.IntegerField(default=0)
+    platform_id = models.IntegerField(default=0)
     n_deposits = models.IntegerField(default=0)
 
 
