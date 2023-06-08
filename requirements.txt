@@ -1,5 +1,7 @@
-django
+django~=4.2.1
 django-extensions
-djangorestframework
-requests
-spotipy
+djangorestframework~=3.14.0
+requests~=2.28.1
+spotipy~=2.23.0
+pathlib~=1.0.1
+fuzzywuzzy~=0.18.0
