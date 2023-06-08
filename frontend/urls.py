@@ -11,5 +11,6 @@ app_name = 'frontend'
 urlpatterns = [
     path('', index, name=''),
     path('register', index),
+    path('login', index),
     path('box/<str:boxName>', index)
 ]
