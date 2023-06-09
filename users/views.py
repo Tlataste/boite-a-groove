@@ -94,8 +94,18 @@ class RegisterUser(APIView):
 class CheckAuthentication(APIView):
     def get(self, request, format=None):
         if request.user.is_authenticated:
-            username = request.user.username
-            return Response({'username': username}, status=status.HTTP_200_OK)
+            user = request.user
+            username = user.username
+            first_name = user.first_name
+            last_name = user.last_name
+            email = user.email
+            response = {
+                'username': username,
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email
+            }
+            return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 

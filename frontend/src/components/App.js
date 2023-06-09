@@ -32,7 +32,7 @@ export default function App() {
       const data = await response.json();
       if (response.ok) {
         console.log("Authenticated");
-        setUser(data.username);
+        setUser(data);
         setIsAuthenticated(true);
       } else {
         console.log("Not authenticated");
