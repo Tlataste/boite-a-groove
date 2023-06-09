@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
+from .util import normalize_string
 
 
 class GetBox(APIView):
@@ -33,8 +34,8 @@ class GetBox(APIView):
         box_name = request.data.get('boxName')
 
         # Normaliser les noms de chanson et d'auteur
-        song_name = self.normalize_string(song_name)
-        song_author = self.normalize_string(song_author)
+        song_name = normalize_string(song_name)
+        song_author = normalize_string(song_author)
 
         # Vérifier si la chanson existe déjà
         try:

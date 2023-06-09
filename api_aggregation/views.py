@@ -68,7 +68,7 @@ class ApiAggregation(APIView):
                 }
                 tracks.append(track)
                 final_song = ut.find_matching_song_from_deezer_to_spotify(song['name'], song['artist'],
-                                                                          song['duration'] // 1000, tracks)
+                                                                          song['duration'], tracks)
 
             return Response(final_song, status=status.HTTP_200_OK)
         else:
