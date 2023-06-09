@@ -45,9 +45,12 @@ class GetBox(APIView):
 
         except Song.DoesNotExist:
             # Créer une nouvelle chanson,
-            song_url = option.get('spotify_url')
+            song_url = option.get('url')
             song_image = option.get('image_url')
-            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, n_deposits=1)
+            song_duration = option.get('duration')
+            song_platform_id = option.get('platform_id')
+            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
+                        platform_id=song_platform_id, n_deposits=1)
 
             song.save()
 
