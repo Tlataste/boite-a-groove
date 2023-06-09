@@ -26,9 +26,14 @@ export default function App() {
 
   const checkUserStatus = async () => {
     try {
-      const response = await fetch("/spotify/is-authenticated");
+      const response = await fetch("/users/is-authenticated");
       const data = await response.json();
-      setIsSpotifyAuthenticated(data.status);
+      if (response.ok) {
+        setUser(data.username);
+        setIsAuthenticated(true);
+      } else {
+        console.log("Not authenticated");
+      }
     } catch (error) {
       console.error(error);
     }
