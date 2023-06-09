@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
+import { getCookie } from "../Security/TokensUtils";
 
 import { json } from "react-router-dom";
 
@@ -46,9 +47,11 @@ export default function LiveSearch({
             setJsonResults([]);
           }
         } else {
+          const csrftoken = getCookie("csrftoken");
           const requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken},
             body: JSON.stringify({
               search_query: searchValue,
             }),
@@ -99,7 +102,9 @@ export default function LiveSearch({
 
   function handleButtonClick(option, boxName) {
     const data = { option, boxName };
+    // console.log(option);
     const jsonData = JSON.stringify(data);
+    // console.log(jsonData);
     const csrftoken = getCookie("csrftoken");
     fetch("/box-management/get-box?name=" + boxName, {
       method: "POST",
@@ -114,13 +119,6 @@ export default function LiveSearch({
 
   function handleStreamingServiceChange(service) {
     setSelectedStreamingService(service);
-  }
-
-  function getCookie(name) {
-    const cookieValue = document.cookie.match(
-      "(^|;)\\s*" + name + "\\s*=\\s*([^;]+)"
-    );
-    return cookieValue ? cookieValue.pop() : "";
   }
 
   return (

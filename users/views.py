@@ -19,6 +19,7 @@ class LoginUser(APIView):
 
     Doc used : https://docs.djangoproject.com/en/4.2/topics/auth/default/
     '''
+
     def post(self, request, format=None):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -46,6 +47,7 @@ class LogoutUser(APIView):
 
     Doc used : https://docs.djangoproject.com/en/4.2/topics/auth/default/
     '''
+
     def get(self, request, format=None):
         if request.user.is_authenticated:
             logout(request)
@@ -86,7 +88,26 @@ class RegisterUser(APIView):
                             status=status.HTTP_200_OK)
         else:
             errors = form.errors
-            return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CheckAuthentication(APIView):
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            user = request.user
+            username = user.username
+            first_name = user.first_name
+            last_name = user.last_name
+            email = user.email
+            response = {
+                'username': username,
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email
+            }
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):

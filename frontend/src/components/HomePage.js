@@ -5,5 +5,5 @@ import Menu from "./Menu";
 import LiveSearch from "./MusicBox/LiveSearch";
 
 export default function HomePage() {
-  return <div>HOME PAGE</div>;
+  return <div>HomePage</div>;
 }

@@ -1,16 +1,21 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
+import { logoutUser, checkUserStatus } from "./UsersUtils";
 
-export default function MenuAppBar({ boxName }) {
+export default function MenuAppBar() {
+  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+    useContext(UserContext);
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -22,26 +27,33 @@ export default function MenuAppBar({ boxName }) {
     setAnchorEl(null);
   };
 
+  const handleDisconnect = () => {
+    handleClose();
+    logoutUser(setUser, setIsAuthenticated);
+  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        background: "linear-gradient(to right, #fa9227, #fb451f)",
+      }}
+    >
       <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
             <Typography variant="h6" component="div">
               La Boîte à Groove
             </Typography>
-            <Typography variant="subtitle1">{boxName}</Typography>
+            {isAuthenticated ? (
+              <Typography variant="subtitle1" component="div">
+                Bienvenu {user.username}
+              </Typography>
+            ) : (
+              <></>
+            )}
           </Box>
-          {auth && (
+          {isAuthenticated && (
             <div>
               <IconButton
                 size="large"
@@ -71,8 +83,10 @@ export default function MenuAppBar({ boxName }) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem component={Link} to="/profile" onClick={handleClose}>
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={handleDisconnect}>Déconnexion</MenuItem>
               </Menu>
             </div>
           )}
