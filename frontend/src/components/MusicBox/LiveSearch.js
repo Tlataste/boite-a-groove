@@ -10,8 +10,10 @@ import { json } from "react-router-dom";
 
 export default function LiveSearch({
   isSpotifyAuthenticated,
+  isDeezerAuthenticated,
   boxName,
   setIsDeposited,
+  streamingService,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
@@ -27,37 +29,69 @@ export default function LiveSearch({
   useEffect(() => {
     const getData = setTimeout(() => {
       console.log("Live search - Auth ? " + isSpotifyAuthenticated);
-      if (searchValue === "") {
-        if (isSpotifyAuthenticated) {
-          fetch("/spotify/recent-tracks")
-            .then((response) => response.json())
-            .then((data) => {
-              setJsonResults(data);
-              console.log(data);
-            });
+      console.log("Live search - Auth ? " + isDeezerAuthenticated);
+      if (streamingService === "spotify") {
+        if (searchValue === "") {
+          if (isSpotifyAuthenticated) {
+            fetch("/spotify/recent-tracks")
+                .then((response) => response.json())
+                .then((data) => {
+                  setJsonResults(data);
+                  console.log(data);
+                });
+          } else {
+            setJsonResults([]);
+          }
         } else {
-          setJsonResults([]);
-        }
-      } else {
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            search_query: searchValue,
-          }),
-        };
+          const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              search_query: searchValue,
+            }),
+          };
 
-        fetch("/spotify/search", requestOptions)
-          .then((response) => response.json())
-          .then((data) => {
-            setJsonResults(data);
-            console.log(data);
-          });
+          fetch("/spotify/search", requestOptions)
+              .then((response) => response.json())
+              .then((data) => {
+                setJsonResults(data);
+                console.log(data);
+              });
+        }
       }
+        if (streamingService === "deezer") {
+          if (searchValue === "") {
+            if (isDeezerAuthenticated) {
+            fetch("/deezer/recent-tracks")
+                .then((response) => response.json())
+                .then((data) => {
+                  setJsonResults(data);
+                  console.log(data);
+                });
+          } else {
+            setJsonResults([]);
+          }
+        } else {
+          const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              search_query: searchValue,
+            }),
+          };
+
+          fetch("/deezer/search", requestOptions)
+              .then((response) => response.json())
+              .then((data) => {
+                setJsonResults(data);
+                console.log(data);
+              });
+        }
+        }
     }, 400);
 
     return () => clearTimeout(getData);
-  }, [searchValue, isSpotifyAuthenticated]);
+  }, [searchValue, isDeezerAuthenticated, isSpotifyAuthenticated]);
 
   function handleButtonClick(option, boxName) {
     const data = { option, boxName };
@@ -88,7 +122,7 @@ export default function LiveSearch({
         getOptionLabel={(option) => `${option.name}`}
         isOptionEqualToValue={(option, value) => option.name === value.name}
         noOptionsText={
-          !isSpotifyAuthenticated && searchValue === ""
+          !isDeezerAuthenticated && searchValue === "" || !isSpotifyAuthenticated && searchValue === ""
             ? "Connect to unlock recent tracks!"
             : "No songs available"
         }
