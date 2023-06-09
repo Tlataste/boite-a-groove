@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Menu from "../Menu";
 import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -40,17 +39,7 @@ export default function MusicBox() {
   };
 
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        background: "linear-gradient(to right, #F59225, #F8431D)",
-      }}
-    >
-      <Menu boxName={boxName} />
+    <>
       <Button variant="contained" onClick={handleButtonClick}>
         Connect
       </Button>
@@ -60,6 +49,6 @@ export default function MusicBox() {
         boxName={boxName}
         setIsDeposited={setIsDeposited}
       />
-    </Box>
+    </>
   );
 }
