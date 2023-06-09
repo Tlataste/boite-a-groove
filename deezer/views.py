@@ -159,7 +159,9 @@ class GetRecentlyPlayedTracks(APIView):
                 'artist': item['artist']['name'],
                 'album': item['album']['title'],
                 'image_url': item['album']['cover_medium'],
-                'deezer_url': item['link'],
+                'duration': item['duration'],
+                'platform_id': 2,
+                'url': item['link'],
             }
             tracks.append(track)
         # Return the list of recently played tracks in the response
