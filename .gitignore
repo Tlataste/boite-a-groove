@@ -191,3 +191,6 @@ sketch
 # Others
 .vscode
 credential.json
+
+frontend/static/frontend/main.js
+frontend/static/frontend/main.js.LICENSE.txt
