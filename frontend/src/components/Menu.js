@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import { logoutUser, checkUserStatus } from "./UsersUtils";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export default function MenuAppBar() {
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
@@ -53,7 +54,7 @@ export default function MenuAppBar() {
               <></>
             )}
           </Box>
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <div>
               <IconButton
                 size="large"
@@ -87,6 +88,41 @@ export default function MenuAppBar() {
                   Profile
                 </MenuItem>
                 <MenuItem onClick={handleDisconnect}>Déconnexion</MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <LockOpenIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem component={Link} to="/login" onClick={handleClose}>
+                  Se connecter
+                </MenuItem>
+                <MenuItem component={Link} to="/register" onClick={handleClose}>
+                  S'enregistrer
+                </MenuItem>
               </Menu>
             </div>
           )}
