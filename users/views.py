@@ -91,5 +91,14 @@ class RegisterUser(APIView):
             return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CheckAuthentication(APIView):
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            username = request.user.username
+            return Response({'username': username}, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 def example(request):
     return render(request, 'connect.html', {})
