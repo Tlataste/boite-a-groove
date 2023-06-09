@@ -43,7 +43,9 @@ export default function UserProfilePage() {
           />
         </Grid>
         <Grid item>
-          <Typography variant="h5">John Doe</Typography>
+          <Typography variant="h5">
+            {user.first_name + " " + user.last_name}
+          </Typography>
         </Grid>
       </Grid>
       <Typography variant="h6" gutterBottom>
@@ -51,30 +53,10 @@ export default function UserProfilePage() {
       </Typography>
       <TextField
         style={styles.textField}
-        label="First Name"
-        variant="outlined"
-        fullWidth
-        value="John"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        style={styles.textField}
-        label="Last Name"
-        variant="outlined"
-        fullWidth
-        value="Doe"
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-      <TextField
-        style={styles.textField}
         label="Nom d'utilisateur"
         variant="outlined"
         fullWidth
-        value="John.D"
+        value={user.username}
         InputProps={{
           readOnly: true,
         }}
@@ -84,7 +66,7 @@ export default function UserProfilePage() {
         label="Email"
         variant="outlined"
         fullWidth
-        value="john.doe@example.com"
+        value={user.email}
         InputProps={{
           readOnly: true,
         }}
