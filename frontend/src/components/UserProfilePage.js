@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "./UserContext";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -17,12 +19,18 @@ const styles = {
   },
 };
 
-const UserProfilePage = () => {
+export default function UserProfilePage() {
   const [password, setPassword] = useState("********");
+  const { user, isAuthenticated } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+
+  if (!isAuthenticated) {
+    return null; // or render a different component or message
+  }
 
   return (
     <div style={styles.root}>
@@ -92,6 +100,4 @@ const UserProfilePage = () => {
       />
     </div>
   );
-};
-
-export default UserProfilePage;
+}

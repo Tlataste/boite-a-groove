@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "./UserContext";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +13,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { checkUserStatus } from "./UsersUtils";
 
 /**
 Copyright Component
@@ -42,6 +44,8 @@ export default function LoginPage() {
   // States & Variables
   const [authenticationSuccess, setAuthenticationSuccess] = useState(false);
   const [errorMessages, setErrorMessages] = useState("");
+  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+    useContext(UserContext);
 
   /**
    * sendAndProcessData Function
@@ -62,6 +66,7 @@ export default function LoginPage() {
       console.log(data);
       if (response.ok) {
         setAuthenticationSuccess(true);
+        checkUserStatus(setUser, setIsAuthenticated);
         setErrorMessages("");
       } else {
         if (response.status === 401) {

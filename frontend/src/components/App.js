@@ -9,6 +9,7 @@ import UserProfilePage from "./UserProfilePage";
 import { UserContext } from "./UserContext";
 import MenuAppBar from "./Menu";
 import Box from "@mui/material/Box";
+import { checkUserStatus } from "./UsersUtils";
 
 import {
   BrowserRouter as Router,
@@ -19,31 +20,15 @@ import {
 } from "react-router-dom";
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const providerValue = useMemo(
     () => ({ user, setUser, isAuthenticated, setIsAuthenticated }),
     [user, setUser, isAuthenticated, setIsAuthenticated]
   );
 
-  const checkUserStatus = async () => {
-    try {
-      const response = await fetch("/users/check-authentication");
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Authenticated");
-        setUser(data);
-        setIsAuthenticated(true);
-      } else {
-        console.log("Not authenticated");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
-    checkUserStatus();
+    checkUserStatus(setUser, setIsAuthenticated);
   }, []);
 
   return (

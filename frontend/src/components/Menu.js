@@ -11,10 +11,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
-import { logoutUser } from "./UsersUtils";
+import { logoutUser, checkUserStatus } from "./UsersUtils";
 
 export default function MenuAppBar() {
-  const { user, isAuthenticated, setIsAuthenticated } = useContext(UserContext);
+  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+    useContext(UserContext);
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -28,7 +29,7 @@ export default function MenuAppBar() {
 
   const handleDisconnect = () => {
     handleClose();
-    logoutUser(setIsAuthenticated);
+    logoutUser(setUser, setIsAuthenticated);
   };
 
   return (
