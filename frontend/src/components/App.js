@@ -32,30 +32,18 @@ export default function App() {
   }, []);
 
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        background: "linear-gradient(to right, #C9D6FF, #E2E2E2)",
-        overflow: "auto",
-      }}
-    >
-      <Router>
-        <UserContext.Provider value={providerValue}>
-          <MenuAppBar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/profile" element={<UserProfilePage />} />
-            <Route path="/box/:boxName" element={<MusicBox />} />
-          </Routes>
-        </UserContext.Provider>
-      </Router>
-    </Box>
+    <Router>
+      <UserContext.Provider value={providerValue}>
+        <MenuAppBar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/box/:boxName" element={<MusicBox />} />
+        </Routes>
+      </UserContext.Provider>
+    </Router>
   );
 }
 

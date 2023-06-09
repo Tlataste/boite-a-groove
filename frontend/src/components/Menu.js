@@ -33,7 +33,12 @@ export default function MenuAppBar() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        background: "linear-gradient(to right, #fa9227, #fb451f)",
+      }}
+    >
       <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
