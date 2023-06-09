@@ -97,7 +97,7 @@ class CheckAuthentication(APIView):
             username = request.user.username
             return Response({'username': username}, status=status.HTTP_200_OK)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response({}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):

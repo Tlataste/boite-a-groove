@@ -7,6 +7,8 @@ import LoginPage from "./LoginPage";
 import MusicBox from "./MusicBox/MusicBox";
 import UserProfilePage from "./UserProfilePage";
 import { UserContext } from "./UserContext";
+import MenuAppBar from "./Menu";
+import Box from "@mui/material/Box";
 
 import {
   BrowserRouter as Router,
@@ -26,9 +28,10 @@ export default function App() {
 
   const checkUserStatus = async () => {
     try {
-      const response = await fetch("/users/is-authenticated");
+      const response = await fetch("/users/check-authentication");
       const data = await response.json();
       if (response.ok) {
+        console.log("Authenticated");
         setUser(data.username);
         setIsAuthenticated(true);
       } else {
@@ -44,17 +47,30 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <UserContext.Provider value={providerValue}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<UserProfilePage />} />
-          <Route path="/box/:boxName" element={<MusicBox />} />
-        </Routes>
-      </UserContext.Provider>
-    </Router>
+    <Box
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        background: "linear-gradient(to right, #C9D6FF, #E2E2E2)",
+        overflow: "auto",
+      }}
+    >
+      <Router>
+        <UserContext.Provider value={providerValue}>
+          <MenuAppBar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/profile" element={<UserProfilePage />} />
+            <Route path="/box/:boxName" element={<MusicBox />} />
+          </Routes>
+        </UserContext.Provider>
+      </Router>
+    </Box>
   );
 }
 
