@@ -11,9 +11,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
+import { logoutUser } from "./UsersUtils";
 
 export default function MenuAppBar() {
-  const { user, isAuthenticated } = useContext(UserContext);
+  const { user, isAuthenticated, setIsAuthenticated } = useContext(UserContext);
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -23,6 +24,11 @@ export default function MenuAppBar() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleDisconnect = () => {
+    handleClose();
+    logoutUser(setIsAuthenticated);
   };
 
   return (
@@ -74,7 +80,7 @@ export default function MenuAppBar() {
                 <MenuItem component={Link} to="/profile" onClick={handleClose}>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={handleClose}>Déconnexion</MenuItem>
+                <MenuItem onClick={handleDisconnect}>Déconnexion</MenuItem>
               </Menu>
             </div>
           )}
