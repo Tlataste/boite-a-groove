@@ -28,11 +28,6 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
 
-  const handleDisconnect = () => {
-    handleClose();
-    logoutUser(setUser, setIsAuthenticated);
-  };
-
   return (
     <Box
       sx={{
@@ -48,48 +43,26 @@ export default function MenuAppBar() {
             </Typography>
             {isAuthenticated ? (
               <Typography variant="subtitle1" component="div">
-                Bienvenu {user.username}
+                Bienvenue {user.username}
               </Typography>
             ) : (
               <></>
             )}
           </Box>
           {isAuthenticated ? (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <Avatar
-                  alt="Remy Sharp"
-                  src="../static/images/profile_picture.jpg"
-                />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem component={Link} to="/profile" onClick={handleClose}>
-                  Profile
-                </MenuItem>
-                <MenuItem onClick={handleDisconnect}>Déconnexion</MenuItem>
-              </Menu>
-            </div>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              color="inherit"
+              component={Link}
+              to="/profile"
+            >
+              <Avatar
+                alt="Remy Sharp"
+                src="../static/images/profile_picture.jpg"
+              />
+            </IconButton>
           ) : (
             <div>
               <IconButton
