@@ -14,6 +14,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { checkUserStatus } from "./UsersUtils";
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
 Copyright Component
@@ -44,8 +46,9 @@ export default function LoginPage() {
   // States & Variables
   const [authenticationSuccess, setAuthenticationSuccess] = useState(false);
   const [errorMessages, setErrorMessages] = useState("");
-  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+  const { user, setUser, isAuthenticated, setIsAuthenticated, currentBoxName } =
     useContext(UserContext);
+  const navigate = useNavigate();
 
   /**
    * sendAndProcessData Function
@@ -66,8 +69,11 @@ export default function LoginPage() {
       console.log(data);
       if (response.ok) {
         setAuthenticationSuccess(true);
-        checkUserStatus(setUser, setIsAuthenticated);
         setErrorMessages("");
+        setTimeout(() => {
+          checkUserStatus(setUser, setIsAuthenticated);
+          navigate("/box/" + currentBoxName);
+        }, 2000);
       } else {
         if (response.status === 401) {
           setErrorMessages("Informations d'identification non valides");
@@ -115,9 +121,12 @@ export default function LoginPage() {
           Se connecter
         </Typography>
         {authenticationSuccess ? (
-          <Typography variant="body2" color="text.primary" align="center">
-            Vous vous êtes connecté avec succès!
-          </Typography>
+          <>
+            <Typography variant="body2" color="text.primary" align="center">
+              Vous vous êtes connecté avec succès!
+            </Typography>
+            <CircularProgress color="success" />
+          </>
         ) : (
           <Box
             component="form"

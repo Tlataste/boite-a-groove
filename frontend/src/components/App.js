@@ -17,14 +17,30 @@ import {
   Route,
   Link,
   Redirect,
+  Navigate,
 } from "react-router-dom";
 
 export default function App() {
   const [user, setUser] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentBoxName, setCurrentBoxName] = useState("");
   const providerValue = useMemo(
-    () => ({ user, setUser, isAuthenticated, setIsAuthenticated }),
-    [user, setUser, isAuthenticated, setIsAuthenticated]
+    () => ({
+      user,
+      setUser,
+      isAuthenticated,
+      setIsAuthenticated,
+      currentBoxName,
+      setCurrentBoxName,
+    }),
+    [
+      user,
+      setUser,
+      isAuthenticated,
+      setIsAuthenticated,
+      currentBoxName,
+      setCurrentBoxName,
+    ]
   );
 
   useEffect(() => {
@@ -37,9 +53,24 @@ export default function App() {
         <MenuAppBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<UserProfilePage />} />
+          <Route
+            path="/register"
+            element={
+              isAuthenticated ? <Navigate to="/profile" /> : <RegisterPage />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              isAuthenticated ? <Navigate to="/profile" /> : <LoginPage />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              isAuthenticated ? <UserProfilePage /> : <Navigate to="/login" />
+            }
+          />
           <Route path="/box/:boxName" element={<MusicBox />} />
         </Routes>
       </UserContext.Provider>
