@@ -7,7 +7,6 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
-from django import forms
 
 
 class LoginUser(APIView):
@@ -76,9 +75,16 @@ class RegisterUser(APIView):
 
     def post(self, request, format=None):
 
-        form = RegisterUserForm(data=request.data)
+        form = RegisterUserForm(request.data, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+
+            # Handle profile picture
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+
+            user.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
 
@@ -151,6 +157,18 @@ class CheckAuthentication(APIView):
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class GetProfilePictureConnectedURL(APIView):
+    '''
+    Class goal: Retrieve the URL of the profile picture of the connected user in order to display it.
+    '''
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            profile_picture_url = request.user.profile_picture.url
+            return Response({'profile_picture_url': profile_picture_url}, status=status.HTTP_200_OK)
+        else:
+            Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):
