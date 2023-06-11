@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "../UserContext";
 import Button from "@mui/material/Button";
 import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
@@ -18,6 +18,7 @@ export default function MusicBox() {
   const [isDeposited, setIsDeposited] = useState(false);
   const { boxName } = useParams();
   const navigate = useNavigate();
+  const { currentBoxName, setCurrentBoxName } = useContext(UserContext);
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
@@ -25,6 +26,7 @@ export default function MusicBox() {
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
+    setCurrentBoxName(boxName);
     getBoxDetails(boxName, navigate)
       .then((data) => {
         setDeposits(data);
