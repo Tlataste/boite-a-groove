@@ -56,8 +56,8 @@ export default function MenuAppBar() {
               to="/profile"
             >
               <Avatar
-                alt="Remy Sharp"
-                src={"../../.." + user.profile_picture_url}
+                alt="Profile picture"
+                src={user.profile_picture_url}
               />
             </IconButton>
           ) : (
