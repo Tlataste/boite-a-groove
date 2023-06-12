@@ -13,9 +13,9 @@ import Avatar from "@mui/material/Avatar";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export default function MenuAppBar() {
+  // States & Variables
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
     useContext(UserContext);
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {
@@ -25,7 +25,6 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   return (
     <Box
       sx={{
@@ -57,8 +56,8 @@ export default function MenuAppBar() {
               to="/profile"
             >
               <Avatar
-                alt="Remy Sharp"
-                src="../static/images/profile_picture.jpg"
+                alt="Profile picture"
+                src={user.profile_picture_url}
               />
             </IconButton>
           ) : (

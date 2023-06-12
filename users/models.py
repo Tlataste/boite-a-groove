@@ -9,10 +9,10 @@ class CustomUser(AbstractUser):
     def profile_picture_path(instance, filename):
         # Modify the file name to ensure uniqueness
         filename = generate_unique_filename(instance, filename)
-        return f"profile_pictures/{filename}"
+        return filename
 
     # Add profile_picture field
-    profile_picture = models.ImageField(upload_to=profile_picture_path, blank=True)
+    profile_picture = models.ImageField(upload_to=profile_picture_path, blank=True, null=True)
 
 
 @receiver(models.signals.pre_delete, sender=CustomUser)
