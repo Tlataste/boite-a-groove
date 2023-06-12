@@ -11,8 +11,9 @@ import {checkDeezerAuthentication,
     authenticateDeezerUser,
 disconnectDeezerUser} from "./MusicBox/DeezerUtils";
 import {
-  checkSpotifyAuthentication,
-  authenticateSpotifyUser,
+    checkSpotifyAuthentication,
+    authenticateSpotifyUser,
+    disconnectSpotifyUser,
 } from "./MusicBox/SpotifyUtils";
 
 const styles = {
@@ -71,7 +72,8 @@ export default function UserProfilePage() {
         authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
     };
     const handleButtonClickDisconnectSpotify = () => {
-        authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+        disconnectSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+        window.location.reload();
     };
     const handleButtonClickConnectDeezer = () => {
     authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
