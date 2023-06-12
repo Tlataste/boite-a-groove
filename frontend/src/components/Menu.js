@@ -56,7 +56,7 @@ export default function MenuAppBar() {
               to="/profile"
             >
               <Avatar
-                alt="Remy Sharp"
+                alt={user.username}
                 src={
                   user && user.profile_picture_url
                     ? "../../.." + user.profile_picture_url
