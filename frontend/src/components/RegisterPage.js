@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "./UserContext";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +13,9 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { checkUserStatus } from "./UsersUtils";
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
  * Copyright Component
@@ -42,6 +46,9 @@ export default function RegisterPage() {
   // States & variables
   const [errorMessages, setErrorMessages] = useState([]);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const { user, setUser, isAuthenticated, setIsAuthenticated, currentBoxName } =
+    useContext(UserContext);
+  const navigate = useNavigate();
 
   /**
    * sendAndProcessData Function
@@ -62,6 +69,10 @@ export default function RegisterPage() {
       if (response.ok) {
         setErrorMessages({});
         setRegistrationSuccess(true);
+        setTimeout(() => {
+          checkUserStatus(setUser, setIsAuthenticated);
+          navigate("/box/" + currentBoxName);
+        }, 2000);
       } else {
         if (data.errors) {
           console.log(data.errors);
@@ -113,9 +124,12 @@ export default function RegisterPage() {
           S'enregistrer
         </Typography>
         {registrationSuccess ? (
-          <Typography variant="body2" color="text.primary" align="center">
-            Vous êtes enregistré avec succès!
-          </Typography>
+          <>
+            <Typography variant="body2" color="text.primary" align="center">
+              Vous êtes enregistré avec succès!
+            </Typography>
+            <CircularProgress color="success" />
+          </>
         ) : (
           <Box
             component="form"

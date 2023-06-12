@@ -7,11 +7,10 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
-import { logoutUser, checkUserStatus } from "./UsersUtils";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export default function MenuAppBar() {
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
@@ -25,11 +24,6 @@ export default function MenuAppBar() {
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleDisconnect = () => {
-    handleClose();
-    logoutUser(setUser, setIsAuthenticated);
   };
 
   return (
@@ -47,13 +41,27 @@ export default function MenuAppBar() {
             </Typography>
             {isAuthenticated ? (
               <Typography variant="subtitle1" component="div">
-                Bienvenu {user.username}
+                Bienvenue {user.username}
               </Typography>
             ) : (
               <></>
             )}
           </Box>
-          {isAuthenticated && (
+          {isAuthenticated ? (
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              color="inherit"
+              component={Link}
+              to="/profile"
+            >
+              <Avatar
+                alt="Remy Sharp"
+                src="../static/images/profile_picture.jpg"
+              />
+            </IconButton>
+          ) : (
             <div>
               <IconButton
                 size="large"
@@ -63,10 +71,7 @@ export default function MenuAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <Avatar
-                  alt="Remy Sharp"
-                  src="../static/images/profile_picture.jpg"
-                />
+                <LockOpenIcon />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -83,10 +88,12 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem component={Link} to="/profile" onClick={handleClose}>
-                  Profile
+                <MenuItem component={Link} to="/login" onClick={handleClose}>
+                  Se connecter
                 </MenuItem>
-                <MenuItem onClick={handleDisconnect}>Déconnexion</MenuItem>
+                <MenuItem component={Link} to="/register" onClick={handleClose}>
+                  S'enregistrer
+                </MenuItem>
               </Menu>
             </div>
           )}
