@@ -21,6 +21,7 @@ import {
   disconnectSpotifyUser,
 } from "./MusicBox/SpotifyUtils";
 
+// Styles
 const styles = {
   root: {
     flexGrow: 1,
@@ -69,42 +70,57 @@ export default function UserProfilePage() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
   const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
-  const { user, setUser, isAuthenticated, setIsAuthenticated } =
-    useContext(UserContext);
+
+  const { user, setUser, setIsAuthenticated } = useContext(UserContext);
+
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
 
+  /**
+   * Runs the specified callback function after the component has rendered.
+   */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
     checkDeezerAuthentication(setIsDeezerAuthenticated);
   }, []);
+
   const handleButtonClickConnectSpotify = () => {
     authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
   };
+
   const handleButtonClickDisconnectSpotify = () => {
     disconnectSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
     window.location.reload();
   };
+
   const handleButtonClickConnectDeezer = () => {
     authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
   };
+
   const handleButtonClickDisconnectDeezer = () => {
     disconnectDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
     window.location.reload();
   };
 
+  const handlePasswordChange = () => {
+    setShowPasswordForm(true);
+  };
+
+  const handlePasswordCancel = () => {
+    setShowPasswordForm(false);
+  };
+
   /**
-   * sendAndProcessData Function
-   * Sends a POST request with data in JSON to "/users/register_user" endpoint,
-   * processes the response, and handles potential errors.
-   * @param {JSON} form - The JSON data to be sent in the request body
-   * @returns {Promise<void>} - A Promise that resolves when the request is completed
+   * Sends a password change request to the server and processes the response.
+   *
+   * @param {FormData} form - The form data containing the password change details.
+   * @returns {Promise<void>} - A Promise that resolves when the request is completed.
    */
-  const sendAndProcessData = async (form) => {
+  const sendAndProcessPasswordChange = async (form) => {
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
+      headers: { "X-CSRFToken": csrftoken },
       body: form,
     };
     try {
@@ -128,20 +144,15 @@ export default function UserProfilePage() {
   };
 
   /**
-   * handleSubmit Function
-   * Handles the form submission event by preventing the default form submission behavior,
-   * extracting form data, converting it to JSON, and invoking the sendAndProcessData function.
-   * @param {Event} event - The form submission event
+   * Handles the form submission event for password change.
+   *
+   * @param {Event} event - The form submission event.
+   * @returns {void}
    */
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const jsonData = JSON.stringify({
-      old_password: data.get("oldPassword"),
-      new_password1: data.get("newPassword1"),
-      new_password2: data.get("newPassword2"),
-    });
-    sendAndProcessData(jsonData);
+    sendAndProcessPasswordChange(data);
   };
 
   const handleAvatarChange = (event) => {
@@ -152,14 +163,6 @@ export default function UserProfilePage() {
       const formData = new FormData();
       formData.append("avatar", file);
     }
-  };
-
-  const handlePasswordChange = () => {
-    setShowPasswordForm(true);
-  };
-
-  const handlePasswordCancel = () => {
-    setShowPasswordForm(false);
   };
 
   return (
@@ -227,7 +230,7 @@ export default function UserProfilePage() {
               <TextField
                 required
                 fullWidth
-                name="oldPassword"
+                name="old_password"
                 label="Ancien mot de passe"
                 type="password"
                 id="oldPassword"
@@ -238,7 +241,7 @@ export default function UserProfilePage() {
               <TextField
                 required
                 fullWidth
-                name="newPassword1"
+                name="new_password1"
                 label="Nouveau mot de passe"
                 type="password"
                 id="newPassword1"
@@ -249,7 +252,7 @@ export default function UserProfilePage() {
               <TextField
                 required
                 fullWidth
-                name="newPassword2"
+                name="new_password2"
                 label="Confirmation du mot de passe"
                 type="password"
                 id="newPassword2"
