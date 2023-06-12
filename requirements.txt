@@ -3,4 +3,5 @@ django-extensions
 djangorestframework
 requests
 spotipy
+Pillow
 fuzzywuzzy

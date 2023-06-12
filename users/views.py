@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.contrib import messages
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
-from django import forms
 
 
 class LoginUser(APIView):
@@ -74,9 +75,16 @@ class RegisterUser(APIView):
 
     def post(self, request, format=None):
 
-        form = RegisterUserForm(data=request.data)
+        form = RegisterUserForm(request.data, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+
+            # Handle profile picture
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+
+            user.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
 
@@ -89,6 +97,47 @@ class RegisterUser(APIView):
         else:
             errors = form.errors
             return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordUser(APIView):
+    '''
+    Class goal:
+    While logged in, change your password by typing your old one first.
+    '''
+    def post(self, request, format=None):
+
+        if not request.user.is_authenticated:
+            return Response({'error': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        new_password1 = request.data.get('new_password1')
+        new_password2 = request.data.get('new_password2')
+
+        if new_password1 != new_password2:
+            return Response({'error': 'Les mots de passe ne correspondent pas.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        old_password = request.data.get('old_password')
+
+        # Check if the provided old password is correct
+        if user.check_password(old_password):
+            # Validate the new password against the password policy
+            try:
+                validate_password(new_password1, user=user)
+            except ValidationError as e:
+                error_messages = list(e.messages)
+                return Response({'error': error_messages}, status=status.HTTP_401_UNAUTHORIZED)
+            # Set the new password and save the user
+            user.set_password(new_password1)
+            user.save()
+
+            # Update the user's authentication session with the new password
+            update_session_auth_hash(request, user)
+
+            # Return success response
+            return Response({'status': 'Le mot de passe a été modifié avec succès.'}, status=status.HTTP_200_OK)
+        else:
+            # Return error response if the old password is incorrect
+            return Response({'error': 'Ancien mot de passe invalide.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CheckAuthentication(APIView):
@@ -108,6 +157,18 @@ class CheckAuthentication(APIView):
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class GetProfilePictureConnectedURL(APIView):
+    '''
+    Class goal: Retrieve the URL of the profile picture of the connected user in order to display it.
+    '''
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            profile_picture_url = request.user.profile_picture.url
+            return Response({'profile_picture_url': profile_picture_url}, status=status.HTTP_200_OK)
+        else:
+            Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):
