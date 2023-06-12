@@ -38,6 +38,27 @@ class AuthURL(APIView):
             status=status.HTTP_200_OK)
 
 
+class Disconnect(APIView):
+    def get(self, request, format=None):
+        """
+        Method goal:
+        Disconnects the user from Deezer.
+
+        Arguments:
+        self    : The instance of the class.
+        request : The request object.
+        format  : The desired format of the response. Defaults to None.
+
+        Returns:
+        dict: A dictionary containing the authentication URL.
+
+        """
+        user = request.user.username
+        if user:
+            disconnect_user(user)
+        return Response(status=status.HTTP_200_OK)
+
+
 def deezer_callback(request, format=None):
     """
     Callback function for handling the Deezer authorization code flow.
@@ -64,21 +85,14 @@ def deezer_callback(request, format=None):
     # Extract the fields from the response
     access_token = response['access_token']
     # Check if the user has an active session
-    is_active = is_deezer_authenticated(request.session.session_key)
-
-    # Create a session if it doesn't exist
-    if not request.session.exists(request.session.session_key):
-        request.session.create()
+    user = request.user.username
 
     # If the user has an active session, update the user tokens in the database
-    if is_active:
-        update_or_create_user_tokens(request.session.session_key, access_token)
+    if user:
+        update_or_create_user_tokens(user, access_token)
     # If the user doesn't have an active session, create a new session and store the user tokens in the database
     else:
-        update_or_create_user_tokens(request.session.session_key, access_token)
-    # Create a session if it doesn't exist
-    if not request.session.exists(request.session.session_key):
-        request.session.create()
+        update_or_create_user_tokens(user, access_token)
 
     # Update or create the user tokens in the database
     # Redirect back to the home page
@@ -111,7 +125,7 @@ class IsAuthenticated(APIView):
 
         # Check if the user is authenticated with Spotify
         is_authenticated = is_deezer_authenticated(
-            self.request.session.session_key)
+            self.request.user.username)
 
         # Return the authentication status in the response
         return Response({'status': is_authenticated},
@@ -143,7 +157,7 @@ class GetRecentlyPlayedTracks(APIView):
 
         # Execute the Spotify API request to retrieve the recently played tracks
         response = execute_deezer_api_request(
-            self.request.session.session_key,
+            self.request.user.username,
             '/user/me/history', recent=True)
         results = response.json()
         # Check if there is an error in the response or if the 'items' key is missing
@@ -190,10 +204,9 @@ class Search(APIView):
 
         # Extract the search query from the request data
         search_query = request.data.get('search_query')
-
         # Search for tracks
         results = execute_deezer_api_request(
-            self.request.session.session_key,
+            self.request.user.username,
             'search/track?q=' + search_query + '&output=json')
         results = results.json()
         # Extract the track data from the results and create a list of tracks

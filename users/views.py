@@ -104,17 +104,18 @@ class ChangePasswordUser(APIView):
     Class goal:
     While logged in, change your password by typing your old one first.
     '''
+
     def post(self, request, format=None):
 
         if not request.user.is_authenticated:
-            return Response({'error': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'errors': ['Utilisateur non connecté.']}, status=status.HTTP_401_UNAUTHORIZED)
 
         user = request.user
         new_password1 = request.data.get('new_password1')
         new_password2 = request.data.get('new_password2')
 
         if new_password1 != new_password2:
-            return Response({'error': 'Les mots de passe ne correspondent pas.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'errors': ['Les mots de passe ne correspondent pas.']}, status=status.HTTP_401_UNAUTHORIZED)
 
         old_password = request.data.get('old_password')
 
@@ -125,7 +126,8 @@ class ChangePasswordUser(APIView):
                 validate_password(new_password1, user=user)
             except ValidationError as e:
                 error_messages = list(e.messages)
-                return Response({'error': error_messages}, status=status.HTTP_401_UNAUTHORIZED)
+                print(error_messages)
+                return Response({'errors': error_messages}, status=status.HTTP_401_UNAUTHORIZED)
             # Set the new password and save the user
             user.set_password(new_password1)
             user.save()
@@ -137,7 +139,7 @@ class ChangePasswordUser(APIView):
             return Response({'status': 'Le mot de passe a été modifié avec succès.'}, status=status.HTTP_200_OK)
         else:
             # Return error response if the old password is incorrect
-            return Response({'error': 'Ancien mot de passe invalide.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'errors': ['Ancien mot de passe invalide.']}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CheckAuthentication(APIView):
@@ -169,6 +171,19 @@ class CheckAuthentication(APIView):
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class GetProfilePictureConnectedURL(APIView):
+    '''
+    Class goal: Retrieve the URL of the profile picture of the connected user in order to display it.
+    '''
+
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            profile_picture_url = request.user.profile_picture.url
+            return Response({'profile_picture_url': profile_picture_url}, status=status.HTTP_200_OK)
+        else:
+            Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):

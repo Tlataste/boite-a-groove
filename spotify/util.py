@@ -10,19 +10,19 @@ BASE_URL = "https://api.spotify.com/v1/me/"
 # Check if the user already exists
 
 
-def get_user_tokens(session_id):
+def get_user_tokens(user):
     """
     Retrieves the Spotify tokens associated with a user session.
 
     Args:
-        session_id: The session ID of the user.
+        user: The username of the user.
 
     Returns:
         The SpotifyToken object associated with the user session, or None if no tokens are found.
     """
 
     # Query the SpotifyToken objects for tokens associated with the user session
-    user_tokens = SpotifyToken.objects.filter(user=session_id)
+    user_tokens = SpotifyToken.objects.filter(user=user)
 
     # Check if any tokens exist for the user session
     if user_tokens.exists():
@@ -31,12 +31,12 @@ def get_user_tokens(session_id):
         return None
 
 
-def update_or_create_user_tokens(session_id, access_token, token_type, expires_in, refresh_token):
+def update_or_create_user_tokens(user, access_token, token_type, expires_in, refresh_token):
     """
     Updates or creates Spotify tokens for a user session.
 
     Args:
-        session_id: The session ID of the user.
+        user: The username of the user.
         access_token: The access token received from Spotify.
         token_type: The type of access token (e.g., "Bearer").
         expires_in: The expiration time of the access token in seconds.
@@ -47,7 +47,7 @@ def update_or_create_user_tokens(session_id, access_token, token_type, expires_i
     """
 
     # Retrieve existing tokens associated with the user session
-    tokens = get_user_tokens(session_id)
+    tokens = get_user_tokens(user)
 
     # Calculate the expiration time for the access token
     expires_in = timezone.now() + timedelta(seconds=expires_in)  # Expires in one hour from now
@@ -61,28 +61,27 @@ def update_or_create_user_tokens(session_id, access_token, token_type, expires_i
         tokens.save(update_fields=['access_token', 'refresh_token', 'expires_in', 'token_type'])
     else:
         # Create a new SpotifyToken object for the user session
-        tokens = SpotifyToken(user=session_id, access_token=access_token, refresh_token=refresh_token, token_type=token_type, expires_in=expires_in)
+        tokens = SpotifyToken(user=user, access_token=access_token, refresh_token=refresh_token, token_type=token_type, expires_in=expires_in)
         tokens.save()
 
 
-def is_spotify_authenticated(session_id):
+def is_spotify_authenticated(user):
     """
     Checks if a user session is authenticated with Spotify.
 
     Args:
-        session_id: The session ID of the user.
-
+        user: The username of the user.
     Returns:
         True if the user session is authenticated with Spotify, False otherwise.
     """
 
     # Retrieve the Spotify tokens associated with the user session
-    tokens = get_user_tokens(session_id)
+    tokens = get_user_tokens(user)
 
     if tokens:
         expiry = tokens.expires_in
         if expiry <= timezone.now():  # If the token has expired
-            refresh_spotify_token(session_id)
+            refresh_spotify_token(user)
 
         return True
     else:
@@ -94,19 +93,27 @@ def is_spotify_authenticated(session_id):
 # while the refresh token is used to obtain a new access token once the current token has expired.
 
 
-def refresh_spotify_token(session_id):
+def disconnect_user(user):
+    """
+    Disconnects the user from Spotify.
+    """
+    tokens = get_user_tokens(user)
+    if tokens:
+        tokens.delete()
+
+
+def refresh_spotify_token(user):
     """
     Refreshes the Spotify access token for a user session using the refresh token.
 
     Args:
-        session_id: The session ID of the user.
-
+        user: The username of the user.
     Returns:
         None
     """
 
     # Retrieve the refresh token associated with the user session
-    refresh_token = get_user_tokens(session_id).refresh_token
+    refresh_token = get_user_tokens(user).refresh_token
 
     # Send a POST request to the Spotify API to refresh the access token
     response = post('https://accounts.spotify.com/api/token', data={
@@ -122,15 +129,15 @@ def refresh_spotify_token(session_id):
     expires_in = response.get('expires_in')
 
     # Update the user tokens with the new access token
-    update_or_create_user_tokens(session_id, access_token, token_type, expires_in, refresh_token)
+    update_or_create_user_tokens(user, access_token, token_type, expires_in, refresh_token)
 
 
-def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
+def execute_spotify_api_request(user, endpoint, post_=False, put_=False):
     """
     Executes a request to the Spotify API with the provided session ID, endpoint, and request type.
 
     Args:
-        session_id: The session ID of the user.
+        user: The username of the user.
         endpoint: The API endpoint to request.
         post_: Optional flag to indicate if the request should be a POST request (default: False).
         put_: Optional flag to indicate if the request should be a PUT request (default: False).
@@ -140,9 +147,7 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
     """
 
     # Retrieve the Spotify tokens associated with the user session
-    tokens = get_user_tokens(session_id)
-    # print(tokens.user)
-    # print(tokens.access_token)
+    tokens = get_user_tokens(user)
 
     # Prepare the headers for the API request
     headers = {
