@@ -6,13 +6,8 @@ import Menu from "../Menu";
 import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {
-  checkSpotifyAuthentication,
-  authenticateSpotifyUser,
-} from "./SpotifyUtils";
-import {
-    checkDeezerAuthentication,
-    authenticateDeezerUser, } from "./DeezerUtils";
+import {checkSpotifyAuthentication} from "./SpotifyUtils";
+import {checkDeezerAuthentication} from "./DeezerUtils";
 import { getBoxDetails } from "./BoxUtils";
 import SongCard from "./SongCard";
 
@@ -44,13 +39,6 @@ export default function MusicBox() {
       });
   }, []); // Empty dependency array ensures the effect is only run once
 
-  const handleButtonClickSpotify = () => {
-    authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
-  };
-
-  const handleButtonClickDeezer = () => {
-    authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
-  };
 
   return (
     <Box
@@ -64,12 +52,6 @@ export default function MusicBox() {
       }}
     >
       <Menu boxName={boxName} />
-      <Button variant="contained" onClick={handleButtonClickSpotify}>
-        Connect Spotify
-      </Button>
-        <Button variant="contained" onClick={handleButtonClickDeezer}>
-        Connect Deezer
-        </Button>
       <SongCard deposits={deposits} isDeposited={isDeposited} />
       <LiveSearch
         isSpotifyAuthenticated={isSpotifyAuthenticated}

@@ -7,6 +7,12 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { logoutUser } from "./UsersUtils";
+import {checkDeezerAuthentication,
+    authenticateDeezerUser} from "./MusicBox/DeezerUtils";
+import {
+  checkSpotifyAuthentication,
+  authenticateSpotifyUser,
+} from "./MusicBox/SpotifyUtils";
 
 const styles = {
   root: {
@@ -41,13 +47,25 @@ const styles = {
 
 export default function UserProfilePage() {
   const [password, setPassword] = useState("********");
+  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
+  const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
   const { user, setUser, isAuthenticated, setIsAuthenticated } = useContext(
     UserContext
   );
   const navigate = useNavigate();
-
+ useEffect(() => {
+    checkSpotifyAuthentication(setIsSpotifyAuthenticated);
+    checkDeezerAuthentication(setIsDeezerAuthenticated);
+    }, []);
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+  };
+    const handleButtonClickSpotify = () => {
+        authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+    };
+
+  const handleButtonClickDeezer = () => {
+    authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
   };
 
   if (!isAuthenticated) {
@@ -75,13 +93,13 @@ export default function UserProfilePage() {
 
       <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
         <Grid item>
-          <Button variant="contained" style={styles.buttonPlatform}>
+          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickSpotify}>
             <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.buttonImage} />
             Se connecter
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" style={styles.buttonPlatform}>
+          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickDeezer}>
             <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.buttonImage} />
             Se connecter
           </Button>
