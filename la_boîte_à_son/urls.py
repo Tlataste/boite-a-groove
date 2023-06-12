@@ -30,4 +30,4 @@ urlpatterns = [
     path('users/', include('django.contrib.auth.urls')),  # Bundled Django auth URLs
     path('users/', include('users.urls')),
     path('api_agg/', include('api_aggregation.urls')),
-] + static(settings.MEDIA_URL)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

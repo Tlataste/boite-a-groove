@@ -56,12 +56,8 @@ export default function MenuAppBar() {
               to="/profile"
             >
               <Avatar
-                alt={user.username}
-                src={
-                  user && user.profile_picture_url
-                    ? "../../.." + user.profile_picture_url
-                    : ""
-                }
+                alt="Profile picture"
+                src={user.profile_picture_url}
               />
             </IconButton>
           ) : (
