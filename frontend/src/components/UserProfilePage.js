@@ -33,7 +33,6 @@ const styles = {
   },
   buttonConnect: {
     backgroundColor: "transparent",
-    border: "1px solid gray",
     color: "gray",
   },
   buttonPlatform: {
@@ -43,8 +42,8 @@ const styles = {
     fontStyle: "italic",
   },
   image: {
-    width: "80px",
-    height: "20px",
+    width: "100px",
+    height: "50px",
     marginRight: "8px",
   },
   streamingTitle: {
@@ -107,31 +106,48 @@ export default function UserProfilePage() {
       </Typography>
 
       <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
-        <Grid item>
+        <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
+          <Grid item>
+            <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.image} />
+          </Grid>
+          <Grid item>
             {isSpotifyAuthenticated ? (
-          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickDisconnectSpotify}>
-            <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.buttonImage} />
-            Se déconnecter
-          </Button>
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickDisconnectSpotify}>
+                  Se déconnecter
+              </Button>
             ) : (
-                <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickConnectSpotify}>
-                    <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.buttonImage} />
-                    Se connecter
-                </Button>
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickConnectSpotify}>
+                  Se connecter
+              </Button>
             )}
+          </Grid>
+          <Grid item>
+            <Button variant="contained" style={styles.buttonPlatform}>
+              Choisir comme plateforme principale
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item>
-         {isDeezerAuthenticated ? (
-          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickDisconnectDeezer}>
-            <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.buttonImage} />
-            Se déconnecter
-          </Button>
+
+        <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
+          <Grid item>
+            <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.image} />
+          </Grid>
+          <Grid item>
+            {isDeezerAuthenticated ? (
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickDisconnectDeezer}>
+                Se déconnecter
+              </Button>
             ) : (
-                <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickConnectDeezer}>
-                    <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.buttonImage} />
-                    Se connecter
-                </Button>
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickConnectDeezer}>
+                Se connecter
+              </Button>
             )}
+          </Grid>
+          <Grid item>
+            <Button variant="contained" style={styles.buttonPlatform}>
+              Choisir comme plateforme principale
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
 
