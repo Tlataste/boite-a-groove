@@ -93,6 +93,15 @@ def is_spotify_authenticated(user):
 # while the refresh token is used to obtain a new access token once the current token has expired.
 
 
+def disconnect_user(user):
+    """
+    Disconnects the user from Spotify.
+    """
+    tokens = get_user_tokens(user)
+    if tokens:
+        tokens.delete()
+
+
 def refresh_spotify_token(user):
     """
     Refreshes the Spotify access token for a user session using the refresh token.

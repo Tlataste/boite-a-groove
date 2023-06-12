@@ -43,7 +43,29 @@ class AuthURL(APIView):
             "redirect_uri": REDIRECT_URI,
             "scope": scopes
         }
-        return Response({'url': "https://accounts.spotify.com/authorize?" + urlencode(auth_headers)}, status=status.HTTP_200_OK)
+        return Response({'url': "https://accounts.spotify.com/authorize?" + urlencode(auth_headers)},
+                        status=status.HTTP_200_OK)
+
+
+class Disconnect(APIView):
+    def get(self, request, format=None):
+        """
+        Method goal:
+        Disconnects the user from Spotify.
+
+        Arguments:
+        self    : The instance of the class.
+        request : The request object.
+        format  : The desired format of the response. Defaults to None.
+
+        Returns:
+        dict: A dictionary containing the authentication URL.
+
+        """
+        user = request.user.username
+        if user:
+            disconnect_user(user)
+        return Response(status=status.HTTP_200_OK)
 
 
 def spotify_callback(request, format=None):
