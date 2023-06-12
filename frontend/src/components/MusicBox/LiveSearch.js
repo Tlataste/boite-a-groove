@@ -79,9 +79,11 @@ export default function LiveSearch({
             setJsonResults([]);
           }
         } else {
+          const csrftoken = getCookie("csrftoken");
           const requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken},
             body: JSON.stringify({
               search_query: searchValue,
             }),
