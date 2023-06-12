@@ -13,5 +13,8 @@ class CustomUserAdmin(UserAdmin):
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
 
+    # Remove the 'first_name' and 'last_name' fields from list_display
+    list_display = ('username', 'email', 'is_staff')
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
