@@ -173,24 +173,24 @@ class CheckAuthentication(APIView):
         if request.user.is_authenticated:
             user = request.user
             username = user.username
-            first_name = user.first_name
-            last_name = user.last_name
+            # first_name = user.first_name
+            # last_name = user.last_name
             email = user.email
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
                 response = {
                     'username': username,
-                    'first_name': first_name,
-                    'last_name': last_name,
+                    # 'first_name': first_name,
+                    # 'last_name': last_name,
                     'email': email,
                     'profile_picture_url': profile_picture_url
                 }
             else:
                 response = {
                     'username': username,
-                    'first_name': first_name,
-                    'last_name': last_name,
+                    # 'first_name': first_name,
+                    # 'last_name': last_name,
                     'email': email
                 }
 
