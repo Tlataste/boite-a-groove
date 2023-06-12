@@ -63,9 +63,12 @@ def deezer_callback(request, format=None):
     response = json.loads(response)
     # Extract the fields from the response
     access_token = response['access_token']
-    print(response)
     # Check if the user has an active session
     is_active = is_deezer_authenticated(request.session.session_key)
+
+    # Create a session if it doesn't exist
+    if not request.session.exists(request.session.session_key):
+        request.session.create()
 
     # If the user has an active session, update the user tokens in the database
     if is_active:
@@ -141,7 +144,7 @@ class GetRecentlyPlayedTracks(APIView):
         # Execute the Spotify API request to retrieve the recently played tracks
         response = execute_deezer_api_request(
             self.request.session.session_key,
-            '/user/me/history')
+            '/user/me/history', recent=True)
         results = response.json()
         # Check if there is an error in the response or if the 'items' key is missing
         # if 'error' in response or 'items' not in response:
@@ -156,7 +159,9 @@ class GetRecentlyPlayedTracks(APIView):
                 'artist': item['artist']['name'],
                 'album': item['album']['title'],
                 'image_url': item['album']['cover_medium'],
-                'deezer_url': item['link'],
+                'duration': item['duration'],
+                'platform_id': 2,
+                'url': item['link'],
             }
             tracks.append(track)
         # Return the list of recently played tracks in the response
@@ -184,8 +189,7 @@ class Search(APIView):
         """
 
         # Extract the search query from the request data
-        # search_query = request.data.get('search_query')
-        search_query = 'eminem'
+        search_query = request.data.get('search_query')
 
         # Search for tracks
         results = execute_deezer_api_request(
@@ -201,7 +205,9 @@ class Search(APIView):
                 'artist': item['artist']['name'],
                 'album': item['album']['title'],
                 'image_url': item['album']['cover_medium'],
-                'deezer_url': item['link'],
+                'duration': item['duration'],
+                'platform_id': 2,
+                'url': item['link'],
             }
             tracks.append(track)
 

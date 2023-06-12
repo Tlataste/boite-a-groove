@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
-import re
+from .util import normalize_string
 
 
 class GetBox(APIView):
@@ -34,8 +34,8 @@ class GetBox(APIView):
         box_name = request.data.get('boxName')
 
         # Normaliser les noms de chanson et d'auteur
-        song_name = self.normalize_string(song_name)
-        song_author = self.normalize_string(song_author)
+        song_name = normalize_string(song_name)
+        song_author = normalize_string(song_author)
 
         # Vérifier si la chanson existe déjà
         try:
@@ -45,9 +45,12 @@ class GetBox(APIView):
 
         except Song.DoesNotExist:
             # Créer une nouvelle chanson,
-            song_url = option.get('spotify_url')
+            song_url = option.get('url')
             song_image = option.get('image_url')
-            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, n_deposits=1)
+            song_duration = option.get('duration')
+            song_platform_id = option.get('platform_id')
+            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
+                        platform_id=song_platform_id, n_deposits=1)
 
             song.save()
 
@@ -58,11 +61,3 @@ class GetBox(APIView):
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def normalize_string(input_string):
-        # Remove special characters and convert to lowercase
-        normalized_string = re.sub(r'[^a-zA-Z0-9\s]', '', input_string).lower()
-        # Replace multiple spaces with a single space
-        normalized_string = re.sub(r'\s+', ' ', normalized_string).strip()
-        return normalized_string

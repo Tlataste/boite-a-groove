@@ -13,13 +13,21 @@ class Box(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     client_name = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Song(models.Model):
     title = models.CharField(max_length=50)
     artist = models.CharField(max_length=50)
     url = models.URLField(max_length=200)
     image_url = models.URLField(max_length=200, blank=True)
+    duration = models.IntegerField(default=0)  # Duration in seconds
+    platform_id = models.IntegerField(default=0)
     n_deposits = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title + ' - ' + self.artist
 
 
 class Deposit(models.Model):
@@ -27,3 +35,6 @@ class Deposit(models.Model):
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
     # user_id = models.IntegerField()
     deposited_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.song_id) + ' - ' + str(self.box_id)

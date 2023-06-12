@@ -14,6 +14,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { checkUserStatus } from "./UsersUtils";
+import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
 
 /**
  * Copyright Component
@@ -44,8 +46,9 @@ export default function RegisterPage() {
   // States & variables
   const [errorMessages, setErrorMessages] = useState([]);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+  const { user, setUser, isAuthenticated, setIsAuthenticated, currentBoxName } =
     useContext(UserContext);
+  const navigate = useNavigate();
 
   /**
    * sendAndProcessData Function
@@ -66,7 +69,10 @@ export default function RegisterPage() {
       if (response.ok) {
         setErrorMessages({});
         setRegistrationSuccess(true);
-        checkUserStatus(setUser, setIsAuthenticated);
+        setTimeout(() => {
+          checkUserStatus(setUser, setIsAuthenticated);
+          navigate("/box/" + currentBoxName);
+        }, 2000);
       } else {
         if (data.errors) {
           console.log(data.errors);
@@ -118,9 +124,12 @@ export default function RegisterPage() {
           S'enregistrer
         </Typography>
         {registrationSuccess ? (
-          <Typography variant="body2" color="text.primary" align="center">
-            Vous êtes enregistré avec succès!
-          </Typography>
+          <>
+            <Typography variant="body2" color="text.primary" align="center">
+              Vous êtes enregistré avec succès!
+            </Typography>
+            <CircularProgress color="success" />
+          </>
         ) : (
           <Box
             component="form"

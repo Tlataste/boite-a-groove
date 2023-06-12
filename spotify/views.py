@@ -180,7 +180,9 @@ class GetRecentlyPlayedTracks(APIView):
                     'artist': item['track']['artists'][0]['name'],
                     'album': item['track']['album']['name'],
                     'image_url': item['track']['album']['images'][0]['url'],
-                    'spotify_url': item['track']['external_urls']['spotify'],
+                    'duration': item['track']['duration_ms'] // 1000,
+                    'platform_id': 1,
+                    'url': item['track']['external_urls']['spotify'],
                 }
                 tracks.append(track)
 
@@ -223,8 +225,9 @@ class Search(APIView):
                 'artist': item['artists'][0]['name'],
                 'album': item['album']['name'],
                 'image_url': item['album']['images'][0]['url'],
-                # 'preview_url': item['preview_url'],
-                'spotify_url': item['external_urls']['spotify'],
+                'duration': item['duration_ms'] // 1000,
+                'platform_id': 1,
+                'url': item['external_urls']['spotify'],
             }
             tracks.append(track)
 

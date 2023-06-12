@@ -70,7 +70,7 @@ def is_deezer_authenticated(session_id):
         return False
 
 
-def execute_deezer_api_request(session_id, endpoint, post_=False, put_=False):
+def execute_deezer_api_request(session_id, endpoint, post_=False, put_=False, recent=False):
     """
         Executes a request to the Deezer API with the provided session ID, endpoint, and request type.
 
@@ -81,14 +81,16 @@ def execute_deezer_api_request(session_id, endpoint, post_=False, put_=False):
             put_: Optional flag to indicate if the request should be a PUT request (default: False).
 
         Returns:
-            The JSON response from the Spotify API.
+            The JSON response from the Deezer API.
     """
     # Retrieve the Deezer tokens associated with the user session
-    tokens = get_user_tokens(session_id)
+    if recent:
+        tokens = get_user_tokens(session_id).access_token
+    else:
+        tokens = ""
 
     # Prepare the headers for the API request
     headers = {
-        "Authorization": "Bearer " + tokens.access_token,
         "Content-Type": "application/json"
     }
 
@@ -104,5 +106,8 @@ def execute_deezer_api_request(session_id, endpoint, post_=False, put_=False):
         put(BASE_URL + endpoint, headers=headers)
     else:
         # Send a GET request to the specified API endpoint with user params
-        response = requests.get(BASE_URL + endpoint + "&access_token=" + tokens.access_token, headers=headers, params=user_params)
+        if recent:
+            response = requests.get(BASE_URL + endpoint + "&access_token=" + tokens, headers=headers, params=user_params)
+        else:
+            response = requests.get(BASE_URL + endpoint, headers=headers, params=user_params)
     return response
