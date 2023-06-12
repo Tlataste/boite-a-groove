@@ -33,3 +33,24 @@ export const authenticateSpotifyUser = async (
     console.error(error);
   }
 };
+
+/**
+ * Disconnect the user with Spotify if not already authenticated.
+ * @param {boolean} isSpotifyAuthenticated - A boolean indicating if the user is already authenticated with Deezer.
+ * @param {function} setIsSpotifyAuthenticated - A function to set the Deezer authentication status of the user.
+ */
+export const disconnectSpotifyUser = async (
+  isSpotifyAuthenticated,
+  setIsSpotifyAuthenticated
+) => {
+  try {
+    checkSpotifyAuthentication(setIsSpotifyAuthenticated);
+    if (isSpotifyAuthenticated) {
+      const response = await fetch("/spotify/disconnect");
+      const data = await response.json();
+      window.location.replace(data.url);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};

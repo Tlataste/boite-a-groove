@@ -7,6 +7,14 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { logoutUser } from "./UsersUtils";
+import {checkDeezerAuthentication,
+    authenticateDeezerUser,
+disconnectDeezerUser} from "./MusicBox/DeezerUtils";
+import {
+    checkSpotifyAuthentication,
+    authenticateSpotifyUser,
+    disconnectSpotifyUser,
+} from "./MusicBox/SpotifyUtils";
 
 const styles = {
   root: {
@@ -20,16 +28,58 @@ const styles = {
   textField: {
     marginBottom: "16px",
   },
+  buttonGroup: {
+    marginBottom: "16px",
+  },
+  buttonConnect: {
+    backgroundColor: "transparent",
+    color: "gray",
+  },
+  buttonPlatform: {
+    backgroundColor: "transparent",
+    color: "gray",
+    textTransform: "none",
+    fontStyle: "italic",
+  },
+  image: {
+    width: "100px",
+    height: "50px",
+    marginRight: "8px",
+  },
+  streamingTitle: {
+    marginTop: "24px",
+    marginBottom: "24px",
+  },
 };
 
 export default function UserProfilePage() {
   const [password, setPassword] = useState("********");
-  const { user, setUser, isAuthenticated, setIsAuthenticated } =
-    useContext(UserContext);
+  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
+  const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
+  const { user, setUser, isAuthenticated, setIsAuthenticated } = useContext(
+    UserContext
+  );
   const navigate = useNavigate();
-
+ useEffect(() => {
+    checkSpotifyAuthentication(setIsSpotifyAuthenticated);
+    checkDeezerAuthentication(setIsDeezerAuthenticated);
+    }, []);
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
+  };
+    const handleButtonClickConnectSpotify = () => {
+        authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+    };
+    const handleButtonClickDisconnectSpotify = () => {
+        disconnectSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+        window.location.reload();
+    };
+    const handleButtonClickConnectDeezer = () => {
+    authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
+  };
+    const handleButtonClickDisconnectDeezer = () => {
+    disconnectDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
+    window.location.reload();
   };
 
   if (!isAuthenticated) {
@@ -50,6 +100,57 @@ export default function UserProfilePage() {
           <Typography variant="h5">{user.username}</Typography>
         </Grid>
       </Grid>
+
+      <Typography variant="h6" gutterBottom style={styles.streamingTitle}>
+        Tes services de streaming
+      </Typography>
+
+      <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
+        <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
+          <Grid item>
+            <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.image} />
+          </Grid>
+          <Grid item>
+            {isSpotifyAuthenticated ? (
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickDisconnectSpotify}>
+                  Se déconnecter
+              </Button>
+            ) : (
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickConnectSpotify}>
+                  Se connecter
+              </Button>
+            )}
+          </Grid>
+          <Grid item>
+            <Button variant="contained" style={styles.buttonPlatform}>
+              Choisir comme plateforme principale
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
+          <Grid item>
+            <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.image} />
+          </Grid>
+          <Grid item>
+            {isDeezerAuthenticated ? (
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickDisconnectDeezer}>
+                Se déconnecter
+              </Button>
+            ) : (
+              <Button variant="contained" style={styles.buttonConnect} onClick={handleButtonClickConnectDeezer}>
+                Se connecter
+              </Button>
+            )}
+          </Grid>
+          <Grid item>
+            <Button variant="contained" style={styles.buttonPlatform}>
+              Choisir comme plateforme principale
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
+
       <Typography variant="h6" gutterBottom>
         Informations personnelles
       </Typography>
