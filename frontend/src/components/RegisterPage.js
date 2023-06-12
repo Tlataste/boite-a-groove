@@ -44,11 +44,18 @@ function Copyright(props) {
 
 export default function RegisterPage() {
   // States & variables
+  const [profilePicture, setProfilePicture] = useState(null);
   const [errorMessages, setErrorMessages] = useState([]);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const { user, setUser, isAuthenticated, setIsAuthenticated, currentBoxName } =
     useContext(UserContext);
   const navigate = useNavigate();
+
+  const handleProfilePictureChange = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    setProfilePicture(file);
+  };
 
   /**
    * sendAndProcessData Function
@@ -100,8 +107,6 @@ export default function RegisterPage() {
       email: data.get("email"),
       password1: data.get("password1"),
       password2: data.get("password2"),
-      first_name: data.get("firstName"),
-      last_name: data.get("lastName"),
     });
     sendAndProcessData(jsonData);
   };
@@ -138,27 +143,15 @@ export default function RegisterPage() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="Prénom"
-                  autoFocus
+              <Grid item xs={12}>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  accept=".jpg, .jpeg, .png"
+                  onChange={handleProfilePictureChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Nom"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   autoComplete="username"
@@ -200,14 +193,6 @@ export default function RegisterPage() {
                   type="password"
                   id="password2"
                   autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="Je souhaite recevoir des promotions marketing et des mises à jour par courrier électronique."
                 />
               </Grid>
             </Grid>

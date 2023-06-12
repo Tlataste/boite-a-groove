@@ -170,11 +170,6 @@ export default function LoginPage() {
               {errorMessages}
             </Typography>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Mot de passe oublié ?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href="/register" variant="body2">
                   {"Vous n'avez pas de compte ? S'inscrire"}
