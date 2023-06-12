@@ -20,12 +20,17 @@ const styles = {
   textField: {
     marginBottom: "16px",
   },
+  buttonGroup: {
+    marginTop: "16px",
+    marginBottom: "16px",
+  },
 };
 
 export default function UserProfilePage() {
   const [password, setPassword] = useState("********");
-  const { user, setUser, isAuthenticated, setIsAuthenticated } =
-    useContext(UserContext);
+  const { user, setUser, isAuthenticated, setIsAuthenticated } = useContext(
+    UserContext
+  );
   const navigate = useNavigate();
 
   const handlePasswordChange = (event) => {
@@ -50,6 +55,16 @@ export default function UserProfilePage() {
           <Typography variant="h5">{user.username}</Typography>
         </Grid>
       </Grid>
+
+      <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
+        <Grid item>
+          <Button variant="contained">Se connecter à Spotify</Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained">Se connecter à Deezer</Button>
+        </Grid>
+      </Grid>
+
       <Typography variant="h6" gutterBottom>
         Informations personnelles
       </Typography>
