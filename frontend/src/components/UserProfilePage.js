@@ -72,6 +72,7 @@ export default function UserProfilePage() {
   };
     const handleButtonClickDisconnectDeezer = () => {
     disconnectDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
+    window.location.reload();
   };
 
   if (!isAuthenticated) {
