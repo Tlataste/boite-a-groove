@@ -5,8 +5,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -16,14 +14,15 @@ import Container from "@mui/material/Container";
 import { checkUserStatus } from "./UsersUtils";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getCookie } from "./Security/TokensUtils";
 
 /**
-Copyright Component
-Renders a copyright statement with a link to the "La boite à son" website
-and the current year.
-@param {object} props - Additional properties to be spread onto the Typography component
-@returns {React.Element} - A Typography component displaying the copyright statement
-*/
+ * Copyright Component
+ * Renders a copyright statement with a link to the "La boite à son" website
+ * and the current year.
+ * @param {object} props - Additional properties to be spread onto the Typography component
+ * @returns {React.Element} - A Typography component displaying the copyright statement
+ */
 function Copyright(props) {
   return (
     <Typography
@@ -51,16 +50,16 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   /**
-   * sendAndProcessData Function
-   * Sends a POST request with the data in JSON to "/users/login_user" endpoint,
-   * processes the response, and handles potential errors.
-   * @param {JSON} form - The data in JSON to be sent in the request body
-   * @returns {Promise<void>} - A Promise that resolves when the request is completed
+   * Sends form data to the server and processes the response for user login.
+   * @param {FormData} form - The form data to be sent.
+   * @returns {Promise<void>} - A Promise that resolves when the request is completed.
    */
   const sendAndProcessData = async (form) => {
+    const csrftoken = getCookie("csrftoken");
+    // The browser automatically sets the appropriate Content-Type header with the correct boundary value.
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "X-CSRFToken": csrftoken },
       body: form,
     };
     try {
@@ -87,20 +86,15 @@ export default function LoginPage() {
   };
 
   /**
-   * handleSubmit Function
-   * Handles the form submission event by preventing the default form submission behavior,
-   * extracting form data, converting it to JSON, and invoking the sendAndProcessData function.
-   * @param {Event} event - The form submission event
+   * Handles the form submission event.
+   * @param {Event} event - The form submission event.
+   * @returns {void}
    */
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const jsonData = JSON.stringify({
-      username: data.get("username"),
-      password: data.get("password"),
-    });
-    console.log(jsonData);
-    sendAndProcessData(jsonData);
+    // console.log(jsonData);
+    sendAndProcessData(data);
   };
 
   return (
@@ -153,10 +147,6 @@ export default function LoginPage() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Se souvenir de moi"
             />
             <Button
               type="submit"
