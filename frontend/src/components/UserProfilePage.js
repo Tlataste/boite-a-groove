@@ -30,19 +30,25 @@ const styles = {
   buttonGroup: {
     marginBottom: "16px",
   },
-  buttonPlatform: {
+  buttonConnect: {
     backgroundColor: "transparent",
     border: "1px solid gray",
     color: "gray",
   },
-  buttonImage: {
+  buttonPlatform: {
+    backgroundColor: "transparent",
+    color: "gray",
+    textTransform: "none",
+    fontStyle: "italic",
+  },
+  image: {
     width: "80px",
-    height: "80px",
+    height: "20px",
     marginRight: "8px",
   },
   streamingTitle: {
     marginTop: "24px",
-    marginBottom: "12px",
+    marginBottom: "24px",
   },
 };
 
