@@ -25,8 +25,6 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log(user);
-  console.log("../../.." + user.profile_picture_url);
   return (
     <Box
       sx={{
