@@ -16,6 +16,7 @@ import Container from "@mui/material/Container";
 import { checkUserStatus } from "./UsersUtils";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getCookie } from "./Security/TokensUtils";
 
 /**
  * Copyright Component
@@ -65,9 +66,13 @@ export default function RegisterPage() {
    * @returns {Promise<void>} - A Promise that resolves when the request is completed
    */
   const sendAndProcessData = async (form) => {
+    const csrftoken = getCookie("csrftoken");
+    // When you send the FormData object in the request body, the browser automatically sets the appropriate Content-Type header with the correct boundary value.
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "X-CSRFToken": csrftoken,
+      },
       body: form,
     };
     try {
@@ -85,7 +90,7 @@ export default function RegisterPage() {
           console.log(data.errors);
           setErrorMessages(data.errors);
         } else {
-          console.log("No errors returned");
+          console.log(data);
         }
       }
     } catch (error) {
@@ -102,13 +107,8 @@ export default function RegisterPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const jsonData = JSON.stringify({
-      username: data.get("username"),
-      email: data.get("email"),
-      password1: data.get("password1"),
-      password2: data.get("password2"),
-    });
-    sendAndProcessData(jsonData);
+    data.append("profile_picture", profilePicture);
+    sendAndProcessData(data);
   };
 
   return (

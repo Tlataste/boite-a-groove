@@ -25,7 +25,8 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  console.log(user);
+  console.log("../../.." + user.profile_picture_url);
   return (
     <Box
       sx={{
@@ -58,7 +59,7 @@ export default function MenuAppBar() {
             >
               <Avatar
                 alt="Remy Sharp"
-                src="../static/images/profile_picture.jpg"
+                src={"../../.." + user.profile_picture_url}
               />
             </IconButton>
           ) : (
