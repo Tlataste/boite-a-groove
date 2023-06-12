@@ -148,27 +148,27 @@ class CheckAuthentication(APIView):
             first_name = user.first_name
             last_name = user.last_name
             email = user.email
-            response = {
-                'username': username,
-                'first_name': first_name,
-                'last_name': last_name,
-                'email': email
-            }
+
+            if request.user.profile_picture:  # If profile picture, include its URL in the response.
+                profile_picture_url = request.user.profile_picture.url
+                response = {
+                    'username': username,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email,
+                    'profile_picture_url': profile_picture_url
+                }
+            else:
+                response = {
+                    'username': username,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email
+                }
+
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
-
-
-class GetProfilePictureConnectedURL(APIView):
-    '''
-    Class goal: Retrieve the URL of the profile picture of the connected user in order to display it.
-    '''
-    def get(self, request, format=None):
-        if request.user.is_authenticated:
-            profile_picture_url = request.user.profile_picture.url
-            return Response({'profile_picture_url': profile_picture_url}, status=status.HTTP_200_OK)
-        else:
-            Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):
