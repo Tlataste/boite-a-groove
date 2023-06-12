@@ -13,9 +13,9 @@ import Avatar from "@mui/material/Avatar";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 
 export default function MenuAppBar() {
+  // States & Variables
   const { user, setUser, isAuthenticated, setIsAuthenticated } =
     useContext(UserContext);
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleMenu = (event) => {
