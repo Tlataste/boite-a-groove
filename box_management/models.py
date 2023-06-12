@@ -5,13 +5,13 @@ from django.utils.text import slugify
 class Box(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=150, blank=True)
-    url = models.SlugField(unique=True, blank=True)
-    latitude = models.CharField(max_length=50, unique=True)
-    longitude = models.CharField(max_length=50, unique=True)
+    url = models.SlugField(blank=True)
+    latitude = models.CharField(max_length=50)
+    longitude = models.CharField(max_length=50)
     image_url = models.URLField(max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    client_name = models.CharField(max_length=50, unique=True)
+    client_name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name

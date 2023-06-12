@@ -4,3 +4,4 @@ djangorestframework
 requests
 spotipy
 fuzzywuzzy
+django-import-export
