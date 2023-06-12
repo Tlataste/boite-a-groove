@@ -142,48 +142,61 @@ class ChangePasswordUser(APIView):
             return Response({'errors': ['Ancien mot de passe invalide.']}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+class ChangeProfilePicture(APIView):
+    def post(self, request, format=None):
+        # Guard clause that checks if user is logged in
+        if not request.user.is_authenticated:
+            return Response({'errors': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Get connected user
+        user = request.user
+
+        # Guard clause that checks if the profile_picture field exists in the request.FILES
+        if 'profile_picture' not in request.FILES:
+            return Response({'errors': 'Aucune image de profil n\'a été fournie.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the new profile picture from the request.FILES
+        new_profile_picture = request.FILES['profile_picture']
+
+        try:
+            # Update the user's profile picture
+            user.profile_picture = new_profile_picture
+            user.save()
+
+            return Response({'status': 'L\'image de profil a été modifiée avec succès.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class CheckAuthentication(APIView):
     def get(self, request, format=None):
         if request.user.is_authenticated:
             user = request.user
             username = user.username
-            first_name = user.first_name
-            last_name = user.last_name
+            # first_name = user.first_name
+            # last_name = user.last_name
             email = user.email
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
                 response = {
                     'username': username,
-                    'first_name': first_name,
-                    'last_name': last_name,
+                    # 'first_name': first_name,
+                    # 'last_name': last_name,
                     'email': email,
                     'profile_picture_url': profile_picture_url
                 }
             else:
                 response = {
                     'username': username,
-                    'first_name': first_name,
-                    'last_name': last_name,
+                    # 'first_name': first_name,
+                    # 'last_name': last_name,
                     'email': email
                 }
 
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
-
-
-class GetProfilePictureConnectedURL(APIView):
-    '''
-    Class goal: Retrieve the URL of the profile picture of the connected user in order to display it.
-    '''
-
-    def get(self, request, format=None):
-        if request.user.is_authenticated:
-            profile_picture_url = request.user.profile_picture.url
-            return Response({'profile_picture_url': profile_picture_url}, status=status.HTTP_200_OK)
-        else:
-            Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 def example(request):

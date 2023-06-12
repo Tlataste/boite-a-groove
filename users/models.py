@@ -11,6 +11,7 @@ class CustomUser(AbstractUser):
         filename = generate_unique_filename(instance, filename)
         return f"profile_pictures/{filename}"
 
+    # Add profile_picture field
     profile_picture = models.ImageField(upload_to=profile_picture_path, blank=True)
 
 
