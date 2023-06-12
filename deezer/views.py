@@ -38,6 +38,27 @@ class AuthURL(APIView):
             status=status.HTTP_200_OK)
 
 
+class Disconnect(APIView):
+    def get(self, request, format=None):
+        """
+        Method goal:
+        Disconnects the user from Deezer.
+
+        Arguments:
+        self    : The instance of the class.
+        request : The request object.
+        format  : The desired format of the response. Defaults to None.
+
+        Returns:
+        dict: A dictionary containing the authentication URL.
+
+        """
+        user = request.user.username
+        if user:
+            disconnect_user(user)
+        return Response(status=status.HTTP_200_OK)
+
+
 def deezer_callback(request, format=None):
     """
     Callback function for handling the Deezer authorization code flow.

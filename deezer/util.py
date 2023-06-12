@@ -69,6 +69,15 @@ def is_deezer_authenticated(user):
         return False
 
 
+def disconnect_user(user):
+    """
+    Disconnects the user from Deezer.
+    """
+    tokens = get_user_tokens(user)
+    if tokens:
+        tokens.delete()
+
+
 def execute_deezer_api_request(user, endpoint, post_=False, put_=False, recent=False):
     """
         Executes a request to the Deezer API with the provided session ID, endpoint, and request type.
@@ -107,7 +116,8 @@ def execute_deezer_api_request(user, endpoint, post_=False, put_=False, recent=F
     else:
         # Send a GET request to the specified API endpoint with user params
         if recent:
-            response = requests.get(BASE_URL + endpoint + "&access_token=" + tokens, headers=headers, params=user_params)
+            response = requests.get(BASE_URL + endpoint + "&access_token=" + tokens, headers=headers,
+                                    params=user_params)
         else:
             response = requests.get(BASE_URL + endpoint, headers=headers, params=user_params)
     return response

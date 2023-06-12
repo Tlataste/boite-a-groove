@@ -8,7 +8,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { logoutUser } from "./UsersUtils";
 import {checkDeezerAuthentication,
-    authenticateDeezerUser} from "./MusicBox/DeezerUtils";
+    authenticateDeezerUser,
+disconnectDeezerUser} from "./MusicBox/DeezerUtils";
 import {
   checkSpotifyAuthentication,
   authenticateSpotifyUser,
@@ -60,12 +61,17 @@ export default function UserProfilePage() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
-    const handleButtonClickSpotify = () => {
+    const handleButtonClickConnectSpotify = () => {
         authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
     };
-
-  const handleButtonClickDeezer = () => {
+    const handleButtonClickDisconnectSpotify = () => {
+        authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+    };
+    const handleButtonClickConnectDeezer = () => {
     authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
+  };
+    const handleButtonClickDisconnectDeezer = () => {
+    disconnectDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
   };
 
   if (!isAuthenticated) {
@@ -93,16 +99,30 @@ export default function UserProfilePage() {
 
       <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
         <Grid item>
-          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickSpotify}>
+            {isSpotifyAuthenticated ? (
+          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickDisconnectSpotify}>
             <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.buttonImage} />
-            Se connecter
+            Se déconnecter
           </Button>
+            ) : (
+                <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickConnectSpotify}>
+                    <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.buttonImage} />
+                    Se connecter
+                </Button>
+            )}
         </Grid>
         <Grid item>
-          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickDeezer}>
+         {isDeezerAuthenticated ? (
+          <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickDisconnectDeezer}>
             <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.buttonImage} />
-            Se connecter
+            Se déconnecter
           </Button>
+            ) : (
+                <Button variant="contained" style={styles.buttonPlatform} onClick={handleButtonClickConnectDeezer}>
+                    <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.buttonImage} />
+                    Se connecter
+                </Button>
+            )}
         </Grid>
       </Grid>
 
