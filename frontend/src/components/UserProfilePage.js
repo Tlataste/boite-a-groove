@@ -21,8 +21,21 @@ const styles = {
     marginBottom: "16px",
   },
   buttonGroup: {
-    marginTop: "16px",
     marginBottom: "16px",
+  },
+  buttonPlatform: {
+    backgroundColor: "transparent",
+    border: "1px solid gray",
+    color: "gray",
+  },
+  buttonImage: {
+    width: "80px",
+    height: "80px",
+    marginRight: "8px",
+  },
+  streamingTitle: {
+    marginTop: "24px",
+    marginBottom: "12px",
   },
 };
 
@@ -56,12 +69,22 @@ export default function UserProfilePage() {
         </Grid>
       </Grid>
 
+      <Typography variant="h6" gutterBottom style={styles.streamingTitle}>
+        Tes services de streaming
+      </Typography>
+
       <Grid container spacing={2} alignItems="center" style={styles.buttonGroup}>
         <Grid item>
-          <Button variant="contained">Se connecter à Spotify</Button>
+          <Button variant="contained" style={styles.buttonPlatform}>
+            <img src="../static/images/spotify_logo.svg" alt="Spotify" style={styles.buttonImage} />
+            Se connecter
+          </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained">Se connecter à Deezer</Button>
+          <Button variant="contained" style={styles.buttonPlatform}>
+            <img src="../static/images/deezer_logo.svg" alt="Deezer" style={styles.buttonImage} />
+            Se connecter
+          </Button>
         </Grid>
       </Grid>
 
