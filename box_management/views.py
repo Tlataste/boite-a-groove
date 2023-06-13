@@ -82,7 +82,7 @@ class Location(APIView):
             return Response({'valid': True}, status=status.HTTP_200_OK)
         else:
             # L'emplacement est invalide
-            return Response({'valid': False}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'valid': False, 'lat': latitude, 'long': longitude}, status=status.HTTP_403_FORBIDDEN)
 
 
 def check_location(request):
