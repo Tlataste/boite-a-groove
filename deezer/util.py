@@ -24,12 +24,16 @@ def get_user_tokens(user):
     """
 
     # Query the DeezerToken objects for tokens associated with the user session
-    user_tokens = DeezerToken.objects.filter(user=user)
+    try:
+        user_tokens = DeezerToken.objects.filter(user=user)
 
-    # Check if any tokens exist for the user session
-    if user_tokens.exists():
-        return user_tokens[0]
-    else:
+        # Check if any tokens exist for the user session
+        if user_tokens.exists():
+            return user_tokens[0]
+        else:
+            return None
+
+    except TypeError:
         return None
 
 

@@ -7,6 +7,7 @@ import requests
 
 BASE_URL = "https://api.spotify.com/v1/me/"
 
+
 # Check if the user already exists
 
 
@@ -22,12 +23,14 @@ def get_user_tokens(user):
     """
 
     # Query the SpotifyToken objects for tokens associated with the user session
-    user_tokens = SpotifyToken.objects.filter(user=user)
-
-    # Check if any tokens exist for the user session
-    if user_tokens.exists():
-        return user_tokens[0]
-    else:
+    try:
+        user_tokens = SpotifyToken.objects.filter(user=user)
+        # Check if any tokens exist for the user session
+        if user_tokens.exists():
+            return user_tokens[0]
+        else:
+            return None
+    except TypeError:
         return None
 
 
@@ -61,7 +64,8 @@ def update_or_create_user_tokens(user, access_token, token_type, expires_in, ref
         tokens.save(update_fields=['access_token', 'refresh_token', 'expires_in', 'token_type'])
     else:
         # Create a new SpotifyToken object for the user session
-        tokens = SpotifyToken(user=user, access_token=access_token, refresh_token=refresh_token, token_type=token_type, expires_in=expires_in)
+        tokens = SpotifyToken(user=user, access_token=access_token, refresh_token=refresh_token, token_type=token_type,
+                              expires_in=expires_in)
         tokens.save()
 
 

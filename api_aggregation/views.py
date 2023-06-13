@@ -10,7 +10,6 @@ from deezer.util import execute_deezer_api_request
 from spotify.spotipy_client import sp
 
 
-
 class ApiAggregation(APIView):
     def get(self, request):
         # Extract the search query from the request data
@@ -53,7 +52,8 @@ class ApiAggregation(APIView):
                         'url': item['link'],
                     }
                     tracks.append(track)
-                final_song = ut.find_matching_song_from_spotify_to_deezer(song['name'], song['artist'], song['duration'],
+                final_song = ut.find_matching_song_from_spotify_to_deezer(song['name'], song['artist'],
+                                                                          song['duration'],
                                                                           tracks)
                 return Response(final_song['url'], status=status.HTTP_200_OK)
 
