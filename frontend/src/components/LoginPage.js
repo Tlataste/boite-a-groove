@@ -71,7 +71,11 @@ export default function LoginPage() {
         setErrorMessages("");
         setTimeout(() => {
           checkUserStatus(setUser, setIsAuthenticated);
-          navigate("/box/" + currentBoxName);
+          if (currentBoxName) {
+            navigate("/box/" + currentBoxName);
+          } else {
+            navigate("/");
+          }
         }, 2000);
       } else {
         if (response.status === 401) {
