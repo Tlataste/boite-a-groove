@@ -33,6 +33,7 @@ export const getBoxDetails = async (boxName, navigate) => {
         }),
       };
       const verificationResponse = await fetch("../box-management/verify-location", requestOptions);
+      console.log(verificationResponse);
       if (!verificationResponse.ok) {
         navigate("/");
         return [];
