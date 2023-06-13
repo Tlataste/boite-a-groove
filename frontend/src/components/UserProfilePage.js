@@ -10,6 +10,7 @@ import { logoutUser } from "./UsersUtils";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import { getCookie } from "./Security/TokensUtils";
+import { checkUserStatus } from "./UsersUtils";
 import {
   checkDeezerAuthentication,
   authenticateDeezerUser,
@@ -155,13 +156,37 @@ export default function UserProfilePage() {
     sendAndProcessPasswordChange(data);
   };
 
-  const handleAvatarChange = (event) => {
+  const handleAvatarChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Perform necessary operations to upload the image to the server and update the avatar URL in the user context
-      // For example, you can use FormData to upload the image via a POST request to an API
-      const formData = new FormData();
-      formData.append("avatar", file);
+      // console.log(file);
+      const form = new FormData();
+      form.append("profile_picture", file);
+      const csrftoken = getCookie("csrftoken");
+      const requestOptions = {
+        method: "POST",
+        headers: { "X-CSRFToken": csrftoken },
+        body: form,
+      };
+      try {
+        const response = await fetch(
+          "/users/change-profile-pic",
+          requestOptions
+        );
+        const data = await response.json();
+        if (response.ok) {
+          checkUserStatus(setUser, setIsAuthenticated);
+          console.log("Profile picture changed successfuly");
+        } else {
+          if (data.errors) {
+            console.log(data.errors);
+          } else {
+            console.log(data);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -179,7 +204,7 @@ export default function UserProfilePage() {
           <label htmlFor="avatar-input">
             <Avatar
               style={styles.avatar}
-              src={user.avatar}
+              src={user.profile_picture_url}
               alt="User Avatar"
               component="span"
             />
