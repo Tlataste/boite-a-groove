@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.contrib import messages
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
-from django import forms
 
 
 class LoginUser(APIView):
@@ -74,9 +75,16 @@ class RegisterUser(APIView):
 
     def post(self, request, format=None):
 
-        form = RegisterUserForm(data=request.data)
+        form = RegisterUserForm(request.data, request.FILES)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+
+            # Handle profile picture
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+
+            user.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']  # Because 2 pwd fields when you register
 
@@ -91,20 +99,101 @@ class RegisterUser(APIView):
             return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ChangePasswordUser(APIView):
+    '''
+    Class goal:
+    While logged in, change your password by typing your old one first.
+    '''
+
+    def post(self, request, format=None):
+
+        if not request.user.is_authenticated:
+            return Response({'errors': ['Utilisateur non connecté.']}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        new_password1 = request.data.get('new_password1')
+        new_password2 = request.data.get('new_password2')
+
+        if new_password1 != new_password2:
+            return Response({'errors': ['Les mots de passe ne correspondent pas.']}, status=status.HTTP_401_UNAUTHORIZED)
+
+        old_password = request.data.get('old_password')
+
+        # Check if the provided old password is correct
+        if user.check_password(old_password):
+            # Validate the new password against the password policy
+            try:
+                validate_password(new_password1, user=user)
+            except ValidationError as e:
+                error_messages = list(e.messages)
+                print(error_messages)
+                return Response({'errors': error_messages}, status=status.HTTP_401_UNAUTHORIZED)
+            # Set the new password and save the user
+            user.set_password(new_password1)
+            user.save()
+
+            # Update the user's authentication session with the new password
+            update_session_auth_hash(request, user)
+
+            # Return success response
+            return Response({'status': 'Le mot de passe a été modifié avec succès.'}, status=status.HTTP_200_OK)
+        else:
+            # Return error response if the old password is incorrect
+            return Response({'errors': ['Ancien mot de passe invalide.']}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ChangeProfilePicture(APIView):
+    def post(self, request, format=None):
+        # Guard clause that checks if user is logged in
+        if not request.user.is_authenticated:
+            return Response({'errors': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Get connected user
+        user = request.user
+
+        # Guard clause that checks if the profile_picture field exists in the request.FILES
+        if 'profile_picture' not in request.FILES:
+            return Response({'errors': 'Aucune image de profil n\'a été fournie.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the new profile picture from the request.FILES
+        new_profile_picture = request.FILES['profile_picture']
+
+        try:
+            # Update the user's profile picture
+            user.profile_picture = new_profile_picture
+            user.save()
+
+            return Response({'status': 'L\'image de profil a été modifiée avec succès.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class CheckAuthentication(APIView):
     def get(self, request, format=None):
         if request.user.is_authenticated:
             user = request.user
             username = user.username
-            first_name = user.first_name
-            last_name = user.last_name
+            # first_name = user.first_name
+            # last_name = user.last_name
             email = user.email
-            response = {
-                'username': username,
-                'first_name': first_name,
-                'last_name': last_name,
-                'email': email
-            }
+
+            if request.user.profile_picture:  # If profile picture, include its URL in the response.
+                profile_picture_url = request.user.profile_picture.url
+                response = {
+                    'username': username,
+                    # 'first_name': first_name,
+                    # 'last_name': last_name,
+                    'email': email,
+                    'profile_picture_url': profile_picture_url
+                }
+            else:
+                response = {
+                    'username': username,
+                    # 'first_name': first_name,
+                    # 'last_name': last_name,
+                    'email': email
+                }
+
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
