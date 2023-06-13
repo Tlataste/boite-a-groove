@@ -6,3 +6,4 @@ spotipy
 Pillow
 fuzzywuzzy
 python-Levenshtein
+django-import-export

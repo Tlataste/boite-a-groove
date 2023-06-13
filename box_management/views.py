@@ -1,9 +1,11 @@
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
-from .util import normalize_string
+from .util import normalize_string, calculate_distance
+from django.shortcuts import render
 
 
 class GetBox(APIView):
@@ -20,7 +22,10 @@ class GetBox(APIView):
                 # Récupérer les noms des chansons correspondantes aux dépôts
                 songs = Song.objects.filter(id__in=last_deposit.values('song_id'))
                 songs = SongSerializer(songs, many=True).data
-                return Response(songs, status=status.HTTP_200_OK)
+                resp = {}
+                resp['last_deposits'] = songs
+                resp['box'] = data
+                return Response(resp, status=status.HTTP_200_OK)
             else:
                 return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -61,3 +66,24 @@ class GetBox(APIView):
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
+
+
+class Location(APIView):
+    def post(self, request, format=None):
+        latitude = float(request.data.get('latitude'))
+        longitude = float(request.data.get('longitude'))
+        target_longitude = float(request.data.get('box_longitude'))
+        target_latitude = float(request.data.get('box_latitude'))
+        # Comparez les coordonnées avec l'emplacement souhaité
+        max_distance = 100  # Distance maximale tolérée en mètres
+        distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
+        if distance <= max_distance:
+            # L'emplacement est valide
+            return Response({'valid': True}, status=status.HTTP_200_OK)
+        else:
+            # L'emplacement est invalide
+            return Response({'valid': False, 'lat': latitude, 'long': longitude}, status=status.HTTP_403_FORBIDDEN)
+
+
+def check_location(request):
+    return render(request, 'frontend/check_location.html')
