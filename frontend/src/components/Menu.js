@@ -55,10 +55,7 @@ export default function MenuAppBar() {
               component={Link}
               to="/profile"
             >
-              <Avatar
-                alt="Profile picture"
-                src={user.profile_picture_url}
-              />
+              <Avatar alt={user.username} src={user.profile_picture_url} />
             </IconButton>
           ) : (
             <div>
