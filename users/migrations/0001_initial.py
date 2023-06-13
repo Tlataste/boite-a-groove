@@ -8,7 +8,6 @@ import users.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -134,6 +133,6 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "users",
                 "abstract": False,
             },
-            managers=[("objects", django.contrib.auth.models.UserManager()),],
+            managers=[("objects", django.contrib.auth.models.UserManager()), ],
         ),
     ]
