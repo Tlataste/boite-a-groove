@@ -55,7 +55,7 @@ class ApiAggregation(APIView):
                     tracks.append(track)
                 final_song = ut.find_matching_song_from_spotify_to_deezer(song['name'], song['artist'], song['duration'],
                                                                           tracks)
-                return Response(final_song.url, status=status.HTTP_200_OK)
+                return Response(final_song['url'], status=status.HTTP_200_OK)
 
             elif platform_id == 2:  # The streaming platform is Deezer
                 # Search for tracks using the Spotipy client
@@ -77,7 +77,7 @@ class ApiAggregation(APIView):
                     final_song = ut.find_matching_song_from_deezer_to_spotify(song['name'], song['artist'],
                                                                               song['duration'], tracks)
 
-                return Response(final_song.url, status=status.HTTP_200_OK)
+                return Response(final_song['url'], status=status.HTTP_200_OK)
             else:
                 # Return an error response
                 return Response({'error': 'Invalid platform ID.'}, status=status.HTTP_400_BAD_REQUEST)
