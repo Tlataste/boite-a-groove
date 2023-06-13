@@ -3,6 +3,12 @@ django-extensions
 djangorestframework
 requests
 spotipy
+<<<<<<< requirements.txt
 Pillow
 fuzzywuzzy
 python-Levenshtein
+django-import-export
+=======
+fuzzywuzzy
+
+>>>>>>> requirements.txt

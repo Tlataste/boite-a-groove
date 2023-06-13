@@ -1,9 +1,11 @@
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
-from .util import normalize_string
+from .util import normalize_string, calculate_distance
+from django.shortcuts import render
 
 
 class GetBox(APIView):
@@ -61,3 +63,29 @@ class GetBox(APIView):
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
+
+
+class Location(APIView):
+    def post(self, request, format=None):
+        latitude = float(request.data.get('latitude'))
+        longitude = float(request.data.get('longitude'))
+
+        # Comparez les coordonnées avec l'emplacement souhaité
+        # Par exemple, supposons que l'emplacement souhaité soit Paris
+        target_latitude_old = 48.8566
+        target_longitude_old = 2.3522
+        target_longitude = 4.387954
+        target_latitude = 45.452358
+        max_distance = 100  # Distance maximale tolérée en mètres
+
+        distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
+        if distance <= max_distance:
+            # L'emplacement est valide
+            return JsonResponse({'valid': True})
+        else:
+            # L'emplacement est invalide
+            return JsonResponse({'valid': False})
+
+
+def check_location(request):
+    return render(request, 'frontend/check_location.html')
