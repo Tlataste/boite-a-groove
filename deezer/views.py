@@ -85,7 +85,7 @@ def deezer_callback(request, format=None):
     # Extract the fields from the response
     access_token = response['access_token']
     # Check if the user has an active session
-    user = request.user.username
+    user = request.user
 
     # If the user has an active session, update the user tokens in the database
     if user:
@@ -125,7 +125,7 @@ class IsAuthenticated(APIView):
 
         # Check if the user is authenticated with Spotify
         is_authenticated = is_deezer_authenticated(
-            self.request.user.username)
+            self.request.user)
 
         # Return the authentication status in the response
         return Response({'status': is_authenticated},
@@ -157,7 +157,7 @@ class GetRecentlyPlayedTracks(APIView):
 
         # Execute the Spotify API request to retrieve the recently played tracks
         response = execute_deezer_api_request(
-            self.request.user.username,
+            self.request.user,
             '/user/me/history', recent=True)
         results = response.json()
         # Check if there is an error in the response or if the 'items' key is missing
@@ -206,7 +206,7 @@ class Search(APIView):
         search_query = request.data.get('search_query')
         # Search for tracks
         results = execute_deezer_api_request(
-            self.request.user.username,
+            self.request.user,
             'search/track?q=' + search_query + '&output=json')
         results = results.json()
         # Extract the track data from the results and create a list of tracks
