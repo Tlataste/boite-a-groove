@@ -5,3 +5,4 @@ requests
 spotipy
 Pillow
 fuzzywuzzy
+python-Levenshtein
