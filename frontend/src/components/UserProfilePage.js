@@ -55,7 +55,6 @@ const styles = {
   },
   streamingTitle: {
     marginTop: "24px",
-    marginBottom: "24px",
   },
   avatarContainer: {
     position: "relative",
@@ -317,16 +316,23 @@ export default function UserProfilePage() {
         </Button>
       )}
 
-      <Typography variant="h6" gutterBottom style={styles.streamingTitle}>
-        Tes services de streaming
-      </Typography>
-
       <Grid
         container
         spacing={2}
         alignItems="center"
         style={styles.buttonGroup}
       >
+        <Grid item>
+          <>
+            <Typography variant="h6" style={styles.streamingTitle}>
+              Tes services de streaming
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              Ta plateforme principale est celle utilisée pour la recherche
+            </Typography>
+          </>
+        </Grid>
+
         <Grid
           container
           spacing={2}
@@ -359,10 +365,10 @@ export default function UserProfilePage() {
               </Button>
             )}
           </Grid>
-          {user.preferred_platform === "spotify" ? (
-            <></>
-          ) : (
-            <Grid item>
+          <Grid item>
+            {user.preferred_platform === "spotify" ? (
+              <Typography variant="subtitle1">Plateforme principale</Typography>
+            ) : (
               <Button
                 variant="contained"
                 style={styles.buttonPlatform}
@@ -370,8 +376,8 @@ export default function UserProfilePage() {
               >
                 Choisir comme plateforme principale
               </Button>
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
 
         <Grid
@@ -406,10 +412,10 @@ export default function UserProfilePage() {
               </Button>
             )}
           </Grid>
-          {user.preferred_platform === "deezer" ? (
-            <></>
-          ) : (
-            <Grid item>
+          <Grid item>
+            {user.preferred_platform === "deezer" ? (
+              <Typography variant="subtitle1">Plateforme principale</Typography>
+            ) : (
               <Button
                 variant="contained"
                 style={styles.buttonPlatform}
@@ -417,8 +423,8 @@ export default function UserProfilePage() {
               >
                 Choisir comme plateforme principale
               </Button>
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
       </Grid>
 
