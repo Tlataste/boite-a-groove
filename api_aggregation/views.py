@@ -11,22 +11,22 @@ from spotify.spotipy_client import sp
 
 
 class ApiAggregation(APIView):
-    def get(self, request):
+    def post(self, request):
         # Extract the search query from the request data
-        # song = request.data.get('song')
-        song = {
-            'name': 'Lose Yourself',
-            'artist': 'Eminem',
-            'duration': 326,
-            'platform_id': 1,
-        }
+        song = request.data.get('song')
+        # song = {
+        #     'name': 'Lose Yourself',
+        #     'artist': 'Eminem',
+        #     'duration': 326,
+        #     'platform_id': 1,
+        # }
 
         # Extract the id of the streaming platform from the request data
         platform_id = song['platform_id']
 
         try:  # The song already exists in the database
-            final_song = Song.objects.filter(title=song['name'], artist=song['artist'], platform_id=platform_id).get()
-            Response(final_song.url, status=status.HTTP_200_OK)
+            final_song = Song.objects.filter(title=song['title'], artist=song['artist'], platform_id=platform_id).get()
+            return Response(final_song.url, status=status.HTTP_200_OK)
 
         except Song.DoesNotExist:  # The song does not exist in the database
             # Normalize the search query

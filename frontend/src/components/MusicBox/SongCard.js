@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import {getCookie} from "../Security/TokensUtils";
 
 /**
 SongCard Component
@@ -38,6 +39,28 @@ export default function SongCard({ deposits, isDeposited }) {
     if (depositIndex > 0) {
       setdepositIndex(depositIndex - 1);
     }
+  }
+
+  /**
+   * Handles the click event for the "Go to link" button.
+   */
+  function redirectToLink() {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken},
+      body: JSON.stringify({
+        song: deposits[depositIndex],
+      }),
+    };
+
+    fetch("../api_agg/aggreg", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        window.open(data);
+      });
   }
 
   return (
@@ -73,13 +96,14 @@ export default function SongCard({ deposits, isDeposited }) {
               </IconButton>
             </Box>
           </Box>
-          <a href={deposits[depositIndex].url} target="_blank" rel="noopener noreferrer"></a>
-          <CardMedia
-            component="img"
-            sx={{ width: 150 }}
-            image={deposits[depositIndex].image_url}
-            alt="Track cover"
-          />
+          <button onClick={redirectToLink} style={{ background: "none", border: "none", cursor: "pointer" }}>
+            <CardMedia
+              component="img"
+              sx={{ width: 150 }}
+              image={deposits[depositIndex].image_url}
+              alt="Track cover"
+            />
+          </button>
         </Card>
       ) : (
         // Display a loading indicator when deposits is null or empty

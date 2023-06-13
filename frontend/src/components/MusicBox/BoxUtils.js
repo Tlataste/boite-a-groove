@@ -18,9 +18,10 @@ export const getBoxDetails = async (boxName, navigate) => {
       const { latitude, longitude } = position.coords;
       const boxLatitude = data.box.latitude;
       const boxLongitude = data.box.longitude;
+      console.log(latitude, longitude, boxLatitude, boxLongitude);
 
       const csrftoken = getCookie("csrftoken");
-      // Envoyer les coordonnées à votre backend Django pour la vérification
+      // Send the coordinates to the Django backend for verification
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json",
@@ -49,6 +50,10 @@ export const getBoxDetails = async (boxName, navigate) => {
   }
 };
 
+/**
+ * Retrieves the current location of the user.
+ * @returns {Promise<unknown>}
+ */
 function getLocation() {
   return new Promise((resolve, reject) => {
     if (navigator.geolocation) {
