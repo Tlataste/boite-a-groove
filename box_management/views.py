@@ -22,7 +22,10 @@ class GetBox(APIView):
                 # Récupérer les noms des chansons correspondantes aux dépôts
                 songs = Song.objects.filter(id__in=last_deposit.values('song_id'))
                 songs = SongSerializer(songs, many=True).data
-                return Response(songs, status=status.HTTP_200_OK)
+                resp = {}
+                resp['last_deposits'] = songs
+                resp['box'] = data
+                return Response(resp, status=status.HTTP_200_OK)
             else:
                 return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -69,22 +72,17 @@ class Location(APIView):
     def post(self, request, format=None):
         latitude = float(request.data.get('latitude'))
         longitude = float(request.data.get('longitude'))
-
+        target_longitude = float(request.data.get('box_longitude'))
+        target_latitude = float(request.data.get('box_latitude'))
         # Comparez les coordonnées avec l'emplacement souhaité
-        # Par exemple, supposons que l'emplacement souhaité soit Paris
-        target_latitude_old = 48.8566
-        target_longitude_old = 2.3522
-        target_longitude = 4.387954
-        target_latitude = 45.452358
         max_distance = 100  # Distance maximale tolérée en mètres
-
         distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
         if distance <= max_distance:
             # L'emplacement est valide
-            return JsonResponse({'valid': True})
+            return Response({'valid': True}, status=status.HTTP_200_OK)
         else:
             # L'emplacement est invalide
-            return JsonResponse({'valid': False})
+            return Response({'valid': False}, status=status.HTTP_403_FORBIDDEN)
 
 
 def check_location(request):
