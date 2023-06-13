@@ -202,6 +202,7 @@ class CheckAuthentication(APIView):
             # first_name = user.first_name
             # last_name = user.last_name
             email = user.email
+            preferred_platform = user.preferred_platform
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
@@ -210,14 +211,16 @@ class CheckAuthentication(APIView):
                     # 'first_name': first_name,
                     # 'last_name': last_name,
                     'email': email,
-                    'profile_picture_url': profile_picture_url
+                    'profile_picture_url': profile_picture_url,
+                    'preferred_platform': preferred_platform
                 }
             else:
                 response = {
                     'username': username,
                     # 'first_name': first_name,
                     # 'last_name': last_name,
-                    'email': email
+                    'email': email,
+                    'preferred_platform': preferred_platform
                 }
 
             return Response(response, status=status.HTTP_200_OK)

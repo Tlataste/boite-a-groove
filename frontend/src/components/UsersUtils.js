@@ -37,7 +37,8 @@ export const checkUserStatus = async (setUser, setIsAuthenticated) => {
     const response = await fetch("/users/check-authentication");
     const data = await response.json();
     if (response.ok) {
-      console.log("Authenticated");
+      // console.log("Authenticated");
+      // console.log(data);
       setUser(data);
       setIsAuthenticated(true);
     } else {
@@ -55,9 +56,10 @@ export const checkUserStatus = async (setUser, setIsAuthenticated) => {
  */
 export const setPreferredPlatform = async (new_preferred_platform) => {
   const csrftoken = getCookie("csrftoken");
-  const form = {
+  const form = JSON.stringify({
     preferred_platform: new_preferred_platform,
-  };
+  });
+  //console.log(form);
   const requestOptions = {
     method: "POST",
     headers: {

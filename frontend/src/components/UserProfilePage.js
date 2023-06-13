@@ -10,7 +10,7 @@ import { logoutUser } from "./UsersUtils";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import { getCookie } from "./Security/TokensUtils";
-import { checkUserStatus } from "./UsersUtils";
+import { checkUserStatus, setPreferredPlatform } from "./UsersUtils";
 import {
   checkDeezerAuthentication,
   authenticateDeezerUser,
@@ -190,6 +190,16 @@ export default function UserProfilePage() {
     }
   };
 
+  function handlePreferredPlatform(platform) {
+    setPreferredPlatform(platform)
+      .then(() => {
+        checkUserStatus(setUser, setIsAuthenticated);
+      })
+      .catch(() => {
+        console.log("cannot change preferred platform");
+      });
+  }
+
   return (
     <div style={styles.root}>
       <Grid container spacing={2} alignItems="center">
@@ -349,11 +359,19 @@ export default function UserProfilePage() {
               </Button>
             )}
           </Grid>
-          <Grid item>
-            <Button variant="contained" style={styles.buttonPlatform}>
-              Choisir comme plateforme principale
-            </Button>
-          </Grid>
+          {user.preferred_platform === "spotify" ? (
+            <></>
+          ) : (
+            <Grid item>
+              <Button
+                variant="contained"
+                style={styles.buttonPlatform}
+                onClick={() => handlePreferredPlatform("spotify")}
+              >
+                Choisir comme plateforme principale
+              </Button>
+            </Grid>
+          )}
         </Grid>
 
         <Grid
@@ -388,11 +406,19 @@ export default function UserProfilePage() {
               </Button>
             )}
           </Grid>
-          <Grid item>
-            <Button variant="contained" style={styles.buttonPlatform}>
-              Choisir comme plateforme principale
-            </Button>
-          </Grid>
+          {user.preferred_platform === "deezer" ? (
+            <></>
+          ) : (
+            <Grid item>
+              <Button
+                variant="contained"
+                style={styles.buttonPlatform}
+                onClick={() => handlePreferredPlatform("deezer")}
+              >
+                Choisir comme plateforme principale
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Grid>
 
