@@ -168,6 +168,32 @@ class ChangeProfilePicture(APIView):
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class ChangePreferredPlatform(APIView):
+    def post(self, request, format=None):
+        # Guard clause that checks if user is logged in
+        if not request.user.is_authenticated:
+            return Response({'errors': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Get connected user
+        user = request.user
+
+        # Get the preferred platform from the request data
+        preferred_platform = request.data.get('preferred_platform')
+
+        # Validate the preferred platform value
+        if preferred_platform not in ['spotify', 'deezer']:
+            return Response({'errors': 'Plateforme préférée invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Update the user's preferred platform
+            user.preferred_platform = preferred_platform
+            user.save()
+
+            return Response({'status': 'La plateforme préférée a été modifiée avec succès.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class CheckAuthentication(APIView):
     def get(self, request, format=None):
         if request.user.is_authenticated:

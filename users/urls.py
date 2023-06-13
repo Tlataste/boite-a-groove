@@ -8,5 +8,6 @@ urlpatterns = [
     path('check-authentication/', views.CheckAuthentication.as_view(), name='check-authentication'),
     path('change-password', views.ChangePasswordUser.as_view(), name="change-password"),
     path('change-profile-pic', views.ChangeProfilePicture.as_view(), name="change-profile-pic"),
+    path('change-preferred-platform', views.ChangePreferredPlatform.as_view(), name="change-preferred-platform"),
     path('example', views.example, name="example"),
 ]
