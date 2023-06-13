@@ -73,6 +73,7 @@ export default function SongCard({ deposits, isDeposited }) {
               </IconButton>
             </Box>
           </Box>
+          <a href={deposits[depositIndex].url} target="_blank" rel="noopener noreferrer"></a>
           <CardMedia
             component="img"
             sx={{ width: 150 }}
