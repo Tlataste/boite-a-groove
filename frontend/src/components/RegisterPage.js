@@ -5,8 +5,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -16,6 +14,7 @@ import Container from "@mui/material/Container";
 import { checkUserStatus } from "./UsersUtils";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getCookie } from "./Security/TokensUtils";
 
 /**
  * Copyright Component
@@ -44,32 +43,53 @@ function Copyright(props) {
 
 export default function RegisterPage() {
   // States & variables
+  const [profilePicture, setProfilePicture] = useState(null);
   const [errorMessages, setErrorMessages] = useState([]);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const { user, setUser, isAuthenticated, setIsAuthenticated, currentBoxName } =
+  const { setUser, setIsAuthenticated, currentBoxName } =
     useContext(UserContext);
   const navigate = useNavigate();
 
   /**
-   * sendAndProcessData Function
-   * Sends a POST request with data in JSON to "/users/register_user" endpoint,
-   * processes the response, and handles potential errors.
-   * @param {JSON} form - The JSON data to be sent in the request body
-   * @returns {Promise<void>} - A Promise that resolves when the request is completed
+   * Handles the change event of the profile picture input element.
+   * Updates the profile picture state with the selected file.
+   *
+   * @param {Event} event - The event object triggered by the change event of the profile picture input element.
+   *                       It contains information about the selected file.
+   * @returns {void}
+   */
+  const handleProfilePictureChange = (event) => {
+    const file = event.target.files[0];
+    // console.log(file);
+    setProfilePicture(file);
+  };
+
+  /**
+   * Sends form data to the server and processes the response.
+   *
+   * @param {FormData} form - The form data to be sent.
+   * @returns {Promise<void>} - A Promise that resolves when the request is completed.
    */
   const sendAndProcessData = async (form) => {
+    const csrftoken = getCookie("csrftoken");
+    // The browser automatically sets the appropriate Content-Type header with the correct boundary value.
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "X-CSRFToken": csrftoken,
+      },
       body: form,
     };
     try {
       const response = await fetch("/users/register_user", requestOptions);
       const data = await response.json();
       if (response.ok) {
+        // Reset error messages and set registration success flag
         setErrorMessages({});
         setRegistrationSuccess(true);
+
         setTimeout(() => {
+          // Check user status and navigate to the appropriate page
           checkUserStatus(setUser, setIsAuthenticated);
           navigate("/box/" + currentBoxName);
         }, 2000);
@@ -78,7 +98,7 @@ export default function RegisterPage() {
           console.log(data.errors);
           setErrorMessages(data.errors);
         } else {
-          console.log("No errors returned");
+          console.log(data);
         }
       }
     } catch (error) {
@@ -95,15 +115,8 @@ export default function RegisterPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const jsonData = JSON.stringify({
-      username: data.get("username"),
-      email: data.get("email"),
-      password1: data.get("password1"),
-      password2: data.get("password2"),
-      first_name: data.get("firstName"),
-      last_name: data.get("lastName"),
-    });
-    sendAndProcessData(jsonData);
+    data.append("profile_picture", profilePicture);
+    sendAndProcessData(data);
   };
 
   return (
@@ -138,27 +151,15 @@ export default function RegisterPage() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="Prénom"
-                  autoFocus
+              <Grid item xs={12}>
+                <input
+                  type="file"
+                  id="profilePicture"
+                  accept=".jpg, .jpeg, .png"
+                  onChange={handleProfilePictureChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Nom"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   autoComplete="username"
@@ -200,14 +201,6 @@ export default function RegisterPage() {
                   type="password"
                   id="password2"
                   autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="Je souhaite recevoir des promotions marketing et des mises à jour par courrier électronique."
                 />
               </Grid>
             </Grid>
