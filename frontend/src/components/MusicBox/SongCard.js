@@ -55,6 +55,7 @@ export default function SongCard({ deposits, isDeposited }) {
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
         song: deposits[depositIndex],
+        platform: selectedProvider,
       }),
     };
 

@@ -23,17 +23,23 @@ class ApiAggregation(APIView):
 
         # Extract the id of the streaming platform from the request data
         platform_id = song['platform_id']
+        request_platform = request.data.get('platform')
+
+        if request_platform == "spotify":
+            platform_req_id = 1
+        else:
+            platform_req_id = 2
 
         try:  # The song already exists in the database
-            final_song = Song.objects.filter(title=song['title'], artist=song['artist'], platform_id=platform_id).get()
+            final_song = Song.objects.filter(title=song['title'], artist=song['artist'], platform_id=platform_req_id).get()
             return Response(final_song.url, status=status.HTTP_200_OK)
 
         except Song.DoesNotExist:  # The song does not exist in the database
             # Normalize the search query
-            search_query = normalize_string(song['name'] + ' ' + song['artist'])
+            search_query = normalize_string(song['title'] + ' ' + song['artist'])
             tracks = []
 
-            if platform_id == 1:  # The streaming platform is Spotify
+            if platform_id == 1 and platform_req_id == 2:  # The streaming platform is Spotify
                 # Search for tracks using the Deezer API
                 results = execute_deezer_api_request(
                     self.request.session.session_key,
@@ -52,12 +58,12 @@ class ApiAggregation(APIView):
                         'url': item['link'],
                     }
                     tracks.append(track)
-                final_song = ut.find_matching_song_from_spotify_to_deezer(song['name'], song['artist'],
+                final_song = ut.find_matching_song_from_spotify_to_deezer(song['title'], song['artist'],
                                                                           song['duration'],
                                                                           tracks)
                 return Response(final_song['url'], status=status.HTTP_200_OK)
 
-            elif platform_id == 2:  # The streaming platform is Deezer
+            elif platform_id == 2 and platform_req_id == 1:  # The streaming platform is Deezer
                 # Search for tracks using the Spotipy client
                 results = sp.search(q=search_query, type='track')
 
@@ -74,7 +80,7 @@ class ApiAggregation(APIView):
                         'url': item['external_urls']['spotify'],
                     }
                     tracks.append(track)
-                    final_song = ut.find_matching_song_from_deezer_to_spotify(song['name'], song['artist'],
+                    final_song = ut.find_matching_song_from_deezer_to_spotify(song['title'], song['artist'],
                                                                               song['duration'], tracks)
 
                 return Response(final_song['url'], status=status.HTTP_200_OK)
