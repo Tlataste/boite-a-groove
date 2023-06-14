@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../UserContext";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Menu from "../Menu";
 import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
@@ -21,9 +20,13 @@ export default function MusicBox() {
   const [stage, setStage] = useState(0);
   const navigate = useNavigate();
 
+  // Gets box name from URL
   const { boxName } = useParams();
+  // Stores all the information about the box
   const [boxInfo, setBoxInfo] = useState({});
+  // Checks if a song has been deposited in the box
   const [isDeposited, setIsDeposited] = useState(false);
+  // User Context variables
   const { setCurrentBoxName, user } = useContext(UserContext);
 
   /**
@@ -56,7 +59,13 @@ export default function MusicBox() {
     >
       <Menu />
       {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} />}
-      {stage === 1 && <EnableLocation setStage={setStage} />}
+      {stage === 1 && (
+        <EnableLocation
+          setStage={setStage}
+          boxInfo={boxInfo}
+          navigate={navigate}
+        />
+      )}
       {stage === 2 && (
         <>
           <SongCard

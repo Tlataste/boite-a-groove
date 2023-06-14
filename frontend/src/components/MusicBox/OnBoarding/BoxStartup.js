@@ -2,12 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 export default function BoxStartup({ setStage, boxInfo }) {
-  // States & Variables
-
   return (
     <>
       {boxInfo && Object.keys(boxInfo.box || {}).length > 0 ? (
