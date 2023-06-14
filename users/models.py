@@ -14,6 +14,8 @@ class CustomUser(AbstractUser):
     # Add profile_picture field
     profile_picture = models.ImageField(upload_to=profile_picture_path, blank=True, null=True)
 
+    points = models.IntegerField(default=0)
+
     # Preferred platform choice
     PLATFORM_CHOICES = [
         ('spotify', 'Spotify'),
