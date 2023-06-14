@@ -28,7 +28,7 @@ export default function LiveSearch({
    * @param {Array} dependencies - Triggers the callback function when the user's preferred_platform changes.
    */
   useEffect(() => {
-    console.log("here");
+    // console.log("here");
     if (user.preferred_platform) {
       setSelectedStreamingService(user.preferred_platform);
     }
@@ -45,8 +45,8 @@ export default function LiveSearch({
    */
   useEffect(() => {
     const getData = setTimeout(() => {
-      console.log("Live search - Auth ? " + isSpotifyAuthenticated);
-      console.log("Live search - Auth ? " + isDeezerAuthenticated);
+      // console.log("Live search - Auth ? " + isSpotifyAuthenticated);
+      // console.log("Live search - Auth ? " + isDeezerAuthenticated);
       if (selectedStreamingService === "spotify") {
         if (searchValue === "") {
           if (isSpotifyAuthenticated) {
@@ -54,7 +54,7 @@ export default function LiveSearch({
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                console.log(data);
+                // console.log(data);
               });
           } else {
             setJsonResults([]);
@@ -76,7 +76,7 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
-              console.log(data);
+              // console.log(data);
             });
         }
       }
@@ -88,7 +88,7 @@ export default function LiveSearch({
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                console.log(data);
+                // console.log(data);
               });
           } else {
             setJsonResults([]);
@@ -110,7 +110,7 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
-              console.log(data);
+              // console.log(data);
             });
         }
       }

@@ -18,12 +18,14 @@ class GetBox(APIView):
             box = Box.objects.filter(name=name)
             if len(box) > 0:
                 data = BoxSerializer(box[0]).data  # Gets in json the data from the database corresponding to the Box
+                deposit_count = Deposit.objects.filter(box_id=data.get('id')).count()
                 last_deposit = Deposit.objects.filter(box_id=data.get('id')).order_by('-deposited_at')[0:2]
                 # Récupérer les noms des chansons correspondantes aux dépôts
                 songs = Song.objects.filter(id__in=last_deposit.values('song_id'))
                 songs = SongSerializer(songs, many=True).data
                 resp = {}
                 resp['last_deposits'] = songs
+                resp['deposit_count'] = deposit_count
                 resp['box'] = data
                 return Response(resp, status=status.HTTP_200_OK)
             else:
