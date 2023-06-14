@@ -13,36 +13,8 @@ export const getBoxDetails = async (boxName, navigate) => {
       return [];
     }
     const data = await response.json();
-    const position = await getLocation();
-    if (position) {
-      const { latitude, longitude } = position.coords;
-      const boxLatitude = data.box.latitude;
-      const boxLongitude = data.box.longitude;
-
-      const csrftoken = getCookie("csrftoken");
-      // Envoyer les coordonnées à votre backend Django pour la vérification
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json",
-        "X-CSRFToken": csrftoken},
-        body: JSON.stringify({
-          latitude: latitude,
-          longitude: longitude,
-          box_latitude: boxLatitude,
-          box_longitude: boxLongitude,
-        }),
-      };
-      const verificationResponse = await fetch("../box-management/verify-location", requestOptions);
-      console.log(verificationResponse);
-      if (!verificationResponse.ok) {
-        navigate("/");
-        return [];
-      }
-    return data.last_deposits;
-    } else {
-      navigate("/");
-      return [];
-    }
+    console.log(data);
+    return data;
   } catch (error) {
     console.error(error);
     return [];
@@ -58,3 +30,37 @@ function getLocation() {
     }
   });
 }
+
+// Data = toutes les infos de la box
+export const checkLocation = async (data, navigate) => {
+  const position = await getLocation();
+  if (position) {
+    const { latitude, longitude } = position.coords;
+    const boxLatitude = data.box.latitude;
+    const boxLongitude = data.box.longitude;
+
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
+      body: JSON.stringify({
+        latitude: latitude,
+        longitude: longitude,
+        box_latitude: boxLatitude,
+        box_longitude: boxLongitude,
+      }),
+    };
+    const verificationResponse = await fetch(
+      "../box-management/verify-location",
+      requestOptions
+    );
+    console.log(verificationResponse);
+    if (!verificationResponse.ok) {
+      navigate("/");
+      return [];
+    }
+  } else {
+    navigate("/");
+    return [];
+  }
+};

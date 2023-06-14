@@ -11,21 +11,24 @@ import { checkDeezerAuthentication } from "./DeezerUtils";
 import { getBoxDetails } from "./BoxUtils";
 import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
+import EnableLocation from "./OnBoarding/EnableLocation";
 
 export default function MusicBox() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
   const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
-  const [deposits, setDeposits] = useState([]);
-  const [isDeposited, setIsDeposited] = useState(false);
+
   const [stage, setStage] = useState(0);
-  const { boxName } = useParams();
   const navigate = useNavigate();
-  const { currentBoxName, setCurrentBoxName, user } = useContext(UserContext);
+
+  const { boxName } = useParams();
+  const [boxInfo, setBoxInfo] = useState({});
+  const [isDeposited, setIsDeposited] = useState(false);
+  const { setCurrentBoxName, user } = useContext(UserContext);
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
-   * Check at page load (only) if user is authenticated with spotify and get the box's last deposits.
+   * Check at page load (only) if user is authenticated with spotify and get the box's details
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
@@ -33,7 +36,7 @@ export default function MusicBox() {
     setCurrentBoxName(boxName);
     getBoxDetails(boxName, navigate)
       .then((data) => {
-        setDeposits(data);
+        setBoxInfo(data);
       })
       .catch((error) => {
         console.error(error);
@@ -52,13 +55,14 @@ export default function MusicBox() {
       }}
     >
       <Menu />
-      {stage === 0 && <BoxStartup setStage={setStage} />}
-      {stage === 1 && (
-        <Button onClick={() => setStage(2)}>Accepter les conditions</Button>
-      )}
+      {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} />}
+      {stage === 1 && <EnableLocation setStage={setStage} />}
       {stage === 2 && (
         <>
-          <SongCard deposits={deposits} isDeposited={isDeposited} />
+          <SongCard
+            deposits={boxInfo.last_deposits}
+            isDeposited={isDeposited}
+          />
           <LiveSearch
             isSpotifyAuthenticated={isSpotifyAuthenticated}
             isDeezerAuthenticated={isDeezerAuthenticated}
