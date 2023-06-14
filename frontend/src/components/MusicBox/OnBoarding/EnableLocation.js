@@ -35,9 +35,9 @@ export default function EnableLocation({ setStage, boxInfo, navigate }) {
             <Grid item>
               <Typography variant="h6">Autoriser la localisation</Typography>
               <Typography variant="subtitle1">
-                Confirme que tu est bien à l'arrêt en partageant ta
+                Confirme que tu es bien à l'arrêt en partageant ta
                 localisation. Ta localisation est uniquement utilisée à
-                l'ouverture d'une boîte
+                l'ouverture d'une boîte.
               </Typography>
             </Grid>
             <Grid item>

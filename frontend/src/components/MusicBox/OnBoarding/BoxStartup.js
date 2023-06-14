@@ -29,8 +29,8 @@ export default function BoxStartup({ setStage, boxInfo }) {
             </Grid>
             <Grid item>
               <Typography variant="body1">
-                {boxInfo.deposit_count} chansons sur cet arrêt échanges-en une
-                pour la découvrir
+                {boxInfo.deposit_count} chansons sur cet arrêt, échange-en une
+                pour la découvrir !
               </Typography>
             </Grid>
             <Grid item>
