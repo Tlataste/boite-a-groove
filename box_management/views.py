@@ -85,7 +85,3 @@ class Location(APIView):
         else:
             # L'emplacement est invalide
             return Response({'valid': False, 'lat': latitude, 'long': longitude}, status=status.HTTP_403_FORBIDDEN)
-
-
-def check_location(request):
-    return render(request, 'frontend/check_location.html')
