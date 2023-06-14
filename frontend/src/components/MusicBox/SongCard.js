@@ -10,8 +10,6 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { getCookie } from "../Security/TokensUtils";
 
-const spotifyLogo = "spotify-logo.png"; // Remplacez par le chemin d'accès à votre logo Spotify
-const deezerLogo = "deezer-logo.png"; // Remplacez par le chemin d'accès à votre logo Deezer
 
 /**
  * SongCard Component
@@ -107,27 +105,17 @@ export default function SongCard({ deposits, isDeposited }) {
                 <NavigateNextIcon sx={{ height: 38, width: 38 }} />
               </IconButton>
             </Box>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <select value={selectedProvider} onChange={handleProviderChange}>
-              <option value="spotify">
-                <img
-                  src={spotifyLogo}
-                  alt="Spotify"
-                  style={{ width: "20px", height: "20px", marginRight: "5px" }}
-                />
-                Spotify
-              </option>
-              <option value="deezer">
-                <img
-                  src={deezerLogo}
-                  alt="Deezer"
-                  style={{ width: "20px", height: "20px", marginRight: "5px" }}
-                />
-                Deezer
-              </option>
-            </select>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
+            <Box sx={{ flex: "1 0 auto", display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+              <select value={selectedProvider} onChange={handleProviderChange}>
+                <option value="spotify">
+                  Spotify
+                </option>
+                <option value="deezer">
+                  Deezer
+                </option>
+              </select>
+              </Box>
+              <Box sx={{ flex: "1 0 auto" }}>
                 <button
                   onClick={redirectToLink}
                   style={{
@@ -139,6 +127,8 @@ export default function SongCard({ deposits, isDeposited }) {
                   Aller vers ...
                 </button>
               </Box>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <button
               onClick={redirectToLink}
               style={{
