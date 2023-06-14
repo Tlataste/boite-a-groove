@@ -127,6 +127,18 @@ export default function SongCard({ deposits, isDeposited }) {
                 Deezer
               </option>
             </select>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
+                <button
+                  onClick={redirectToLink}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Aller vers ...
+                </button>
+              </Box>
             <button
               onClick={redirectToLink}
               style={{
@@ -136,6 +148,7 @@ export default function SongCard({ deposits, isDeposited }) {
                 marginLeft: "10px",
               }}
             >
+
               <CardMedia
                 component="img"
                 sx={{ width: 150 }}
