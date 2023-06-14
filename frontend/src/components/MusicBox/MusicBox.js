@@ -10,6 +10,7 @@ import { checkSpotifyAuthentication } from "./SpotifyUtils";
 import { checkDeezerAuthentication } from "./DeezerUtils";
 import { getBoxDetails } from "./BoxUtils";
 import SongCard from "./SongCard";
+import BoxStartup from "./OnBoarding/BoxStartup";
 
 export default function MusicBox() {
   // States & Variables
@@ -51,14 +52,22 @@ export default function MusicBox() {
       }}
     >
       <Menu />
-      <SongCard deposits={deposits} isDeposited={isDeposited} />
-      <LiveSearch
-        isSpotifyAuthenticated={isSpotifyAuthenticated}
-        isDeezerAuthenticated={isDeezerAuthenticated}
-        boxName={boxName}
-        setIsDeposited={setIsDeposited}
-        user={user}
-      />
+      {stage === 0 && <BoxStartup setStage={setStage} />}
+      {stage === 1 && (
+        <Button onClick={() => setStage(2)}>Accepter les conditions</Button>
+      )}
+      {stage === 2 && (
+        <>
+          <SongCard deposits={deposits} isDeposited={isDeposited} />
+          <LiveSearch
+            isSpotifyAuthenticated={isSpotifyAuthenticated}
+            isDeezerAuthenticated={isDeezerAuthenticated}
+            boxName={boxName}
+            setIsDeposited={setIsDeposited}
+            user={user}
+          />
+        </>
+      )}
     </Box>
   );
 }
