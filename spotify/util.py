@@ -76,14 +76,15 @@ def is_spotify_authenticated(user):
     """
 
     # Retrieve the Spotify tokens associated with the user session
-    tokens = get_user_tokens(user)
+    if user.is_authenticated:
+        tokens = get_user_tokens(user)
 
-    if tokens:
-        expiry = tokens.expires_in
-        if expiry <= timezone.now():  # If the token has expired
-            refresh_spotify_token(user)
+        if tokens:
+            expiry = tokens.expires_in
+            if expiry <= timezone.now():  # If the token has expired
+                refresh_spotify_token(user)
 
-        return True
+            return True
     else:
         return False
 
