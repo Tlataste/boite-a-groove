@@ -17,6 +17,7 @@ export default function MusicBox() {
   const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
   const [deposits, setDeposits] = useState([]);
   const [isDeposited, setIsDeposited] = useState(false);
+  const [stage, setStage] = useState(0);
   const { boxName } = useParams();
   const navigate = useNavigate();
   const { currentBoxName, setCurrentBoxName, user } = useContext(UserContext);
@@ -49,7 +50,7 @@ export default function MusicBox() {
         background: "linear-gradient(to right, #F59225, #F8431D)",
       }}
     >
-      <Menu boxName={boxName} />
+      <Menu />
       <SongCard deposits={deposits} isDeposited={isDeposited} />
       <LiveSearch
         isSpotifyAuthenticated={isSpotifyAuthenticated}
