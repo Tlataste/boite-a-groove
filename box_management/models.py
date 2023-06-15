@@ -10,7 +10,7 @@ class Box(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     client_name = models.CharField(max_length=50)
-    max_deposit = models.IntegerField(default=5)
+    max_deposits = models.IntegerField(default=5)
 
     def __str__(self):
         return self.name
