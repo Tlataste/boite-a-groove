@@ -10,6 +10,7 @@ class Box(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     client_name = models.CharField(max_length=50)
+    max_deposit = models.IntegerField(default=5)
 
     def __str__(self):
         return self.name
@@ -23,7 +24,6 @@ class Song(models.Model):
     duration = models.IntegerField(default=0)  # Duration in seconds
     platform_id = models.IntegerField(default=0)
     n_deposits = models.IntegerField(default=0)
-    max_deposits = models.IntegerField(default=5)
 
     def __str__(self):
         return self.title + ' - ' + self.artist
