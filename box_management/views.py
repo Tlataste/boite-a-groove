@@ -84,9 +84,9 @@ class Location(APIView):
             return Response({'error': 'No location points for this box'}, status=status.HTTP_404_NOT_FOUND)
         for point in points:
             # Get the coordinates of the point
-            max_dist = int(point.dist_location)
-            target_latitude = float(point.latitude)
-            target_longitude = float(point.longitude)
+            max_dist = point.dist_location
+            target_latitude = point.latitude
+            target_longitude = point.longitude
             # Calculate distance between the two points
             distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
             # Comparez les coordonnées avec l'emplacement souhaité

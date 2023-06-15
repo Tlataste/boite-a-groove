@@ -23,6 +23,7 @@ class Song(models.Model):
     duration = models.IntegerField(default=0)  # Duration in seconds
     platform_id = models.IntegerField(default=0)
     n_deposits = models.IntegerField(default=0)
+    max_deposits = models.IntegerField(default=5)
 
     def __str__(self):
         return self.title + ' - ' + self.artist
@@ -40,8 +41,8 @@ class Deposit(models.Model):
 
 class LocationPoint(models.Model):
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
-    latitude = models.CharField(max_length=50)
-    longitude = models.CharField(max_length=50)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
     dist_location = models.IntegerField(default=100)
 
     def __str__(self):
