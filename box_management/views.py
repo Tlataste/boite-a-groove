@@ -74,13 +74,27 @@ class Location(APIView):
     def post(self, request, format=None):
         latitude = float(request.data.get('latitude'))
         longitude = float(request.data.get('longitude'))
-        target_longitude = float(request.data.get('box_longitude'))
-        target_latitude = float(request.data.get('box_latitude'))
-        dist_location = int(request.data.get('dist_location'))
-        # Comparez les coordonnées avec l'emplacement souhaité
-        max_distance = dist_location  # Distance maximale tolérée en mètres
-        distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
-        if distance <= max_distance:
+        box = request.data.get('box')
+        # Get all location points of the box
+        points = LocationPoint.objects.filter(box_id=box)
+        is_valid_location = False
+
+        if len(points) == 0:
+            # No location points for this box, return an error in the response
+            return Response({'error': 'No location points for this box'}, status=status.HTTP_404_NOT_FOUND)
+
+        for point in points:
+            # Get the coordinates of the point
+            max_dist = point.max_location
+            target_latitude = point.latitude
+            target_longitude = point.longitude
+            # Calculate distance between the two points
+            distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
+            # Comparez les coordonnées avec l'emplacement souhaité
+            if distance <= max_dist:
+                is_valid_location = True
+
+        if is_valid_location:
             # L'emplacement est valide
             return Response({'valid': True}, status=status.HTTP_200_OK)
         else:
