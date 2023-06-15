@@ -76,8 +76,9 @@ class Location(APIView):
         longitude = float(request.data.get('longitude'))
         target_longitude = float(request.data.get('box_longitude'))
         target_latitude = float(request.data.get('box_latitude'))
+        dist_location = int(request.data.get('dist_location'))
         # Comparez les coordonnées avec l'emplacement souhaité
-        max_distance = 100000  # Distance maximale tolérée en mètres
+        max_distance = dist_location  # Distance maximale tolérée en mètres
         distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
         if distance <= max_distance:
             # L'emplacement est valide
