@@ -25,7 +25,20 @@ export default function BoxStartup({ setStage, boxInfo }) {
             alignItems="center"
           >
             <Grid item>
-              <Typography variant="h5">{boxInfo.box.name}</Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  background: "linear-gradient(to right, #fa9500, #fa4000)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  borderRadius: "20px",
+                  display: "inline-block",
+                  padding: "5px 10px",
+                  boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)", // Ajout d'une ombre légère
+                }}
+              >
+                {boxInfo.box.name}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="body1">
