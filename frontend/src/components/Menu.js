@@ -11,6 +11,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import PersonIcon from "@mui/icons-material/Person";
+import Button from "@mui/material/Button";
 
 export default function MenuAppBar() {
   // States & Variables
@@ -26,75 +28,69 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        background: "linear-gradient(to right, #fa9227, #fb451f)",
-      }}
-    >
-      <AppBar position="static" sx={{ backgroundColor: "transparent" }}>
-        <Toolbar>
-          <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-            <Typography variant="h6" component="div">
+    <AppBar position="static" sx={{ backgroundColor: "white" }}>
+      <Toolbar>
+        <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+          <a
+            href="/chemin-de-la-page-de-redirection"
+            style={{ textDecoration: "none" }}
+          >
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                backgroundImage: "linear-gradient(to right, #fa9500, #fa4000)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
               La Boîte à Groove
             </Typography>
-            {isAuthenticated ? (
-              <Typography variant="subtitle1" component="div">
-                Bienvenue {user.username}
-              </Typography>
-            ) : (
-              <></>
-            )}
-          </Box>
+          </a>
           {isAuthenticated ? (
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              color="inherit"
-              component={Link}
-              to="/profile"
+            <Typography
+              variant="subtitle1"
+              component="div"
+              sx={{ color: "black" }}
             >
-              <Avatar alt={user.username} src={user.profile_picture_url} />
-            </IconButton>
+              Bienvenue {user.username}
+            </Typography>
           ) : (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <LockOpenIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem component={Link} to="/login" onClick={handleClose}>
-                  Se connecter
-                </MenuItem>
-                <MenuItem component={Link} to="/register" onClick={handleClose}>
-                  S'enregistrer
-                </MenuItem>
-              </Menu>
-            </div>
+            <></>
           )}
-        </Toolbar>
-      </AppBar>
-    </Box>
+        </Box>
+        {isAuthenticated ? (
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            color="inherit"
+            component={Link}
+            to="/profile"
+          >
+            <Avatar alt={user.username} src={user.profile_picture_url} />
+          </IconButton>
+        ) : (
+          <Button
+            variant="outlined"
+            endIcon={<PersonIcon />}
+            component={Link}
+            to="/login"
+            sx={{
+              borderRadius: "20px",
+              backgroundColor: "white",
+              color: "orange",
+              border: "none",
+              textTransform: "none",
+              "&:hover": {
+                border: "none",
+              },
+            }}
+          >
+            Me connecter
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 }
