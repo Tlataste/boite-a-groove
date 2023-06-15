@@ -25,7 +25,20 @@ export default function BoxStartup({ setStage, boxInfo }) {
             alignItems="center"
           >
             <Grid item>
-              <Typography variant="h6">{boxInfo.box.name}</Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  background: "linear-gradient(to right, #fa9500, #fa4000)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  borderRadius: "20px",
+                  display: "inline-block",
+                  padding: "5px 10px",
+                  boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)", // Ajout d'une ombre légère
+                }}
+              >
+                {boxInfo.box.name}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="body1">
@@ -34,7 +47,21 @@ export default function BoxStartup({ setStage, boxInfo }) {
               </Typography>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => setStage(1)}>
+              <Button
+                variant="contained"
+                onClick={() => setStage(1)}
+                sx={{
+                  borderRadius: "20px",
+                  backgroundImage:
+                    "linear-gradient(to right, #fa9500, #fa4000)",
+                  color: "white",
+                  border: "none",
+                  textTransform: "none",
+                  "&:hover": {
+                    border: "none",
+                  },
+                }}
+              >
                 Commencer
               </Button>
             </Grid>

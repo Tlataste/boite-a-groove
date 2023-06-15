@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../UserContext";
 import Box from "@mui/material/Box";
-import Menu from "../Menu";
+import MenuAppBar from "../Menu";
 import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -47,40 +47,33 @@ export default function MusicBox() {
   }, []); // Empty dependency array ensures the effect is only run once
 
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        background: "linear-gradient(to right, #F59225, #F8431D)",
-      }}
-    >
-      <Menu />
-      {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} />}
-      {stage === 1 && (
-        <EnableLocation
-          setStage={setStage}
-          boxInfo={boxInfo}
-          navigate={navigate}
-        />
-      )}
-      {stage === 2 && (
-        <>
-          <SongCard
-            deposits={boxInfo.last_deposits}
-            isDeposited={isDeposited}
+    <>
+      <MenuAppBar />
+      <Box sx={{ backgroundColor: "#e0e0e0", minHeight: "100vh" }}>
+        {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} />}
+        {stage === 1 && (
+          <EnableLocation
+            setStage={setStage}
+            boxInfo={boxInfo}
+            navigate={navigate}
           />
-          <LiveSearch
-            isSpotifyAuthenticated={isSpotifyAuthenticated}
-            isDeezerAuthenticated={isDeezerAuthenticated}
-            boxName={boxName}
-            setIsDeposited={setIsDeposited}
-            user={user}
-          />
-        </>
-      )}
-    </Box>
+        )}
+        {stage === 2 && (
+          <>
+            <SongCard
+              deposits={boxInfo.last_deposits}
+              isDeposited={isDeposited}
+            />
+            <LiveSearch
+              isSpotifyAuthenticated={isSpotifyAuthenticated}
+              isDeezerAuthenticated={isDeezerAuthenticated}
+              boxName={boxName}
+              setIsDeposited={setIsDeposited}
+              user={user}
+            />
+          </>
+        )}
+      </Box>
+    </>
   );
 }
