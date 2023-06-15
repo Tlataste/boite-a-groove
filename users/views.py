@@ -203,6 +203,7 @@ class CheckAuthentication(APIView):
             # last_name = user.last_name
             email = user.email
             preferred_platform = user.preferred_platform
+            points = user.points
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
@@ -212,7 +213,8 @@ class CheckAuthentication(APIView):
                     # 'last_name': last_name,
                     'email': email,
                     'profile_picture_url': profile_picture_url,
-                    'preferred_platform': preferred_platform
+                    'preferred_platform': preferred_platform,
+                    'points': points,
                 }
             else:
                 response = {
