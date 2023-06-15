@@ -1,11 +1,13 @@
-from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
 from .util import normalize_string, calculate_distance
-from django.shortcuts import render
+import json
+import requests
 
 
 class GetBox(APIView):
@@ -65,6 +67,22 @@ class GetBox(APIView):
         box = Box.objects.filter(name=box_name).get()
         new_deposit = Deposit(song_id=song, box_id=box)
         new_deposit.save()
+
+        # Ajout de points
+        cookies = request.COOKIES
+        csrf_token = get_token(request)
+        # Get the complete URL for the add-points endpoint using reverse
+        add_points_url = request.build_absolute_uri(reverse('add-points'))
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf_token
+        }
+
+        requests.post(add_points_url, cookies=cookies, headers=headers, data=json.dumps({
+            "points": 30
+        })).json()
+
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
         return Response(new_deposit, status=status.HTTP_200_OK)
