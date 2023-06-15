@@ -25,7 +25,7 @@ export default function BoxStartup({ setStage, boxInfo }) {
             alignItems="center"
           >
             <Grid item>
-              <Typography variant="h6">{boxInfo.box.name}</Typography>
+              <Typography variant="h5">{boxInfo.box.name}</Typography>
             </Grid>
             <Grid item>
               <Typography variant="body1">
@@ -34,7 +34,21 @@ export default function BoxStartup({ setStage, boxInfo }) {
               </Typography>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => setStage(1)}>
+              <Button
+                variant="contained"
+                onClick={() => setStage(1)}
+                sx={{
+                  borderRadius: "20px",
+                  backgroundImage:
+                    "linear-gradient(to right, #fa9500, #fa4000)",
+                  color: "white",
+                  border: "none",
+                  textTransform: "none",
+                  "&:hover": {
+                    border: "none",
+                  },
+                }}
+              >
                 Commencer
               </Button>
             </Grid>
