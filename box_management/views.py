@@ -38,6 +38,7 @@ class GetBox(APIView):
         option = request.data.get('option')
         song_name = option.get('name')
         song_author = option.get('artist')
+        song_platform_id = option.get('platform_id')
         box_name = request.data.get('boxName')
 
         # Normaliser les noms de chanson et d'auteur
@@ -46,7 +47,7 @@ class GetBox(APIView):
 
         # Vérifier si la chanson existe déjà
         try:
-            song = Song.objects.filter(title=song_name, artist=song_author).get()
+            song = Song.objects.filter(title=song_name, artist=song_author, platform_id=song_platform_id).get()
             song.n_deposits += 1
             song.save()
 
@@ -55,7 +56,6 @@ class GetBox(APIView):
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
-            song_platform_id = option.get('platform_id')
             song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
                         platform_id=song_platform_id, n_deposits=1)
 
@@ -76,8 +76,9 @@ class Location(APIView):
         longitude = float(request.data.get('longitude'))
         target_longitude = float(request.data.get('box_longitude'))
         target_latitude = float(request.data.get('box_latitude'))
+        dist_location = int(request.data.get('dist_location'))
         # Comparez les coordonnées avec l'emplacement souhaité
-        max_distance = 100  # Distance maximale tolérée en mètres
+        max_distance = dist_location  # Distance maximale tolérée en mètres
         distance = calculate_distance(latitude, longitude, target_latitude, target_longitude)
         if distance <= max_distance:
             # L'emplacement est valide

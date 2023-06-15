@@ -8,17 +8,20 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { getCookie } from "../Security/TokensUtils";
+
 
 /**
-SongCard Component
-Displays a card representing a song with its title, artist, and album cover image.
-@param {Object} deposits - An object containing song deposit data.
-@param {boolean} isDeposited - A boolean indicating whether the song has been deposited.
-@returns {JSX.Element} - JSX element representing the SongCard component.
-*/
+ * SongCard Component
+ * Displays a card representing a song with its title, artist, and album cover image.
+ * @param {Object} deposits - An object containing song deposit data.
+ * @param {boolean} isDeposited - A boolean indicating whether the song has been deposited.
+ * @returns {JSX.Element} - JSX element representing the SongCard component.
+ */
 export default function SongCard({ deposits, isDeposited }) {
   // States
   const [depositIndex, setdepositIndex] = useState(0);
+  const [selectedProvider, setSelectedProvider] = useState("spotify");
 
   /**
    * Handles the click event for the "Next" button.
@@ -38,6 +41,36 @@ export default function SongCard({ deposits, isDeposited }) {
     if (depositIndex > 0) {
       setdepositIndex(depositIndex - 1);
     }
+  }
+
+  /**
+   * Handles the click event for the "Go to link" button.
+   */
+  function redirectToLink() {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
+      body: JSON.stringify({
+        song: deposits[depositIndex],
+        platform: selectedProvider,
+      }),
+    };
+
+    fetch("../api_agg/aggreg", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        window.open(data);
+      });
+  }
+
+  /**
+   * Handles the change event for the provider selection dropdown.
+   * @param {React.ChangeEvent<HTMLSelectElement>} event - The change event object.
+   */
+  function handleProviderChange(event) {
+    setSelectedProvider(event.target.value);
   }
 
   return (
@@ -72,13 +105,48 @@ export default function SongCard({ deposits, isDeposited }) {
                 <NavigateNextIcon sx={{ height: 38, width: 38 }} />
               </IconButton>
             </Box>
+            <Box sx={{ flex: "1 0 auto", display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+              <select value={selectedProvider} onChange={handleProviderChange}>
+                <option value="spotify">
+                  Spotify
+                </option>
+                <option value="deezer">
+                  Deezer
+                </option>
+              </select>
+              </Box>
+              <Box sx={{ flex: "1 0 auto" }}>
+                <button
+                  onClick={redirectToLink}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Aller vers ...
+                </button>
+              </Box>
           </Box>
-          <CardMedia
-            component="img"
-            sx={{ width: 150 }}
-            image={deposits[depositIndex].image_url}
-            alt="Track cover"
-          />
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <button
+              onClick={redirectToLink}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                marginLeft: "10px",
+              }}
+            >
+
+              <CardMedia
+                component="img"
+                sx={{ width: 150 }}
+                image={deposits[depositIndex].image_url}
+                alt="Track cover"
+              />
+            </button>
+          </Box>
         </Card>
       ) : (
         // Display a loading indicator when deposits is null or empty
