@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'deezer.apps.DeezerConfig',
     'box_management.apps.BoxManagementConfig',
     'users',
+    'achievements',
 ]
 
 MIDDLEWARE = [
