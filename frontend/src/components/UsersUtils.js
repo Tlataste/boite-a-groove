@@ -1,3 +1,5 @@
+import { getCookie } from "./Security/TokensUtils";
+
 /**
  * Logs out the current user by sending a request to the "/users/logout_user" endpoint.
  * If the logout is successful, it sets the user to null and sets the isAuthenticated flag to false.
@@ -35,7 +37,8 @@ export const checkUserStatus = async (setUser, setIsAuthenticated) => {
     const response = await fetch("/users/check-authentication");
     const data = await response.json();
     if (response.ok) {
-      console.log("Authenticated");
+      // console.log("Authenticated");
+      // console.log(data);
       setUser(data);
       setIsAuthenticated(true);
     } else {
@@ -43,5 +46,42 @@ export const checkUserStatus = async (setUser, setIsAuthenticated) => {
     }
   } catch (error) {
     console.error(error);
+  }
+};
+
+/**
+ * Sets the preferred platform for a user on the server.
+ * @param {string} new_preferred_platform - The new preferred platform value to be set. Valid values are 'spotify' or 'deezer'.
+ * @returns {Promise<boolean>} A Promise that resolves to true if the preferred platform was set successfully, or false if there was an error.
+ */
+export const setPreferredPlatform = async (new_preferred_platform) => {
+  const csrftoken = getCookie("csrftoken");
+  const form = JSON.stringify({
+    preferred_platform: new_preferred_platform,
+  });
+  //console.log(form);
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrftoken,
+    },
+    body: form,
+  };
+  try {
+    const response = await fetch(
+      "/users/change-preferred-platform",
+      requestOptions
+    );
+    const data = await response.json();
+    if (response.ok) {
+      return true;
+    } else {
+      console.log(data);
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
   }
 };

@@ -1,30 +1,37 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../UserContext";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Menu from "../Menu";
 import LiveSearch from "./LiveSearch";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {checkSpotifyAuthentication} from "./SpotifyUtils";
-import {checkDeezerAuthentication} from "./DeezerUtils";
+import { checkSpotifyAuthentication } from "./SpotifyUtils";
+import { checkDeezerAuthentication } from "./DeezerUtils";
 import { getBoxDetails } from "./BoxUtils";
 import SongCard from "./SongCard";
+import BoxStartup from "./OnBoarding/BoxStartup";
+import EnableLocation from "./OnBoarding/EnableLocation";
 
 export default function MusicBox() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
   const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
-  let [streamingService] = useState("spotify");
-  const [deposits, setDeposits] = useState([]);
-  const [isDeposited, setIsDeposited] = useState(false);
-  const { boxName } = useParams();
+
+  const [stage, setStage] = useState(0);
   const navigate = useNavigate();
-  const { currentBoxName, setCurrentBoxName } = useContext(UserContext);
+
+  // Gets box name from URL
+  const { boxName } = useParams();
+  // Stores all the information about the box
+  const [boxInfo, setBoxInfo] = useState({});
+  // Checks if a song has been deposited in the box
+  const [isDeposited, setIsDeposited] = useState(false);
+  // User Context variables
+  const { setCurrentBoxName, user } = useContext(UserContext);
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
-   * Check at page load (only) if user is authenticated with spotify and get the box's last deposits.
+   * Check at page load (only) if user is authenticated with spotify and get the box's details
    */
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
@@ -32,13 +39,12 @@ export default function MusicBox() {
     setCurrentBoxName(boxName);
     getBoxDetails(boxName, navigate)
       .then((data) => {
-        setDeposits(data);
+        setBoxInfo(data);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []); // Empty dependency array ensures the effect is only run once
-
 
   return (
     <Box
@@ -51,15 +57,30 @@ export default function MusicBox() {
         background: "linear-gradient(to right, #F59225, #F8431D)",
       }}
     >
-      <Menu boxName={boxName} />
-      <SongCard deposits={deposits} isDeposited={isDeposited} />
-      <LiveSearch
-        isSpotifyAuthenticated={isSpotifyAuthenticated}
-        isDeezerAuthenticated={isDeezerAuthenticated}
-        boxName={boxName}
-        setIsDeposited={setIsDeposited}
-        streamingService={streamingService}
-      />
+      <Menu />
+      {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} />}
+      {stage === 1 && (
+        <EnableLocation
+          setStage={setStage}
+          boxInfo={boxInfo}
+          navigate={navigate}
+        />
+      )}
+      {stage === 2 && (
+        <>
+          <SongCard
+            deposits={boxInfo.last_deposits}
+            isDeposited={isDeposited}
+          />
+          <LiveSearch
+            isSpotifyAuthenticated={isSpotifyAuthenticated}
+            isDeezerAuthenticated={isDeezerAuthenticated}
+            boxName={boxName}
+            setIsDeposited={setIsDeposited}
+            user={user}
+          />
+        </>
+      )}
     </Box>
   );
 }

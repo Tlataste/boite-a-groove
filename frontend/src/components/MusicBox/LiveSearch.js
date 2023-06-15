@@ -8,18 +8,31 @@ import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import { getCookie } from "../Security/TokensUtils";
 
-import { json } from "react-router-dom";
-
 export default function LiveSearch({
   isSpotifyAuthenticated,
   isDeezerAuthenticated,
   boxName,
   setIsDeposited,
-  streamingService,
+  user,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
-  const [selectedStreamingService, setSelectedStreamingService] = useState(streamingService || "spotify");
+  const [selectedStreamingService, setSelectedStreamingService] = useState(
+    user.preferred_platform || "spotify"
+  );
+
+  /**
+   * Updates the selectedStreamingService when the user's preferred_platform changes.
+   *
+   * @param {function} callback - The function to be executed as the side effect.
+   * @param {Array} dependencies - Triggers the callback function when the user's preferred_platform changes.
+   */
+  useEffect(() => {
+    // console.log("here");
+    if (user.preferred_platform) {
+      setSelectedStreamingService(user.preferred_platform);
+    }
+  }, [user.preferred_platform]);
 
   /**
    * useEffect hook that executes when the component mounts or when the 'searchValue' or 'streamingService' dependencies change.
@@ -32,8 +45,8 @@ export default function LiveSearch({
    */
   useEffect(() => {
     const getData = setTimeout(() => {
-      console.log("Live search - Auth ? " + isSpotifyAuthenticated);
-      console.log("Live search - Auth ? " + isDeezerAuthenticated);
+      // console.log("Live search - Auth ? " + isSpotifyAuthenticated);
+      // console.log("Live search - Auth ? " + isDeezerAuthenticated);
       if (selectedStreamingService === "spotify") {
         if (searchValue === "") {
           if (isSpotifyAuthenticated) {
@@ -41,7 +54,7 @@ export default function LiveSearch({
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                console.log(data);
+                // console.log(data);
               });
           } else {
             setJsonResults([]);
@@ -50,8 +63,10 @@ export default function LiveSearch({
           const csrftoken = getCookie("csrftoken");
           const requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken},
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+            },
             body: JSON.stringify({
               search_query: searchValue,
             }),
@@ -61,7 +76,7 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
-              console.log(data);
+              // console.log(data);
             });
         }
       }
@@ -73,7 +88,7 @@ export default function LiveSearch({
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                console.log(data);
+                // console.log(data);
               });
           } else {
             setJsonResults([]);
@@ -82,8 +97,10 @@ export default function LiveSearch({
           const csrftoken = getCookie("csrftoken");
           const requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken},
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+            },
             body: JSON.stringify({
               search_query: searchValue,
             }),
@@ -93,14 +110,19 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
-              console.log(data);
+              // console.log(data);
             });
         }
       }
     }, 400);
 
     return () => clearTimeout(getData);
-  }, [searchValue, selectedStreamingService, isDeezerAuthenticated, isSpotifyAuthenticated]);
+  }, [
+    searchValue,
+    selectedStreamingService,
+    isDeezerAuthenticated,
+    isSpotifyAuthenticated,
+  ]);
 
   function handleButtonClick(option, boxName) {
     const data = { option, boxName };
@@ -127,14 +149,18 @@ export default function LiveSearch({
     <Stack sx={{ width: 350, margin: "auto", marginTop: "20px" }}>
       <Box sx={{ marginBottom: "10px" }}>
         <Button
-          variant={selectedStreamingService === "spotify" ? "contained" : "outlined"}
+          variant={
+            selectedStreamingService === "spotify" ? "contained" : "outlined"
+          }
           onClick={() => handleStreamingServiceChange("spotify")}
           sx={{ marginRight: "5px" }}
         >
           Spotify
         </Button>
         <Button
-          variant={selectedStreamingService === "deezer" ? "contained" : "outlined"}
+          variant={
+            selectedStreamingService === "deezer" ? "contained" : "outlined"
+          }
           onClick={() => handleStreamingServiceChange("deezer")}
         >
           Deezer
@@ -145,8 +171,12 @@ export default function LiveSearch({
         getOptionLabel={(option) => `${option.name}`}
         isOptionEqualToValue={(option, value) => option.name === value.name}
         noOptionsText={
-          (!isDeezerAuthenticated && selectedStreamingService === "deezer" && searchValue === "") ||
-          (!isSpotifyAuthenticated && selectedStreamingService === "spotify" && searchValue === "")
+          (!isDeezerAuthenticated &&
+            selectedStreamingService === "deezer" &&
+            searchValue === "") ||
+          (!isSpotifyAuthenticated &&
+            selectedStreamingService === "spotify" &&
+            searchValue === "")
             ? "Connect to unlock recent tracks!"
             : "No songs available"
         }

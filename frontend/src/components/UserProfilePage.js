@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import MenuAppBar from "./Menu";
 import { UserContext } from "./UserContext";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -10,7 +10,7 @@ import { logoutUser } from "./UsersUtils";
 import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import { getCookie } from "./Security/TokensUtils";
-import { checkUserStatus } from "./UsersUtils";
+import { checkUserStatus, setPreferredPlatform } from "./UsersUtils";
 import {
   checkDeezerAuthentication,
   authenticateDeezerUser,
@@ -55,7 +55,6 @@ const styles = {
   },
   streamingTitle: {
     marginTop: "24px",
-    marginBottom: "24px",
   },
   avatarContainer: {
     position: "relative",
@@ -190,218 +189,268 @@ export default function UserProfilePage() {
     }
   };
 
+  function handlePreferredPlatform(platform) {
+    setPreferredPlatform(platform)
+      .then(() => {
+        checkUserStatus(setUser, setIsAuthenticated);
+      })
+      .catch(() => {
+        console.log("cannot change preferred platform");
+      });
+  }
+
   return (
-    <div style={styles.root}>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item style={styles.avatarContainer}>
-          <input
-            accept="image/*"
-            id="avatar-input"
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleAvatarChange}
-          />
-          <label htmlFor="avatar-input">
-            <Avatar
-              style={styles.avatar}
-              src={user.profile_picture_url}
-              alt="User Avatar"
-              component="span"
+    <>
+      <MenuAppBar />
+      <div style={styles.root}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item style={styles.avatarContainer}>
+            <input
+              accept="image/*"
+              id="avatar-input"
+              type="file"
+              style={{ display: "none" }}
+              onChange={handleAvatarChange}
             />
-            <EditIcon style={styles.editIcon} />
-          </label>
-        </Grid>
-        <Grid item>
-          <Typography variant="h5">{user.username}</Typography>
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6" gutterBottom>
-            Tes informations personnelles
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            style={styles.textField}
-            label="Email"
-            variant="outlined"
-            fullWidth
-            value={user.email}
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            style={styles.textField}
-            label="Mot de passe"
-            variant="outlined"
-            fullWidth
-            type="password"
-            value="*******"
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </Grid>
-      </Grid>
-      {showPasswordForm ? (
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="old_password"
-                label="Ancien mot de passe"
-                type="password"
-                id="oldPassword"
-                autoComplete="current-password"
+            <label htmlFor="avatar-input">
+              <Avatar
+                style={styles.avatar}
+                src={user.profile_picture_url}
+                alt="User Avatar"
+                component="span"
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                name="new_password1"
-                label="Nouveau mot de passe"
-                type="password"
-                id="newPassword1"
-                autoComplete="new-password"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                name="new_password2"
-                label="Confirmation du mot de passe"
-                type="password"
-                id="newPassword2"
-                autoComplete="new-password"
-              />
-            </Grid>
+              <EditIcon style={styles.editIcon} />
+            </label>
           </Grid>
-          <Button type="submit" variant="contained" sx={{ mt: 3 }}>
-            Modifier
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ ml: 3, mt: 3 }}
-            onClick={handlePasswordCancel}
-          >
-            Annuler
-          </Button>
-          {Object.keys(errorMessages).map((key) => (
-            <Typography key={key} variant="body2" color="error" align="center">
-              {errorMessages[key]}
+          <Grid item>
+            <Typography variant="h5">{user.username}</Typography>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Tes informations personnelles
             </Typography>
-          ))}
-        </Box>
-      ) : (
-        <Button variant="contained" onClick={handlePasswordChange}>
-          Modifier le mot de passe
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              style={styles.textField}
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={user.email}
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              style={styles.textField}
+              label="Mot de passe"
+              variant="outlined"
+              fullWidth
+              type="password"
+              value="*******"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Grid>
+        </Grid>
+        {showPasswordForm ? (
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="old_password"
+                  label="Ancien mot de passe"
+                  type="password"
+                  id="oldPassword"
+                  autoComplete="current-password"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  name="new_password1"
+                  label="Nouveau mot de passe"
+                  type="password"
+                  id="newPassword1"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  name="new_password2"
+                  label="Confirmation du mot de passe"
+                  type="password"
+                  id="newPassword2"
+                  autoComplete="new-password"
+                />
+              </Grid>
+            </Grid>
+            <Button type="submit" variant="contained" sx={{ mt: 3 }}>
+              Modifier
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ ml: 3, mt: 3 }}
+              onClick={handlePasswordCancel}
+            >
+              Annuler
+            </Button>
+            {Object.keys(errorMessages).map((key) => (
+              <Typography
+                key={key}
+                variant="body2"
+                color="error"
+                align="center"
+              >
+                {errorMessages[key]}
+              </Typography>
+            ))}
+          </Box>
+        ) : (
+          <Button variant="contained" onClick={handlePasswordChange}>
+            Modifier le mot de passe
+          </Button>
+        )}
+
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          style={styles.buttonGroup}
+        >
+          <Grid item>
+            <>
+              <Typography variant="h6" style={styles.streamingTitle}>
+                Tes services de streaming
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                Ta plateforme principale est celle utilisée pour la recherche
+              </Typography>
+            </>
+          </Grid>
+
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            style={styles.buttonGroup}
+          >
+            <Grid item>
+              <img
+                src="../static/images/spotify_logo.svg"
+                alt="Spotify"
+                style={styles.image}
+              />
+            </Grid>
+            <Grid item>
+              {isSpotifyAuthenticated ? (
+                <Button
+                  variant="contained"
+                  style={styles.buttonConnect}
+                  onClick={handleButtonClickDisconnectSpotify}
+                >
+                  Se déconnecter
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={styles.buttonConnect}
+                  onClick={handleButtonClickConnectSpotify}
+                >
+                  Se connecter
+                </Button>
+              )}
+            </Grid>
+            <Grid item>
+              {user.preferred_platform === "spotify" ? (
+                <Typography variant="subtitle1">
+                  Plateforme principale
+                </Typography>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={styles.buttonPlatform}
+                  onClick={() => handlePreferredPlatform("spotify")}
+                >
+                  Choisir comme plateforme principale
+                </Button>
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            style={styles.buttonGroup}
+          >
+            <Grid item>
+              <img
+                src="../static/images/deezer_logo.svg"
+                alt="Deezer"
+                style={styles.image}
+              />
+            </Grid>
+            <Grid item>
+              {isDeezerAuthenticated ? (
+                <Button
+                  variant="contained"
+                  style={styles.buttonConnect}
+                  onClick={handleButtonClickDisconnectDeezer}
+                >
+                  Se déconnecter
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={styles.buttonConnect}
+                  onClick={handleButtonClickConnectDeezer}
+                >
+                  Se connecter
+                </Button>
+              )}
+            </Grid>
+            <Grid item>
+              {user.preferred_platform === "deezer" ? (
+                <Typography variant="subtitle1">
+                  Plateforme principale
+                </Typography>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={styles.buttonPlatform}
+                  onClick={() => handlePreferredPlatform("deezer")}
+                >
+                  Choisir comme plateforme principale
+                </Button>
+              )}
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Button
+          variant="contained"
+          onClick={() => logoutUser(setUser, setIsAuthenticated)}
+        >
+          Déconnexion
         </Button>
-      )}
-
-      <Typography variant="h6" gutterBottom style={styles.streamingTitle}>
-        Tes services de streaming
-      </Typography>
-
-      <Grid
-        container
-        spacing={2}
-        alignItems="center"
-        style={styles.buttonGroup}
-      >
-        <Grid
-          container
-          spacing={2}
-          alignItems="center"
-          style={styles.buttonGroup}
-        >
-          <Grid item>
-            <img
-              src="../static/images/spotify_logo.svg"
-              alt="Spotify"
-              style={styles.image}
-            />
-          </Grid>
-          <Grid item>
-            {isSpotifyAuthenticated ? (
-              <Button
-                variant="contained"
-                style={styles.buttonConnect}
-                onClick={handleButtonClickDisconnectSpotify}
-              >
-                Se déconnecter
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                style={styles.buttonConnect}
-                onClick={handleButtonClickConnectSpotify}
-              >
-                Se connecter
-              </Button>
-            )}
-          </Grid>
-          <Grid item>
-            <Button variant="contained" style={styles.buttonPlatform}>
-              Choisir comme plateforme principale
-            </Button>
-          </Grid>
-        </Grid>
-
-        <Grid
-          container
-          spacing={2}
-          alignItems="center"
-          style={styles.buttonGroup}
-        >
-          <Grid item>
-            <img
-              src="../static/images/deezer_logo.svg"
-              alt="Deezer"
-              style={styles.image}
-            />
-          </Grid>
-          <Grid item>
-            {isDeezerAuthenticated ? (
-              <Button
-                variant="contained"
-                style={styles.buttonConnect}
-                onClick={handleButtonClickDisconnectDeezer}
-              >
-                Se déconnecter
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                style={styles.buttonConnect}
-                onClick={handleButtonClickConnectDeezer}
-              >
-                Se connecter
-              </Button>
-            )}
-          </Grid>
-          <Grid item>
-            <Button variant="contained" style={styles.buttonPlatform}>
-              Choisir comme plateforme principale
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Button
-        variant="contained"
-        onClick={() => logoutUser(setUser, setIsAuthenticated)}
-      >
-        Déconnexion
-      </Button>
-    </div>
+      </div>
+    </>
   );
 }

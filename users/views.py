@@ -168,6 +168,32 @@ class ChangeProfilePicture(APIView):
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class ChangePreferredPlatform(APIView):
+    def post(self, request, format=None):
+        # Guard clause that checks if user is logged in
+        if not request.user.is_authenticated:
+            return Response({'errors': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Get connected user
+        user = request.user
+
+        # Get the preferred platform from the request data
+        preferred_platform = request.data.get('preferred_platform')
+
+        # Validate the preferred platform value
+        if preferred_platform not in ['spotify', 'deezer']:
+            return Response({'errors': 'Plateforme préférée invalide.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Update the user's preferred platform
+            user.preferred_platform = preferred_platform
+            user.save()
+
+            return Response({'status': 'La plateforme préférée a été modifiée avec succès.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class CheckAuthentication(APIView):
     def get(self, request, format=None):
         if request.user.is_authenticated:
@@ -176,6 +202,7 @@ class CheckAuthentication(APIView):
             # first_name = user.first_name
             # last_name = user.last_name
             email = user.email
+            preferred_platform = user.preferred_platform
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
@@ -184,19 +211,55 @@ class CheckAuthentication(APIView):
                     # 'first_name': first_name,
                     # 'last_name': last_name,
                     'email': email,
-                    'profile_picture_url': profile_picture_url
+                    'profile_picture_url': profile_picture_url,
+                    'preferred_platform': preferred_platform
                 }
             else:
                 response = {
                     'username': username,
                     # 'first_name': first_name,
                     # 'last_name': last_name,
-                    'email': email
+                    'email': email,
+                    'preferred_platform': preferred_platform
                 }
 
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class AddUserPoints(APIView):
+    def post(self, request, format=None):
+        # Guard clause that checks if user is logged in
+        if not request.user.is_authenticated:
+            return Response({'errors': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        points = request.data.get('points')
+
+        if not points:
+            return Response({'errors': 'Veuillez fournir un nombre de points valide.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            points = int(points)
+            user.points += points
+            user.save()
+
+            return Response({'status': 'Points mis à jour avec succès.'}, status=status.HTTP_200_OK)
+        except ValueError:
+            return Response({'errors': 'Veuillez fournir un nombre de points valide.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetUserPoints(APIView):
+    def get(self, request, format=None):
+        # Guard clause that checks if user is logged in
+        if not request.user.is_authenticated:
+            return Response({'errors': 'Utilisateur non connecté.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        points = user.points
+
+        return Response({'points': points}, status=status.HTTP_200_OK)
 
 
 def example(request):

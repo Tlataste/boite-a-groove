@@ -66,9 +66,12 @@ def is_deezer_authenticated(user):
     """
     Checks if the user is authenticated with Deezer.
     """
-    tokens = get_user_tokens(user)
-    if tokens:
-        return True
+    if user.is_authenticated:
+        tokens = get_user_tokens(user)
+        if tokens:
+            return True
+        else:
+            return False
     else:
         return False
 
