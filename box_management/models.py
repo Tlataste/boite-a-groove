@@ -48,3 +48,10 @@ class LocationPoint(models.Model):
     def __str__(self):
         box_name = Box.objects.get(id=self.box_id_id).name
         return box_name + ' - ' + str(self.latitude) + ' - ' + str(self.longitude)
+
+
+class VisibleDeposits(models.Model):
+    deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.deposit_id)
