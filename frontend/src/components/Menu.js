@@ -31,10 +31,7 @@ export default function MenuAppBar() {
     <AppBar position="static" sx={{ backgroundColor: "white" }}>
       <Toolbar>
         <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-          <a
-            href="/chemin-de-la-page-de-redirection"
-            style={{ textDecoration: "none" }}
-          >
+          <a href="/" style={{ textDecoration: "none" }}>
             <Typography
               variant="h6"
               component="div"
