@@ -6,9 +6,6 @@ class Box(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=150, blank=True)
     url = models.SlugField(blank=True)
-    latitude = models.CharField(max_length=50)
-    longitude = models.CharField(max_length=50)
-    dist_location = models.IntegerField(default=100)
     image_url = models.URLField(max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -39,3 +36,14 @@ class Deposit(models.Model):
 
     def __str__(self):
         return str(self.song_id) + ' - ' + str(self.box_id)
+
+
+class LocationPoint(models.Model):
+    box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
+    latitude = models.CharField(max_length=50)
+    longitude = models.CharField(max_length=50)
+    dist_location = models.IntegerField(default=100)
+
+    def __str__(self):
+        box_name = Box.objects.get(id=self.box_id_id).name
+        return box_name + ' - ' + str(self.latitude) + ' - ' + str(self.longitude)

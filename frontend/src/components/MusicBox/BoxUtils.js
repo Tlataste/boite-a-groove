@@ -75,9 +75,7 @@ export const checkLocation = async (data, navigate) => {
     const position = await getLocation();
 
     const { latitude, longitude } = position.coords;
-    const boxLatitude = data.box.latitude;
-    const boxLongitude = data.box.longitude;
-    const distLocation = data.box.dist_location;
+    const box = data.box;
 
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
@@ -86,9 +84,7 @@ export const checkLocation = async (data, navigate) => {
       body: JSON.stringify({
         latitude: latitude,
         longitude: longitude,
-        box_latitude: boxLatitude,
-        box_longitude: boxLongitude,
-        dist_location: distLocation,
+        box: box,
       }),
     };
     const verificationResponse = await fetch(
