@@ -24,3 +24,9 @@ class LocationPointSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationPoint
         fields = '__all__'
+
+
+class VisibleDepositsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deposit
+        fields = '__all__'
