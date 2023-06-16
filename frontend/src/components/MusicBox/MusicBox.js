@@ -7,10 +7,11 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { checkSpotifyAuthentication } from "./SpotifyUtils";
 import { checkDeezerAuthentication } from "./DeezerUtils";
-import { getBoxDetails } from "./BoxUtils";
+import { getBoxDetails, setCurrentBoxName } from "./BoxUtils";
 import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
+import { getCookie } from "../Security/TokensUtils";
 
 export default function MusicBox() {
   // States & Variables
@@ -27,7 +28,7 @@ export default function MusicBox() {
   // Checks if a song has been deposited in the box
   const [isDeposited, setIsDeposited] = useState(false);
   // User Context variables
-  const { setCurrentBoxName, user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
