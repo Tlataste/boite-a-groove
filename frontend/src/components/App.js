@@ -5,8 +5,10 @@ import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
 import MusicBox from "./MusicBox/MusicBox";
 import UserProfilePage from "./UserProfilePage";
+import RedirectToMobile from "./RedirectToMobile";
 import { UserContext } from "./UserContext";
 import { checkUserStatus } from "./UsersUtils";
+import { isMobile } from "react-device-detect";
 
 import {
   BrowserRouter as Router,
@@ -50,22 +52,49 @@ export default function App() {
           <Route
             path="/register"
             element={
-              isAuthenticated ? <Navigate to="/profile" /> : <RegisterPage />
+              isMobile ? (
+                isAuthenticated ? (
+                  <Navigate to="/profile" />
+                ) : (
+                  <RegisterPage />
+                )
+              ) : (
+                <RedirectToMobile />
+              )
             }
           />
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/profile" /> : <LoginPage />
+              isMobile ? (
+                isAuthenticated ? (
+                  <Navigate to="/profile" />
+                ) : (
+                  <LoginPage />
+                )
+              ) : (
+                <RedirectToMobile />
+              )
             }
           />
           <Route
             path="/profile"
             element={
-              isAuthenticated ? <UserProfilePage /> : <Navigate to="/login" />
+              isMobile ? (
+                isAuthenticated ? (
+                  <UserProfilePage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              ) : (
+                <RedirectToMobile />
+              )
             }
           />
-          <Route path="/box/:boxName" element={<MusicBox />} />
+          <Route
+            path="/box/:boxName"
+            element={isMobile ? <MusicBox /> : <RedirectToMobile />}
+          />
         </Routes>
       </UserContext.Provider>
     </Router>
