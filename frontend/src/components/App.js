@@ -5,8 +5,10 @@ import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
 import MusicBox from "./MusicBox/MusicBox";
 import UserProfilePage from "./UserProfilePage";
+import RedirectToMobile from "./RedirectToMobile";
 import { UserContext } from "./UserContext";
 import { checkUserStatus } from "./UsersUtils";
+import { isMobile } from "react-device-detect";
 
 import {
   BrowserRouter as Router,
@@ -65,7 +67,10 @@ export default function App() {
               isAuthenticated ? <UserProfilePage /> : <Navigate to="/login" />
             }
           />
-          <Route path="/box/:boxName" element={<MusicBox />} />
+          <Route
+            path="/box/:boxName"
+            element={isMobile ? <MusicBox /> : <RedirectToMobile />}
+          />
         </Routes>
       </UserContext.Provider>
     </Router>
