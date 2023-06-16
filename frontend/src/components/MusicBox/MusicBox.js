@@ -11,7 +11,6 @@ import { getBoxDetails, setCurrentBoxName } from "./BoxUtils";
 import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
-import { getCookie } from "../Security/TokensUtils";
 
 export default function MusicBox() {
   // States & Variables

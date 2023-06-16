@@ -122,3 +122,18 @@ export const setCurrentBoxName = async (boxName) => {
     console.error(error);
   }
 };
+
+export const navigateToCurrentBox = async (navigate) => {
+  try {
+    const response = await fetch("/box-management/current-box-management");
+    if (!response.ok) {
+      navigate("/");
+    }
+    const data = await response.json();
+    console.log(data);
+    navigate("/box/" + data.current_box_name);
+  } catch (error) {
+    console.error(error);
+    navigate("/");
+  }
+};
