@@ -52,19 +52,43 @@ export default function App() {
           <Route
             path="/register"
             element={
-              isAuthenticated ? <Navigate to="/profile" /> : <RegisterPage />
+              isMobile ? (
+                isAuthenticated ? (
+                  <Navigate to="/profile" />
+                ) : (
+                  <RegisterPage />
+                )
+              ) : (
+                <RedirectToMobile />
+              )
             }
           />
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/profile" /> : <LoginPage />
+              isMobile ? (
+                isAuthenticated ? (
+                  <Navigate to="/profile" />
+                ) : (
+                  <LoginPage />
+                )
+              ) : (
+                <RedirectToMobile />
+              )
             }
           />
           <Route
             path="/profile"
             element={
-              isAuthenticated ? <UserProfilePage /> : <Navigate to="/login" />
+              isMobile ? (
+                isAuthenticated ? (
+                  <UserProfilePage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              ) : (
+                <RedirectToMobile />
+              )
             }
           />
           <Route
