@@ -22,7 +22,7 @@ export default function SongCard({ deposits, isDeposited }) {
   // States
   const [depositIndex, setdepositIndex] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState("spotify");
-
+  console.log(searchSong)
   /**
    * Handles the click event for the "Next" button.
    * Increments the depositIndex if it is less than 1.
@@ -63,6 +63,26 @@ export default function SongCard({ deposits, isDeposited }) {
         console.log(data);
         window.open(data);
       });
+  }
+
+  function replaceVisibleDeposit() {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
+      body: JSON.stringify({
+        visible_deposit: deposits[depositIndex],
+        search_deposit: searchSong,
+      }),
+    };
+
+    fetch("../box-management/replace-visible-deposits", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      },() => setStage(4)
+      );
+    setDispSong(deposits[depositIndex]);
   }
 
   /**
@@ -117,7 +137,7 @@ export default function SongCard({ deposits, isDeposited }) {
               </Box>
               <Box sx={{ flex: "1 0 auto" }}>
                 <button
-                  onClick={redirectToLink}
+                  onClick={() => {redirectToLink(); replaceVisibleDeposit(); }}
                   style={{
                     background: "none",
                     border: "none",

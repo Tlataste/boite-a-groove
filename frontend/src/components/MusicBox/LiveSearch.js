@@ -139,6 +139,7 @@ export default function LiveSearch({
       body: jsonData,
     });
     setIsDeposited(true);
+    setSearchSong(sSong);
   }
 
   function handleStreamingServiceChange(service) {
