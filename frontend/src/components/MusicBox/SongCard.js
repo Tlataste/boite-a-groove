@@ -16,9 +16,12 @@ import { getCookie } from "../Security/TokensUtils";
  * Displays a card representing a song with its title, artist, and album cover image.
  * @param {Object} deposits - An object containing song deposit data.
  * @param {boolean} isDeposited - A boolean indicating whether the song has been deposited.
+ * @param setStage - A function used to set the stage of the page
+ * @param setDispSong - A function used to set the song that we will display
+ * @param searchSong
  * @returns {JSX.Element} - JSX element representing the SongCard component.
  */
-export default function SongCard({ deposits, isDeposited }) {
+export default function SongCard({ deposits, isDeposited, setStage, setDispSong, searchSong}) {
   // States
   const [depositIndex, setdepositIndex] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState("spotify");
