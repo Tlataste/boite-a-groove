@@ -15,6 +15,7 @@ import { checkUserStatus } from "./UsersUtils";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getCookie } from "./Security/TokensUtils";
+import { navigateToCurrentBox } from "./MusicBox/BoxUtils";
 
 /**
  * Copyright Component
@@ -91,7 +92,7 @@ export default function RegisterPage() {
         setTimeout(() => {
           // Check user status and navigate to the appropriate page
           checkUserStatus(setUser, setIsAuthenticated);
-          navigate("/box/" + currentBoxName);
+          navigateToCurrentBox(navigate);
         }, 2000);
       } else {
         if (data.errors) {
