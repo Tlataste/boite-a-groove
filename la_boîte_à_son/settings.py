@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from spotify.credentials import CLIENT_ID, CLIENT_SECRET
+from deezer.credentials import APP_ID, APP_SECRET
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +30,6 @@ SECRET_KEY = 'django-insecure-mwb#$xb6cdl#+v*#7_r04r&d7dx#cn@lvhp)syyn-(84k87cvn
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -47,6 +49,8 @@ INSTALLED_APPS = [
     'deezer.apps.DeezerConfig',
     'box_management.apps.BoxManagementConfig',
     'users',
+
+    # Django Social-Auth
     'social_django'
 ]
 
@@ -58,6 +62,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Django Social-Auth middleware
     'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
@@ -75,6 +81,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
+                # Django Social-Auth processors
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect'
             ],
@@ -82,14 +89,19 @@ TEMPLATES = [
     },
 ]
 
+# Authentication providers
+# https://python-social-auth.readthedocs.io/en/latest/configuration/django.html
 AUTHENTICATION_BACKENDS = [
+
+    # Music streaming platforms
     'social_core.backends.spotify.SpotifyOAuth2',
     'social_core.backends.deezer.DeezerOAuth2',
+
+    # Default auth model
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 WSGI_APPLICATION = 'la_boîte_à_son.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -100,7 +112,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -120,7 +131,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -132,7 +142,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -143,16 +152,30 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.CustomUser'
-SOCIAL_AUTH_USER_MODEL = 'users.CustomUser'
-
-
 # Define media URL for user.profile_picture.url
 MEDIA_URL = '/media/'
 
 # Make folder accessible in static
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-SOCIAL_AUTH_SPOTIFY_KEY = '38285d7faed34b9592ad046a05fff079'
-SOCIAL_AUTH_SPOTIFY_SECRET = 'fbc5c8c1830c494ea19abc83bd6ece23'
+# General Social-Auth settings
+# https://python-social-auth.readthedocs.io/en/latest/configuration/django.html
+
+AUTH_USER_MODEL = 'users.CustomUser'
+SOCIAL_AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = '/profile'
+
+# Social-Auth settings for Spotify provider
+# https://python-social-auth.readthedocs.io/en/latest/backends/spotify.html
+
+SOCIAL_AUTH_SPOTIFY_KEY = CLIENT_ID
+SOCIAL_AUTH_SPOTIFY_SECRET = CLIENT_SECRET
+SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-email']
+SOCIAL_AUTH_SPOTIFY_EXTRA_DATA = [('email', 'email')]
+
+# Social-Auth settings for Deezer provider
+
+SOCIAL_AUTH_DEEZER_KEY = APP_ID
+SOCIAL_AUTH_DEEZER_SECRET = APP_SECRET
+SOCIAL_AUTH_DEEZER_SCOPE = ['user-read-email']
+SOCIAL_AUTH_DEEZER_EXTRA_DATA = [('email', 'email')]
