@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'deezer.apps.DeezerConfig',
     'box_management.apps.BoxManagementConfig',
     'users',
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
 ROOT_URLCONF = 'la_boîte_à_son.urls'
@@ -72,9 +74,18 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.spotify.SpotifyOAuth2',
+    'social_core.backends.deezer.DeezerOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 WSGI_APPLICATION = 'la_boîte_à_son.wsgi.application'
@@ -133,6 +144,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+SOCIAL_AUTH_USER_MODEL = 'users.CustomUser'
 
 
 # Define media URL for user.profile_picture.url
@@ -140,3 +152,7 @@ MEDIA_URL = '/media/'
 
 # Make folder accessible in static
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+SOCIAL_AUTH_SPOTIFY_KEY = '38285d7faed34b9592ad046a05fff079'
+SOCIAL_AUTH_SPOTIFY_SECRET = 'fbc5c8c1830c494ea19abc83bd6ece23'
+LOGIN_REDIRECT_URL = '/profile'

@@ -169,6 +169,9 @@ export default function LoginPage() {
             </Grid>
           </Box>
         )}
+        <div>
+          <a href="/oauth/login/spotify">Login with Spo</a>
+        </div>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
