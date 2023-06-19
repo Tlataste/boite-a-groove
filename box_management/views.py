@@ -44,9 +44,9 @@ class GetBox(APIView):
         song_platform_id = option.get('platform_id')
         box_name = request.data.get('boxName')
 
-        # Normalise the song and artist names
-        song_name = normalize_string(song_name)
-        song_author = normalize_string(song_author)
+        # # Normalise the song and artist names
+        # song_name = normalize_string(song_name)
+        # song_author = normalize_string(song_author)
 
         # Verify if the song already exists
         try:
@@ -61,7 +61,6 @@ class GetBox(APIView):
             song_duration = option.get('duration')
             song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
                         platform_id=song_platform_id, n_deposits=1)
-
             song.save()
 
         # Create a new deposit

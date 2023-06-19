@@ -36,7 +36,7 @@ class Deposit(models.Model):
     deposited_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.song_id) + ' - ' + str(self.box_id)
+        return str(self.song_id) + ' - ' + str(self.box_id) + ' - ' + str(self.deposited_at)
 
 
 class LocationPoint(models.Model):
