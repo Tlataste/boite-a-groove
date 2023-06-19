@@ -43,6 +43,7 @@ class GetBox(APIView):
         # Get the data from the request (song name, artist, platform_id, box name)
         option = request.data.get('option')
         song_id = option.get('id')
+
         song_name = option.get('name')
         song_author = option.get('artist')
         song_platform_id = option.get('platform_id')
@@ -63,7 +64,7 @@ class GetBox(APIView):
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
-            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
+            song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
                         platform_id=song_platform_id, n_deposits=1)
             song.save()
 

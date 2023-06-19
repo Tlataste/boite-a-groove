@@ -252,6 +252,5 @@ class Search(APIView):
                 'url': item['external_urls']['spotify'],
             }
             tracks.append(track)
-
         # Return the list of tracks as a response
         return Response(tracks, status=status.HTTP_200_OK)
