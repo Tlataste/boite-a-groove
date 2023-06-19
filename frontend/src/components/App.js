@@ -10,6 +10,7 @@ import { UserContext } from "./UserContext";
 import { checkUserStatus } from "./UsersUtils";
 import { isMobile } from "react-device-detect";
 import SuccessfulLogout from "./SuccessfulLogout";
+import { Footer } from "./Common/footer";
 
 import {
   BrowserRouter as Router,
@@ -46,59 +47,62 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <UserContext.Provider value={providerValue}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/register"
-            element={
-              isMobile ? (
-                isAuthenticated ? (
-                  <Navigate to="/profile" />
+    <>
+      <Router>
+        <UserContext.Provider value={providerValue}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/register"
+              element={
+                isMobile ? (
+                  isAuthenticated ? (
+                    <Navigate to="/profile" />
+                  ) : (
+                    <RegisterPage />
+                  )
                 ) : (
-                  <RegisterPage />
+                  <RedirectToMobile />
                 )
-              ) : (
-                <RedirectToMobile />
-              )
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              isMobile ? (
-                isAuthenticated ? (
-                  <Navigate to="/profile" />
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                isMobile ? (
+                  isAuthenticated ? (
+                    <Navigate to="/profile" />
+                  ) : (
+                    <LoginPage />
+                  )
                 ) : (
-                  <LoginPage />
+                  <RedirectToMobile />
                 )
-              ) : (
-                <RedirectToMobile />
-              )
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              isMobile ? (
-                isAuthenticated ? (
-                  <UserProfilePage />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                isMobile ? (
+                  isAuthenticated ? (
+                    <UserProfilePage />
+                  ) : (
+                    <SuccessfulLogout />
+                  )
                 ) : (
-                  <SuccessfulLogout />
+                  <RedirectToMobile />
                 )
-              ) : (
-                <RedirectToMobile />
-              )
-            }
-          />
-          <Route
-            path="/box/:boxName"
-            element={isMobile ? <MusicBox /> : <RedirectToMobile />}
-          />
-        </Routes>
-      </UserContext.Provider>
-    </Router>
+              }
+            />
+            <Route
+              path="/box/:boxName"
+              element={isMobile ? <MusicBox /> : <RedirectToMobile />}
+            />
+          </Routes>
+        </UserContext.Provider>
+      </Router>
+      <Footer sx={{ mt: 8, mb: 4 }} />
+    </>
   );
 }
 

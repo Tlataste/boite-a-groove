@@ -30,31 +30,6 @@ const styles = {
   },
 };
 
-/**
- * Copyright Component
- * Renders a copyright statement with a link to the "La boite à son" website
- * and the current year.
- * @param {object} props - Additional properties to be spread onto the Typography component
- * @returns {React.Element} - A Typography component displaying the copyright statement
- */
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        La boite à son
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 const handleMultiplatformLogin = (platform) => {
   window.location.href = "/oauth/login/" + platform;
 };
@@ -124,6 +99,7 @@ export default function LoginPage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          textAlign: "center",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "#fa9500" }}>
@@ -140,74 +116,75 @@ export default function LoginPage() {
             <CircularProgress color="success" />
           </>
         ) : (
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Nom d'utilisateur"
-              name="username"
-              autoComplete="username"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Mot de passe"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              style={styles.button}
-              sx={{ mt: 3, mb: 2 }}
+          <>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 1 }}
             >
-              Se connecter
-            </Button>
-            <Typography variant="body2" color="error" align="center">
-              {errorMessages}
-            </Typography>
-            <Grid container>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Vous n'avez pas de compte ? S'inscrire"}
-                </Link>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Nom d'utilisateur"
+                name="username"
+                autoComplete="username"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Mot de passe"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                style={styles.button}
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Se connecter
+              </Button>
+              <Typography variant="body2" color="error" align="center">
+                {errorMessages}
+              </Typography>
+              <Grid container>
+                <Grid item>
+                  <Link href="/register" variant="body2">
+                    {"Vous n'avez pas de compte ? S'inscrire"}
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
+              <Typography mt="10px" variant="h6">
+                Ou utiliser une autre plateforme
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+              <Button
+                variant="contained"
+                style={styles.button}
+                onClick={() => handleMultiplatformLogin("spotify")}
+              >
+                Spotify
+              </Button>
+              <Button
+                variant="contained"
+                style={styles.button}
+                onClick={() => handleMultiplatformLogin("deezer")}
+              >
+                Deezer
+              </Button>
+            </Box>
+          </>
         )}
-        <Typography mt="10px" variant="h6">
-          Ou utiliser votre compte
-        </Typography>
-        <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
-          <Button
-            variant="contained"
-            style={styles.button}
-            onClick={() => handleMultiplatformLogin("spotify")}
-          >
-            Spotify
-          </Button>
-          <Button
-            variant="contained"
-            style={styles.button}
-            onClick={() => handleMultiplatformLogin("deezer")}
-          >
-            Deezer
-          </Button>
-        </Box>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );
 }

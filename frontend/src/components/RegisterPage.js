@@ -17,31 +17,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { getCookie } from "./Security/TokensUtils";
 import { navigateToCurrentBox } from "./MusicBox/BoxUtils";
 
-/**
- * Copyright Component
- * Renders a copyright statement with a link to the "La boite à son" website
- * and the current year.
- * @param {object} props - Additional properties to be spread onto the Typography component
- * @returns {React.Element} - A Typography component displaying the copyright statement
- */
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        La boite à son
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 export default function RegisterPage() {
   // States & variables
   const [profilePicture, setProfilePicture] = useState(null);
@@ -233,7 +208,6 @@ export default function RegisterPage() {
           </Box>
         )}
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }
