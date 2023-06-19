@@ -28,7 +28,6 @@ class ApiAggregation(APIView):
         try:  # The song already exists in the database
             final_song = Song.objects.filter(title=song['title'], artist=song['artist'],
                                              platform_id=platform_req_id).get()
-
             return Response(general_url + final_song.song_id, status=status.HTTP_200_OK)
 
         except Song.DoesNotExist:  # The song does not exist in the database
