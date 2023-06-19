@@ -14,6 +14,8 @@ export default function LiveSearch({
   boxName,
   setIsDeposited,
   user,
+  setStage,
+  setSearchSong,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
@@ -137,10 +139,13 @@ export default function LiveSearch({
         "X-CSRFToken": csrftoken,
       },
       body: jsonData,
-    });
+    }).then((response) => response.json())
+        .then((data_resp) => {
+    setSearchSong(data_resp);
+  });
     setIsDeposited(true);
+    setStage(3);
   }
-
   function handleStreamingServiceChange(service) {
     setSelectedStreamingService(service);
   }

@@ -7,10 +7,12 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { checkSpotifyAuthentication } from "./SpotifyUtils";
 import { checkDeezerAuthentication } from "./DeezerUtils";
-import { getBoxDetails, setCurrentBoxName } from "./BoxUtils";
+import { getBoxDetails, setCurrentBoxName, updateVisibleDeposits } from "./BoxUtils";
 import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
+import SongDisplay from "./OnBoarding/SongDisplay";
+import DispHiddenSongs from "./OnBoarding/DispHiddenSongs";
 
 export default function MusicBox() {
   // States & Variables
@@ -29,6 +31,10 @@ export default function MusicBox() {
   // User Context variables
   const { user } = useContext(UserContext);
 
+  const [dispSong, setDispSong] = useState("");
+
+  const [searchSong, setSearchSong] = useState("");
+
   /**
    * Function to be executed when the component is mounted and the page is loaded
    * Check at page load (only) if user is authenticated with spotify and get the box's details
@@ -37,6 +43,7 @@ export default function MusicBox() {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
     checkDeezerAuthentication(setIsDeezerAuthenticated);
     setCurrentBoxName(boxName);
+    updateVisibleDeposits(boxName);
     getBoxDetails(boxName, navigate)
       .then((data) => {
         setBoxInfo(data);
@@ -60,8 +67,8 @@ export default function MusicBox() {
         )}
         {stage === 2 && (
           <>
-            <SongCard
-              deposits={boxInfo.last_deposits}
+            <DispHiddenSongs
+              deposits={boxInfo}
               isDeposited={isDeposited}
             />
             <LiveSearch
@@ -70,6 +77,26 @@ export default function MusicBox() {
               boxName={boxName}
               setIsDeposited={setIsDeposited}
               user={user}
+              setStage={setStage}
+              setSearchSong={setSearchSong}
+            />
+          </>
+        )}
+        {stage === 3 && (
+            <>
+              <SongCard
+              deposits={boxInfo}
+              isDeposited={isDeposited}
+              setStage={setStage}
+              setDispSong={setDispSong}
+              searchSong = {searchSong}
+            />
+            </>
+        )}
+        {stage === 4 && (
+            <>
+              <SongDisplay
+              dispSong = {dispSong}
             />
           </>
         )}
