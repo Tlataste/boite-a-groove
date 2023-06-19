@@ -269,73 +269,79 @@ export default function UserProfilePage() {
             />
           </Grid>
         </Grid>
-        {showPasswordForm ? (
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="old_password"
-                  label="Ancien mot de passe"
-                  type="password"
-                  id="oldPassword"
-                  autoComplete="current-password"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  name="new_password1"
-                  label="Nouveau mot de passe"
-                  type="password"
-                  id="newPassword1"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  name="new_password2"
-                  label="Confirmation du mot de passe"
-                  type="password"
-                  id="newPassword2"
-                  autoComplete="new-password"
-                />
-              </Grid>
-            </Grid>
-            <Button type="submit" variant="contained" sx={{ mt: 3 }}>
-              Modifier
-            </Button>
-            <Button
-              variant="contained"
-              sx={{ ml: 3, mt: 3 }}
-              onClick={handlePasswordCancel}
+        {!user.is_social_auth ? (
+          showPasswordForm ? (
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 3 }}
             >
-              Annuler
-            </Button>
-            {Object.keys(errorMessages).map((key) => (
-              <Typography
-                key={key}
-                variant="body2"
-                color="error"
-                align="center"
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="old_password"
+                    label="Ancien mot de passe"
+                    type="password"
+                    id="oldPassword"
+                    autoComplete="current-password"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="new_password1"
+                    label="Nouveau mot de passe"
+                    type="password"
+                    id="newPassword1"
+                    autoComplete="new-password"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="new_password2"
+                    label="Confirmation du mot de passe"
+                    type="password"
+                    id="newPassword2"
+                    autoComplete="new-password"
+                  />
+                </Grid>
+              </Grid>
+              <Button type="submit" variant="contained" sx={{ mt: 3 }}>
+                Modifier
+              </Button>
+              <Button
+                variant="contained"
+                sx={{ ml: 3, mt: 3 }}
+                onClick={handlePasswordCancel}
               >
-                {errorMessages[key]}
-              </Typography>
-            ))}
-          </Box>
+                Annuler
+              </Button>
+              {Object.keys(errorMessages).map((key) => (
+                <Typography
+                  key={key}
+                  variant="body2"
+                  color="error"
+                  align="center"
+                >
+                  {errorMessages[key]}
+                </Typography>
+              ))}
+            </Box>
+          ) : (
+            <Button variant="contained" onClick={handlePasswordChange}>
+              Modifier le mot de passe
+            </Button>
+          )
         ) : (
-          <Button variant="contained" onClick={handlePasswordChange}>
-            Modifier le mot de passe
-          </Button>
+          <Typography variant="body2" align="center">
+            Vous êtes connecté avec une plateforme de streaming.
+          </Typography>
         )}
 
         <Grid

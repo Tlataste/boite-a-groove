@@ -38,7 +38,7 @@ export const checkUserStatus = async (setUser, setIsAuthenticated) => {
     const data = await response.json();
     if (response.ok) {
       // console.log("Authenticated");
-      // console.log(data);
+      console.log(data);
       setUser(data);
       setIsAuthenticated(true);
     } else {

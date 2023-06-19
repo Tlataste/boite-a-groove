@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
+from social_django.models import UserSocialAuth
 
 
 class LoginUser(APIView):
@@ -204,8 +205,9 @@ class CheckAuthentication(APIView):
             email = user.email
             preferred_platform = user.preferred_platform
             points = user.points
-            # Checks if the user is authenticated with social-auth
-            is_social_auth = hasattr(request.user, 'social_auth')
+
+            # Checks if the user is authenticated with social-auth and if so gets the provider
+            is_social_auth = UserSocialAuth.objects.filter(user=user).exists()
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
