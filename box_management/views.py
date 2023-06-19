@@ -63,7 +63,7 @@ class GetBox(APIView):
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
-            song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
+            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
                         platform_id=song_platform_id, n_deposits=1)
             song.save()
 
@@ -127,6 +127,34 @@ class Location(APIView):
         else:
             # Location is not valid
             return Response({'valid': False, 'lat': latitude, 'long': longitude}, status=status.HTTP_403_FORBIDDEN)
+
+
+class CurrentBoxManagement(APIView):
+
+    def get(self, request, format=None):
+        try:
+            current_box_name = request.session['current_box_name']
+            return Response({'current_box_name': current_box_name}, status=status.HTTP_200_OK)
+        except KeyError:
+            # The 'current_box_name' key does not exist in request.session
+            return Response({'error': 'La clé current_box_name n\'existe pas'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, format=None):
+
+        # Guard clause that checks if user is logged in
+        if 'current_box_name' not in request.data:
+            return Response({'errors': 'Aucun nom de boîte n\'a été fournie.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        current_box_name = request.data.get('current_box_name')
+
+        try:
+            # Update the current box name in the user's session
+            request.session['current_box_name'] = current_box_name
+            request.session.modified = True
+
+            return Response({'status': 'Le nom de la boîte actuelle a été modifié avec succès.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UpdateVisibleDeposits(APIView):

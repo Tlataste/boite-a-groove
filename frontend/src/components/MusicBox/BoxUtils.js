@@ -40,7 +40,7 @@ export const getBoxDetails = async (boxName, navigate) => {
       return [];
     }
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     console.error(error);
@@ -91,7 +91,7 @@ export const checkLocation = async (data, navigate) => {
       "../box-management/verify-location",
       requestOptions
     );
-    console.log(verificationResponse);
+    // console.log(verificationResponse);
     if (!verificationResponse.ok) {
       navigate("/");
     }
@@ -99,6 +99,45 @@ export const checkLocation = async (data, navigate) => {
     navigate("/");
   }
 };
+
+export const setCurrentBoxName = async (boxName) => {
+  try {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({
+        current_box_name: boxName,
+      }),
+    };
+    const response = await fetch(
+      "/box-management/current-box-management",
+      requestOptions
+    );
+    // console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const navigateToCurrentBox = async (navigate) => {
+  try {
+    const response = await fetch("/box-management/current-box-management");
+    if (!response.ok) {
+      navigate("/");
+    }
+    const data = await response.json();
+    console.log(data);
+    navigate("/box/" + data.current_box_name);
+  } catch (error) {
+    console.error(error);
+    navigate("/");
+  }
+};
+
 
 export const updateVisibleDeposits = async (boxName) => {
   try {

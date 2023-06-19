@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import GetBox, Location, ReplaceVisibleDeposits, UpdateVisibleDeposits
+from .views import *
 
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path('verify-location', Location.as_view()),
     path('replace-visible-deposits', ReplaceVisibleDeposits.as_view()),
     path('update-visible-deposits', UpdateVisibleDeposits.as_view()),
+    path('current-box-management', CurrentBoxManagement.as_view()),
 ]

@@ -11,6 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import Box from "@mui/material/Box";
 import { getCookie } from "./Security/TokensUtils";
 import { checkUserStatus, setPreferredPlatform } from "./UsersUtils";
+import { navigateToCurrentBox } from "./MusicBox/BoxUtils";
 import {
   checkDeezerAuthentication,
   authenticateDeezerUser,
@@ -21,6 +22,7 @@ import {
   authenticateSpotifyUser,
   disconnectSpotifyUser,
 } from "./MusicBox/SpotifyUtils";
+import { useNavigate } from "react-router-dom";
 
 // Styles
 const styles = {
@@ -75,6 +77,8 @@ export default function UserProfilePage() {
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
+
+  const navigate = useNavigate();
 
   /**
    * Runs the specified callback function after the component has rendered.
@@ -203,6 +207,12 @@ export default function UserProfilePage() {
     <>
       <MenuAppBar />
       <div style={styles.root}>
+        <Button
+          variant="contained"
+          onClick={() => navigateToCurrentBox(navigate)}
+        >
+          Retourner sur la boîte
+        </Button>
         <Grid container spacing={2} alignItems="center">
           <Grid item style={styles.avatarContainer}>
             <input

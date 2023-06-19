@@ -97,7 +97,7 @@ def deezer_callback(request, format=None):
     # Update or create the user tokens in the database
     # Redirect back to the home page
     # If we want to redirect to the register page for example we should write frontend:register
-    return redirect('frontend:')
+    return redirect('frontend:profile')
 
 
 class IsAuthenticated(APIView):

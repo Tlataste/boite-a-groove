@@ -123,7 +123,7 @@ def spotify_callback(request, format=None):
 
     # Redirect back to the home page
     # If we want to redirect to the register page for example we should write frontend:register
-    return redirect('frontend:')
+    return redirect('frontend:profile')
 
 
 class IsAuthenticated(APIView):
