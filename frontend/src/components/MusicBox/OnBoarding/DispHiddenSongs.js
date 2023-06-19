@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState} from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,7 +7,6 @@ import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { getCookie } from "../Security/TokensUtils";
 
 
 /**
@@ -20,10 +19,9 @@ import { getCookie } from "../Security/TokensUtils";
  * @param searchSong
  * @returns {JSX.Element} - JSX element representing the SongCard component.
  */
-export default function SongCard({ deposits, isDeposited, setStage, setDispSong, searchSong}) {
+export default function DispHiddenSongs({ deposits, isDeposited}) {
   // States
   const [depositIndex, setdepositIndex] = useState(0);
-  const [selectedProvider, setSelectedProvider] = useState("spotify");
   /**
    * Handles the click event for the "Next" button.
    * Increments the depositIndex if it is less than 1.
@@ -47,46 +45,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
   /**
    * Handles the click event for the "Go to link" button.
    */
-  function redirectToLink() {
-    const csrftoken = getCookie("csrftoken");
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      body: JSON.stringify({
-        song: deposits.last_deposits_songs[depositIndex],
-        platform: selectedProvider,
-      }),
-    };
-
-    fetch("../api_agg/aggreg", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        // window.open(data);
-        window.location.href = data;
-      });
-  }
-
-
-  function replaceVisibleDeposit() {
-    const csrftoken = getCookie("csrftoken");
-    console.log(deposits.last_deposits[depositIndex]);
-    console.log(searchSong)
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      body: JSON.stringify({
-        visible_deposit: deposits.last_deposits[depositIndex],
-        search_deposit: searchSong,
-      }),
-    };
-
-    fetch("../box-management/replace-visible-deposits", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      }).then(()=>setDispSong(deposits.last_deposits_songs[depositIndex])).then(() => setStage(4))
-  }
 
   /**
    * Handles the change event for the provider selection dropdown.
@@ -104,6 +62,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
             display: "flex",
             margin: "auto",
             maxWidth: "fit-content",
+            filter: isDeposited ? "none" : "blur(4px)",
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", width: 200 }}>
@@ -122,28 +81,11 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
 
               </Box>
               <Box sx={{ flex: "1 0 auto" }}>
-                <button
-                  onClick={() => {replaceVisibleDeposit(); }}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Révéler
-                </button>
+
               </Box>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <button
-              onClick={redirectToLink}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                marginLeft: "10px",
-              }}
-            >
+
 
               <CardMedia
                 component="img"
@@ -151,7 +93,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
                 image={deposits.last_deposits_songs[depositIndex].image_url}
                 alt="Track cover"
               />
-            </button>
           </Box>
         </Card>
       ) : (

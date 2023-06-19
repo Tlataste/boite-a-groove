@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import Box, Deposit, Song, LocationPoint
+from .models import *
 
 
 class BoxAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -23,3 +23,4 @@ admin.site.register(Box, BoxAdmin)
 admin.site.register(Deposit, DepositAdmin)
 admin.site.register(Song)
 admin.site.register(LocationPoint, LocationPointAdmin)
+admin.site.register(VisibleDeposit)

@@ -17,6 +17,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { getCookie } from "./Security/TokensUtils";
 import { navigateToCurrentBox } from "./MusicBox/BoxUtils";
 
+const styles = {
+  button: {
+    borderRadius: "20px",
+    backgroundImage: "linear-gradient(to right, #fa9500, #fa4000)",
+    color: "white",
+    border: "none",
+    textTransform: "none",
+    "&:hover": {
+      border: "none",
+    },
+  },
+};
+
 /**
  * Copyright Component
  * Renders a copyright statement with a link to the "La boite à son" website
@@ -41,6 +54,10 @@ function Copyright(props) {
     </Typography>
   );
 }
+
+const handleMultiplatformLogin = (platform) => {
+  window.location.href = "/oauth/login/" + platform;
+};
 
 export default function LoginPage() {
   // States & Variables
@@ -109,7 +126,7 @@ export default function LoginPage() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+        <Avatar sx={{ m: 1, bgcolor: "#fa9500" }}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -153,6 +170,7 @@ export default function LoginPage() {
               type="submit"
               fullWidth
               variant="contained"
+              style={styles.button}
               sx={{ mt: 3, mb: 2 }}
             >
               Se connecter
@@ -169,6 +187,25 @@ export default function LoginPage() {
             </Grid>
           </Box>
         )}
+        <Typography mt="10px" variant="h6">
+          Ou utiliser votre compte
+        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+          <Button
+            variant="contained"
+            style={styles.button}
+            onClick={() => handleMultiplatformLogin("spotify")}
+          >
+            Spotify
+          </Button>
+          <Button
+            variant="contained"
+            style={styles.button}
+            onClick={() => handleMultiplatformLogin("deezer")}
+          >
+            Deezer
+          </Button>
+        </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>

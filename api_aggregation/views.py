@@ -20,25 +20,27 @@ class ApiAggregation(APIView):
 
         if request_platform == "spotify":
             platform_req_id = 1
+            general_url = "spotify://track/"
         else:
             platform_req_id = 2
+            general_url = "deezer://www.deezer.com/track/"
 
         try:  # The song already exists in the database
             final_song = Song.objects.filter(title=song['title'], artist=song['artist'],
                                              platform_id=platform_req_id).get()
-            return Response(final_song.url, status=status.HTTP_200_OK)
+            return Response(general_url + final_song.song_id, status=status.HTTP_200_OK)
 
         except Song.DoesNotExist:  # The song does not exist in the database
             # Normalize the search query
             search_query = normalize_string(song['title'] + ' ' + song['artist'])
 
-            if platform_req_id == 2:  # The streaming platform is Deezer
-                final_song = ut.search_on_deezer(search_query, song, self.request.session.session_key)
-                return Response(final_song['url'], status=status.HTTP_200_OK)
-
-            elif platform_req_id == 1:  # The streaming platform is Spotify
+            if platform_req_id == 1:  # The streaming platform is Spotify
                 final_song = ut.search_on_spotify(search_query, song)
-                return Response(final_song['url'], status=status.HTTP_200_OK)
+                return Response(general_url + str(final_song['id']), status=status.HTTP_200_OK)
+
+            elif platform_req_id == 2:  # The streaming platform is Deezer
+                final_song = ut.search_on_deezer(search_query, song, self.request.session.session_key)
+                return Response(general_url + str(final_song['id']), status=status.HTTP_200_OK)
 
             else:
                 # Return an error response

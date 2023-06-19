@@ -7,3 +7,4 @@ Pillow
 fuzzywuzzy
 python-Levenshtein
 django-import-export
+social-auth-app-django
