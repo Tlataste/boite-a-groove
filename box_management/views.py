@@ -68,7 +68,6 @@ class GetBox(APIView):
                         platform_id=song_platform_id, n_deposits=1)
             song.save()
 
-
         # Create a new deposit
         box = Box.objects.filter(name=box_name).get()
         user = request.user if not isinstance(request.user, AnonymousUser) else None
