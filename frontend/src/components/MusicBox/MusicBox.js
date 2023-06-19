@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { checkSpotifyAuthentication } from "./SpotifyUtils";
 import { checkDeezerAuthentication } from "./DeezerUtils";
-import { getBoxDetails } from "./BoxUtils";
+import { getBoxDetails, updateVisibleDeposits } from "./BoxUtils";
 import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
@@ -43,6 +43,7 @@ export default function MusicBox() {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
     checkDeezerAuthentication(setIsDeezerAuthenticated);
     setCurrentBoxName(boxName);
+    updateVisibleDeposits(boxName);
     getBoxDetails(boxName, navigate)
       .then((data) => {
         setBoxInfo(data);

@@ -28,7 +28,7 @@ export default function DispHiddenSongs({ deposits, isDeposited}) {
    * Increments the depositIndex if it is less than 1.
    */
   function next() {
-    if (depositIndex < 1) {
+    if (depositIndex < deposits.last_deposits_songs.length - 1) {
       setdepositIndex(depositIndex + 1);
     }
   }

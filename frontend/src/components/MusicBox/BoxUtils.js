@@ -99,3 +99,25 @@ export const checkLocation = async (data, navigate) => {
     navigate("/");
   }
 };
+
+export const updateVisibleDeposits = async (boxName) => {
+  try {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
+      body: JSON.stringify({
+        boxName: boxName
+      }),
+    };
+    const response = await fetch("../box-management/update-visible-deposits", requestOptions);
+        const data = await response.json();
+          console.log(data);
+          if (!response.ok) {
+            return [];
+          }
+  } catch (error) {
+    console.log(error);
+    return {};
+  }
+}

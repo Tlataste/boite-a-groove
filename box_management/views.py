@@ -27,8 +27,7 @@ class GetBox(APIView):
                 songs = Song.objects.filter(id__in=last_deposit.values('song_id')).order_by('-id')
                 songs = SongSerializer(songs, many=True).data
                 last_deposit = DepositSerializer(last_deposit, many=True).data
-                print(last_deposit)
-                print(songs)
+
                 resp = {}
                 resp['last_deposits'] = last_deposit
                 resp['last_deposits_songs'] = songs
@@ -80,11 +79,8 @@ class ReplaceVisibleDeposits(APIView):
     def post(self, request, format=None):
         # Get the box, the visible deposit disclosed by the user and the search deposit
         box_id = request.data.get('visible_deposit').get('box_id')
-        print(request.data.get('visible_deposit'))
         visible_deposit_id = request.data.get('visible_deposit').get('id')
         search_deposit_id = request.data.get('search_deposit').get('id')
-        print(visible_deposit_id)
-        print(search_deposit_id)
 
         # Delete the visible deposit disclosed by the user
         VisibleDeposit.objects.filter(deposit_id_id=visible_deposit_id).delete()
@@ -130,3 +126,32 @@ class Location(APIView):
         else:
             # Location is not valid
             return Response({'valid': False, 'lat': latitude, 'long': longitude}, status=status.HTTP_403_FORBIDDEN)
+
+class UpdateVisibleDeposits(APIView):
+    def post(self, request, format=None):
+        box_name = request.data.get('boxName')
+        box = Box.objects.filter(name=box_name).get()
+
+        # Get the maximum number of deposits to display
+        max_deposits = box.max_deposits
+        # Get the visible deposits of the box
+        visible_deposits = VisibleDeposit.objects.filter(deposit_id__box_id=box).order_by('-deposit_id__deposited_at')
+        # Get the number of visible deposits
+        n_visible_deposits = len(visible_deposits)
+
+        # If the number of visible deposits is more than the maximum number of deposits to display
+        if n_visible_deposits > max_deposits:
+            # Delete the oldest visible deposits
+            for i in range(max_deposits, n_visible_deposits):
+                visible_deposits[i].delete()
+        # If the number of visible deposits is less than the maximum number of deposits to display
+        elif n_visible_deposits < max_deposits:
+            # Get the number of deposits to add
+            n_deposits_to_add = max_deposits - n_visible_deposits
+            # Get the last n_deposits_to_add deposits of the box that are not visible
+            deposits_to_add = Deposit.objects.filter(box_id=box).exclude(id__in=visible_deposits.values('deposit_id')).order_by('-deposited_at')[:n_deposits_to_add]
+            # Add the deposits to the visible deposits
+            for deposit in deposits_to_add:
+                VisibleDeposit(deposit_id=deposit).save()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+
