@@ -30,10 +30,6 @@ const styles = {
   },
 };
 
-const handleMultiplatformLogin = (platform) => {
-  window.location.href = "/oauth/login/" + platform;
-};
-
 export default function LoginPage() {
   // States & Variables
   const [authenticationSuccess, setAuthenticationSuccess] = useState(false);
@@ -58,7 +54,7 @@ export default function LoginPage() {
     try {
       const response = await fetch("/users/login_user", requestOptions);
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       if (response.ok) {
         setAuthenticationSuccess(true);
         setErrorMessages("");
@@ -90,6 +86,10 @@ export default function LoginPage() {
     sendAndProcessData(data);
   };
 
+  const handleMultiplatformLogin = (platform) => {
+    window.location.href = "/oauth/login/" + platform;
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -113,7 +113,11 @@ export default function LoginPage() {
             <Typography variant="body2" color="text.primary" align="center">
               Vous vous êtes connecté avec succès!
             </Typography>
-            <CircularProgress color="success" />
+            <CircularProgress
+              sx={{
+                color: "#fa9500",
+              }}
+            />
           </>
         ) : (
           <>

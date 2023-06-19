@@ -66,6 +66,16 @@ const styles = {
     top: "15px",
     right: "0px",
   },
+  basicButton: {
+    borderRadius: "20px",
+    backgroundImage: "linear-gradient(to right, #fa9500, #fa4000)",
+    color: "white",
+    border: "none",
+    textTransform: "none",
+    "&:hover": {
+      border: "none",
+    },
+  },
 };
 
 export default function UserProfilePage() {
@@ -210,6 +220,8 @@ export default function UserProfilePage() {
         <Button
           variant="contained"
           onClick={() => navigateToCurrentBox(navigate)}
+          style={styles.basicButton}
+          sx={{ marginBottom: "12px" }}
         >
           Retourner sur la boîte
         </Button>
@@ -255,19 +267,23 @@ export default function UserProfilePage() {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              style={styles.textField}
-              label="Mot de passe"
-              variant="outlined"
-              fullWidth
-              type="password"
-              value="*******"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </Grid>
+          {!user.is_social_auth ? (
+            <Grid item xs={12} sm={6}>
+              <TextField
+                style={styles.textField}
+                label="Mot de passe"
+                variant="outlined"
+                fullWidth
+                type="password"
+                value="*******"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Grid>
+          ) : (
+            <></>
+          )}
         </Grid>
         {!user.is_social_auth ? (
           showPasswordForm ? (
@@ -312,13 +328,19 @@ export default function UserProfilePage() {
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" variant="contained" sx={{ mt: 3 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ mt: 3 }}
+                style={styles.basicButton}
+              >
                 Modifier
               </Button>
               <Button
                 variant="contained"
                 sx={{ ml: 3, mt: 3 }}
                 onClick={handlePasswordCancel}
+                style={styles.basicButton}
               >
                 Annuler
               </Button>
@@ -334,7 +356,11 @@ export default function UserProfilePage() {
               ))}
             </Box>
           ) : (
-            <Button variant="contained" onClick={handlePasswordChange}>
+            <Button
+              variant="contained"
+              onClick={handlePasswordChange}
+              style={styles.basicButton}
+            >
               Modifier le mot de passe
             </Button>
           )
@@ -463,6 +489,7 @@ export default function UserProfilePage() {
         <Button
           variant="contained"
           onClick={() => logoutUser(setUser, setIsAuthenticated)}
+          style={styles.basicButton}
         >
           Déconnexion
         </Button>
