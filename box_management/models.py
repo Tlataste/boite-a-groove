@@ -17,7 +17,7 @@ class Box(models.Model):
 
 
 class Song(models.Model):
-    song_id = models.CharField(max_length=50, unique=True)
+    song_id = models.CharField(max_length=15)
     title = models.CharField(max_length=50)
     artist = models.CharField(max_length=50)
     url = models.URLField(max_length=200)
