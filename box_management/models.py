@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
+from users.models import CustomUser
 
 
 class Box(models.Model):
@@ -31,10 +33,17 @@ class Song(models.Model):
 
 
 class Deposit(models.Model):
+    # Overriding of the save() method in order to avoid 'auto_now_add=True' which makes DateTimeField uneditable
+    def save(self, *args, **kwargs):
+        self.deposited_at = timezone.now()
+
+        super().save(*args, **kwargs)  # calling the save() method of the parent class (which is User)
+
     song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     # user_id = models.IntegerField()
-    deposited_at = models.DateTimeField(auto_now_add=True)
+    deposited_at = models.DateTimeField()
 
     def __str__(self):
         return str(self.id) + '-' + str(self.song_id) + ' - ' + str(self.box_id) + ' - ' + str(self.deposited_at)
