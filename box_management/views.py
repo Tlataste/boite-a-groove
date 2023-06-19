@@ -54,7 +54,7 @@ class GetBox(APIView):
 
         # Verify if the song already exists
         try:
-            song = Song.objects.filter(title=song_name, artist=song_author, platform_id=song_platform_id).get()
+            song = Song.objects.filter(song_id=song_id, title=song_name, artist=song_author, platform_id=song_platform_id).get()
             song.n_deposits += 1
             song.save()
 

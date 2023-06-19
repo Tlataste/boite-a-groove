@@ -62,9 +62,11 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        window.open(data);
+        // window.open(data);
+        window.location.href = data;
       });
   }
+
 
   function replaceVisibleDeposit() {
     const csrftoken = getCookie("csrftoken");

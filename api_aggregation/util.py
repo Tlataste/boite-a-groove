@@ -73,3 +73,5 @@ def search_on_deezer(search_query, song, session_key):
         tracks.append(track)
     final_song = find_matching_song(song['title'], song['artist'], song['duration'], tracks)
     return final_song
+
+
