@@ -9,6 +9,7 @@ import RedirectToMobile from "./RedirectToMobile";
 import { UserContext } from "./UserContext";
 import { checkUserStatus } from "./UsersUtils";
 import { isMobile } from "react-device-detect";
+import SuccessfulLogout from "../SuccessfulLogout";
 
 import {
   BrowserRouter as Router,
@@ -84,7 +85,7 @@ export default function App() {
                 isAuthenticated ? (
                   <UserProfilePage />
                 ) : (
-                  <Navigate to="/login" />
+                  <SuccessfulLogout />
                 )
               ) : (
                 <RedirectToMobile />
