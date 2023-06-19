@@ -204,6 +204,8 @@ class CheckAuthentication(APIView):
             email = user.email
             preferred_platform = user.preferred_platform
             points = user.points
+            # Checks if the user is authenticated with social-auth
+            is_social_auth = hasattr(request.user, 'social_auth')
 
             if request.user.profile_picture:  # If profile picture, include its URL in the response.
                 profile_picture_url = request.user.profile_picture.url
@@ -215,6 +217,7 @@ class CheckAuthentication(APIView):
                     'profile_picture_url': profile_picture_url,
                     'preferred_platform': preferred_platform,
                     'points': points,
+                    'is_social_auth': is_social_auth
                 }
             else:
                 response = {
@@ -222,7 +225,9 @@ class CheckAuthentication(APIView):
                     # 'first_name': first_name,
                     # 'last_name': last_name,
                     'email': email,
-                    'preferred_platform': preferred_platform
+                    'preferred_platform': preferred_platform,
+                    'points': points,
+                    'is_social_auth': is_social_auth
                 }
 
             return Response(response, status=status.HTTP_200_OK)
