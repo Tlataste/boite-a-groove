@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from django.middleware.csrf import get_token
 from django.urls import reverse
 from rest_framework.response import Response
@@ -65,7 +66,8 @@ class GetBox(APIView):
 
         # Créer un nouveau dépôt de musique
         box = Box.objects.filter(name=box_name).get()
-        new_deposit = Deposit(song_id=song, box_id=box)
+        user = request.user if not isinstance(request.user, AnonymousUser) else None
+        new_deposit = Deposit(song_id=song, box_id=box, user=user)
         new_deposit.save()
 
         # Ajout de points
