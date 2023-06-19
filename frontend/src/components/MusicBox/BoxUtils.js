@@ -130,7 +130,7 @@ export const navigateToCurrentBox = async (navigate) => {
       navigate("/");
     }
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     navigate("/box/" + data.current_box_name);
   } catch (error) {
     console.error(error);
