@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
@@ -70,7 +70,8 @@ class GetBox(APIView):
 
         # Create a new deposit
         box = Box.objects.filter(name=box_name).get()
-        new_deposit = Deposit(song_id=song, box_id=box)
+        user = request.user if not isinstance(request.user, AnonymousUser) else None
+        new_deposit = Deposit(song_id=song, box_id=box, user=user)
         new_deposit.save()
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
