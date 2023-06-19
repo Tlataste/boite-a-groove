@@ -1,11 +1,10 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { getCookie } from "../Security/TokensUtils";
@@ -84,7 +83,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-      }).then(()=>setDispSong(deposits.last_deposits[depositIndex])).then(() => setStage(4))
+      }).then(()=>setDispSong(deposits.last_deposits_songs[depositIndex])).then(() => setStage(4))
   }
 
   /**
@@ -103,21 +102,11 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
             display: "flex",
             margin: "auto",
             maxWidth: "fit-content",
-            filter: isDeposited ? "none" : "blur(4px)",
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", width: 200 }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
-              <Typography component="div" variant="h5">
-                {deposits.last_deposits_songs[depositIndex].title}
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                component="div"
-              >
-                {deposits.last_deposits_songs[depositIndex].artist}
-              </Typography>
+
             </CardContent>
             <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
               <IconButton aria-label="previous" onClick={prev}>
@@ -128,25 +117,18 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
               </IconButton>
             </Box>
             <Box sx={{ flex: "1 0 auto", display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-              <select value={selectedProvider} onChange={handleProviderChange}>
-                <option value="spotify">
-                  Spotify
-                </option>
-                <option value="deezer">
-                  Deezer
-                </option>
-              </select>
+
               </Box>
               <Box sx={{ flex: "1 0 auto" }}>
                 <button
-                  onClick={() => {redirectToLink(); replaceVisibleDeposit(); }}
+                  onClick={() => {replaceVisibleDeposit(); }}
                   style={{
                     background: "none",
                     border: "none",
                     cursor: "pointer",
                   }}
                 >
-                  Aller vers ...
+                  Révéler
                 </button>
               </Box>
           </Box>

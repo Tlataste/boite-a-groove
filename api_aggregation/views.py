@@ -32,7 +32,7 @@ class ApiAggregation(APIView):
             # Normalize the search query
             search_query = normalize_string(song['title'] + ' ' + song['artist'])
 
-            if platform_req_id == 2:  # The streaming platform is Deezer
+            elif platform_req_id == 2:  # The streaming platform is Deezer
                 final_song = ut.search_on_deezer(search_query, song, self.request.session.session_key)
                 return Response(final_song['url'], status=status.HTTP_200_OK)
 

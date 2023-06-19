@@ -42,6 +42,7 @@ class GetBox(APIView):
     def post(self, request, format=None):
         # Get the data from the request (song name, artist, platform_id, box name)
         option = request.data.get('option')
+        song_id = option.get('id')
         song_name = option.get('name')
         song_author = option.get('artist')
         song_platform_id = option.get('platform_id')
@@ -62,7 +63,7 @@ class GetBox(APIView):
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
-            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
+            song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
                         platform_id=song_platform_id, n_deposits=1)
             song.save()
 
@@ -127,6 +128,7 @@ class Location(APIView):
             # Location is not valid
             return Response({'valid': False, 'lat': latitude, 'long': longitude}, status=status.HTTP_403_FORBIDDEN)
 
+
 class UpdateVisibleDeposits(APIView):
     def post(self, request, format=None):
         box_name = request.data.get('boxName')
@@ -149,9 +151,9 @@ class UpdateVisibleDeposits(APIView):
             # Get the number of deposits to add
             n_deposits_to_add = max_deposits - n_visible_deposits
             # Get the last n_deposits_to_add deposits of the box that are not visible
-            deposits_to_add = Deposit.objects.filter(box_id=box).exclude(id__in=visible_deposits.values('deposit_id')).order_by('-deposited_at')[:n_deposits_to_add]
+            deposits_to_add = Deposit.objects.filter(box_id=box).exclude(
+                id__in=visible_deposits.values('deposit_id')).order_by('-deposited_at')[:n_deposits_to_add]
             # Add the deposits to the visible deposits
             for deposit in deposits_to_add:
                 VisibleDeposit(deposit_id=deposit).save()
         return Response({'success': True}, status=status.HTTP_200_OK)
-
