@@ -57,7 +57,7 @@ export default function DispHiddenSongs({ deposits, isDeposited}) {
 
   return (
     <>
-      {Object.keys(deposits).length > 0 ? (
+      {Object.keys(deposits.last_deposits_songs).length > 0 ? (
         <Card
           sx={{
             display: "flex",
@@ -69,14 +69,14 @@ export default function DispHiddenSongs({ deposits, isDeposited}) {
           <Box sx={{ display: "flex", flexDirection: "column", width: 200 }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">
-                {deposits[depositIndex].title}
+                {deposits.last_deposits_songs[depositIndex].title}
               </Typography>
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
               >
-                {deposits[depositIndex].artist}
+                {deposits.last_deposits_songs[depositIndex].artist}
               </Typography>
             </CardContent>
             <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
@@ -100,7 +100,7 @@ export default function DispHiddenSongs({ deposits, isDeposited}) {
               <CardMedia
                 component="img"
                 sx={{ width: 150 }}
-                image={deposits[depositIndex].image_url}
+                image={deposits.last_deposits_songs[depositIndex].image_url}
                 alt="Track cover"
               />
           </Box>

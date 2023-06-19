@@ -67,7 +67,7 @@ export default function MusicBox() {
         {stage === 2 && (
           <>
             <DispHiddenSongs
-              deposits={boxInfo.last_deposits}
+              deposits={boxInfo}
               isDeposited={isDeposited}
             />
             <LiveSearch
@@ -84,7 +84,7 @@ export default function MusicBox() {
         {stage === 3 && (
             <>
               <SongCard
-              deposits={boxInfo.last_deposits}
+              deposits={boxInfo}
               isDeposited={isDeposited}
               setStage={setStage}
               setDispSong={setDispSong}

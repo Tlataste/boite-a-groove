@@ -36,7 +36,7 @@ class Deposit(models.Model):
     deposited_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.song_id) + ' - ' + str(self.box_id) + ' - ' + str(self.deposited_at)
+        return str(self.id) + '-' + str(self.song_id) + ' - ' + str(self.box_id) + ' - ' + str(self.deposited_at)
 
 
 class LocationPoint(models.Model):
@@ -54,4 +54,4 @@ class VisibleDeposit(models.Model):
     deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.deposit_id)
+        return str(self.id) + '-' + str(self.deposit_id)

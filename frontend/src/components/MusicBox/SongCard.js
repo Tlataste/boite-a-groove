@@ -54,7 +54,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
-        song: deposits[depositIndex],
+        song: deposits.last_deposits_songs[depositIndex],
         platform: selectedProvider,
       }),
     };
@@ -69,13 +69,13 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
 
   function replaceVisibleDeposit() {
     const csrftoken = getCookie("csrftoken");
-    console.log(deposits[depositIndex]);
+    console.log(deposits.last_deposits[depositIndex]);
     console.log(searchSong)
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
-        visible_deposit: deposits[depositIndex],
+        visible_deposit: deposits.last_deposits[depositIndex],
         search_deposit: searchSong,
       }),
     };
@@ -84,7 +84,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-      }).then(()=>setDispSong(deposits[depositIndex])).then(() => setStage(4))
+      }).then(()=>setDispSong(deposits.last_deposits[depositIndex])).then(() => setStage(4))
   }
 
   /**
@@ -97,7 +97,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
 
   return (
     <>
-      {Object.keys(deposits).length > 0 ? (
+      {Object.keys(deposits.last_deposits_songs).length > 0 ? (
         <Card
           sx={{
             display: "flex",
@@ -109,14 +109,14 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
           <Box sx={{ display: "flex", flexDirection: "column", width: 200 }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">
-                {deposits[depositIndex].title}
+                {deposits.last_deposits_songs[depositIndex].title}
               </Typography>
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
               >
-                {deposits[depositIndex].artist}
+                {deposits.last_deposits_songs[depositIndex].artist}
               </Typography>
             </CardContent>
             <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
@@ -164,7 +164,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
               <CardMedia
                 component="img"
                 sx={{ width: 150 }}
-                image={deposits[depositIndex].image_url}
+                image={deposits.last_deposits_songs[depositIndex].image_url}
                 alt="Track cover"
               />
             </button>

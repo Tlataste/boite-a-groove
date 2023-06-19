@@ -5,7 +5,7 @@ from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
 from .util import normalize_string, calculate_distance
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 
 class GetBox(APIView):
@@ -26,8 +26,12 @@ class GetBox(APIView):
                 # Get the names of the songs corresponding to the deposits
                 songs = Song.objects.filter(id__in=last_deposit.values('song_id'))
                 songs = SongSerializer(songs, many=True).data
+                last_deposit = DepositSerializer(last_deposit, many=True).data
+                print(last_deposit)
+                print(songs)
                 resp = {}
-                resp['last_deposits'] = songs
+                resp['last_deposits'] = last_deposit
+                resp['last_deposits_songs'] = songs
                 resp['deposit_count'] = deposit_count
                 resp['box'] = data
                 return Response(resp, status=status.HTTP_200_OK)
@@ -76,16 +80,14 @@ class ReplaceVisibleDeposits(APIView):
     def post(self, request, format=None):
         # Get the box, the visible deposit disclosed by the user and the search deposit
         box_id = request.data.get('visible_deposit').get('box_id')
+        print(request.data.get('visible_deposit'))
         visible_deposit_id = request.data.get('visible_deposit').get('id')
         search_deposit_id = request.data.get('search_deposit').get('id')
-
-        # Get the visible deposits corresponding to the box
-        # visible_deposits = VisibleDeposit.objects.select_related("Deposit").select_related("Box").all()\
-        #     .filter(box_id=box_id)
-        visible_deposits = VisibleDeposit.objects.filter(deposit_id__box_id=box_id)
+        print(visible_deposit_id)
+        print(search_deposit_id)
 
         # Delete the visible deposit disclosed by the user
-        visible_deposits.filter(deposit_id=visible_deposit_id).delete()
+        VisibleDeposit.objects.filter(deposit_id_id=visible_deposit_id).delete()
 
         # Get the most recent deposit that is not in the visible deposits
         i = 0
@@ -95,7 +97,7 @@ class ReplaceVisibleDeposits(APIView):
 
         # Create a new visible deposit with the search deposit
         search_deposit = Deposit.objects.filter(id=search_deposit_id).get()
-        new_visible_deposit = VisibleDeposit(deposit_id=search_deposit)
+        VisibleDeposit(deposit_id=search_deposit).save()
         return Response({'success': True}, status=status.HTTP_200_OK)
 
 
