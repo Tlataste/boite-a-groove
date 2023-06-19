@@ -24,7 +24,7 @@ class GetBox(APIView):
                                                       id__in=VisibleDeposit.objects
                                                       .values('deposit_id')).order_by('-deposited_at')
                 # Get the names of the songs corresponding to the deposits
-                songs = Song.objects.filter(id__in=last_deposit.values('song_id'))
+                songs = Song.objects.filter(id__in=last_deposit.values('song_id')).order_by('-id')
                 songs = SongSerializer(songs, many=True).data
                 last_deposit = DepositSerializer(last_deposit, many=True).data
                 print(last_deposit)
