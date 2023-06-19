@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Box, Song, Deposit, LocationPoint
+from .models import *
 
 
 class BoxSerializer(serializers.ModelSerializer):
@@ -28,5 +28,5 @@ class LocationPointSerializer(serializers.ModelSerializer):
 
 class VisibleDepositsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Deposit
+        model = VisibleDeposit
         fields = '__all__'

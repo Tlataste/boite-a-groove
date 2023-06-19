@@ -12,6 +12,7 @@ import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
 import SongDisplay from "./OnBoarding/SongDisplay";
+import DispHiddenSongs from "./OnBoarding/DispHiddenSongs";
 
 export default function MusicBox() {
   // States & Variables
@@ -30,9 +31,9 @@ export default function MusicBox() {
   // User Context variables
   const { setCurrentBoxName, user } = useContext(UserContext);
 
-  const [dispSong, setDispSong] = useState({});
+  const [dispSong, setDispSong] = useState("");
 
-  const [searchSong, setSearchSong] = useState({});
+  const [searchSong, setSearchSong] = useState("");
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
@@ -65,7 +66,7 @@ export default function MusicBox() {
         )}
         {stage === 2 && (
           <>
-            <SongCard
+            <DispHiddenSongs
               deposits={boxInfo.last_deposits}
               isDeposited={isDeposited}
             />

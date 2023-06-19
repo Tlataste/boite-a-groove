@@ -76,18 +76,13 @@ class ReplaceVisibleDeposits(APIView):
     def post(self, request, format=None):
         # Get the box, the visible deposit disclosed by the user and the search deposit
         box_id = request.data.get('visible_deposit').get('box_id')
-        print(request.data.get('visible_deposit'))
         visible_deposit_id = request.data.get('visible_deposit').get('id')
-        print(visible_deposit_id)
-        print(request.data.get('search_deposit'))
         search_deposit_id = request.data.get('search_deposit').get('id')
-        print(search_deposit_id)
 
         # Get the visible deposits corresponding to the box
         # visible_deposits = VisibleDeposit.objects.select_related("Deposit").select_related("Box").all()\
         #     .filter(box_id=box_id)
         visible_deposits = VisibleDeposit.objects.filter(deposit_id__box_id=box_id)
-        print(visible_deposits)
 
         # Delete the visible deposit disclosed by the user
         visible_deposits.filter(deposit_id=visible_deposit_id).delete()
@@ -97,12 +92,11 @@ class ReplaceVisibleDeposits(APIView):
         while search_deposit_id in VisibleDeposit.objects.filter(deposit_id__box_id=box_id).values('deposit_id'):
             i += 1
             search_deposit_id = Deposit.objects.filter(box_id=box_id).order_by('-deposited_at')[i].id
-            print(search_deposit_id)
 
         # Create a new visible deposit with the search deposit
         search_deposit = Deposit.objects.filter(id=search_deposit_id).get()
-        new_visible_deposit = VisibleDeposit(box_id=box_id, deposit_id=search_deposit)
-        return Response({'success': True, 'visible deposit': new_visible_deposit}, status=status.HTTP_200_OK)
+        new_visible_deposit = VisibleDeposit(deposit_id=search_deposit)
+        return Response({'success': True}, status=status.HTTP_200_OK)
 
 
 class Location(APIView):

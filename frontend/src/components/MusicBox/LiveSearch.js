@@ -15,7 +15,7 @@ export default function LiveSearch({
   setIsDeposited,
   user,
   setStage,
-    setSearchSong,
+  setSearchSong,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
@@ -141,13 +141,11 @@ export default function LiveSearch({
       body: jsonData,
     }).then((response) => response.json())
         .then((data_resp) => {
-    const sSong = data_resp; // ERREUR ICI
-    console.log(data_resp); // Déplacer le console.log ici
+    setSearchSong(data_resp);
   });
     setIsDeposited(true);
-    setSearchSong(sSong);
+    setStage(3);
   }
-
   function handleStreamingServiceChange(service) {
     setSelectedStreamingService(service);
   }

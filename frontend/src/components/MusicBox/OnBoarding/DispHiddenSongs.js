@@ -8,7 +8,6 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { getCookie } from "../Security/TokensUtils";
 
 
 /**
@@ -21,10 +20,9 @@ import { getCookie } from "../Security/TokensUtils";
  * @param searchSong
  * @returns {JSX.Element} - JSX element representing the SongCard component.
  */
-export default function SongCard({ deposits, isDeposited, setStage, setDispSong, searchSong}) {
+export default function DispHiddenSongs({ deposits, isDeposited}) {
   // States
   const [depositIndex, setdepositIndex] = useState(0);
-  const [selectedProvider, setSelectedProvider] = useState("spotify");
   /**
    * Handles the click event for the "Next" button.
    * Increments the depositIndex if it is less than 1.
@@ -48,44 +46,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
   /**
    * Handles the click event for the "Go to link" button.
    */
-  function redirectToLink() {
-    const csrftoken = getCookie("csrftoken");
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      body: JSON.stringify({
-        song: deposits[depositIndex],
-        platform: selectedProvider,
-      }),
-    };
-
-    fetch("../api_agg/aggreg", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        window.open(data);
-      });
-  }
-
-  function replaceVisibleDeposit() {
-    const csrftoken = getCookie("csrftoken");
-    console.log(deposits[depositIndex]);
-    console.log(searchSong)
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      body: JSON.stringify({
-        visible_deposit: deposits[depositIndex],
-        search_deposit: searchSong,
-      }),
-    };
-
-    fetch("../box-management/replace-visible-deposits", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      }).then(()=>setDispSong(deposits[depositIndex])).then(() => setStage(4))
-  }
 
   /**
    * Handles the change event for the provider selection dropdown.
@@ -128,38 +88,14 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
               </IconButton>
             </Box>
             <Box sx={{ flex: "1 0 auto", display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-              <select value={selectedProvider} onChange={handleProviderChange}>
-                <option value="spotify">
-                  Spotify
-                </option>
-                <option value="deezer">
-                  Deezer
-                </option>
-              </select>
+
               </Box>
               <Box sx={{ flex: "1 0 auto" }}>
-                <button
-                  onClick={() => {redirectToLink(); replaceVisibleDeposit(); }}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Aller vers ...
-                </button>
+
               </Box>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <button
-              onClick={redirectToLink}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                marginLeft: "10px",
-              }}
-            >
+
 
               <CardMedia
                 component="img"
@@ -167,7 +103,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
                 image={deposits[depositIndex].image_url}
                 alt="Track cover"
               />
-            </button>
           </Box>
         </Card>
       ) : (
