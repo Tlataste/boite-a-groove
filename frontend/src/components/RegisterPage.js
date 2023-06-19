@@ -17,30 +17,18 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { getCookie } from "./Security/TokensUtils";
 import { navigateToCurrentBox } from "./MusicBox/BoxUtils";
 
-/**
- * Copyright Component
- * Renders a copyright statement with a link to the "La boite à son" website
- * and the current year.
- * @param {object} props - Additional properties to be spread onto the Typography component
- * @returns {React.Element} - A Typography component displaying the copyright statement
- */
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        La boite à son
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+const styles = {
+  button: {
+    borderRadius: "20px",
+    backgroundImage: "linear-gradient(to right, #fa9500, #fa4000)",
+    color: "white",
+    border: "none",
+    textTransform: "none",
+    "&:hover": {
+      border: "none",
+    },
+  },
+};
 
 export default function RegisterPage() {
   // States & variables
@@ -131,7 +119,7 @@ export default function RegisterPage() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+        <Avatar sx={{ m: 1, bgcolor: "#fa9500" }}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -142,7 +130,11 @@ export default function RegisterPage() {
             <Typography variant="body2" color="text.primary" align="center">
               Vous êtes enregistré avec succès!
             </Typography>
-            <CircularProgress color="success" />
+            <CircularProgress
+              sx={{
+                color: "#fa9500",
+              }}
+            />
           </>
         ) : (
           <Box
@@ -153,6 +145,9 @@ export default function RegisterPage() {
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  Choisir une image de profile
+                </Typography>
                 <input
                   type="file"
                   id="profilePicture"
@@ -209,6 +204,7 @@ export default function RegisterPage() {
               type="submit"
               fullWidth
               variant="contained"
+              style={styles.button}
               sx={{ mt: 3, mb: 2 }}
             >
               S'enregistrer
@@ -233,7 +229,6 @@ export default function RegisterPage() {
           </Box>
         )}
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }
