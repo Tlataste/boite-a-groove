@@ -60,6 +60,7 @@ export default function SongCard({
         search_deposit: searchSong,
       }),
     };
+    //console.log(requestOptions.body);
 
     fetch("../box-management/replace-visible-deposits", requestOptions)
       .then((response) => response.json())

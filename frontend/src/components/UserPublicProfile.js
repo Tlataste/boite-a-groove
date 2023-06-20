@@ -18,13 +18,18 @@ export default function UserPublicProfile() {
   const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    getUserDetails(userID, navigate)
+    getUserDetails(userID)
       .then((data) => {
-        setUserInfo(data);
-        // console.log(data);
+        if (data) {
+          setUserInfo(data);
+          // console.log(data);
+        } else {
+          navigate("/");
+        }
       })
       .catch((error) => {
         console.error(error);
+        navigate("/");
       });
   }, []); // Empty dependency array ensures the effect is only run once
 

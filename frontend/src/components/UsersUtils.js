@@ -87,24 +87,21 @@ export const setPreferredPlatform = async (new_preferred_platform) => {
 };
 
 /**
- * Retrieves user details from the server using the provided user ID.
+ * Retrieves user details from the server using the provided userID.
  * @param {string} userID - The ID of the user to fetch details for.
- * @param {function} navigate - A function used for navigation, typically provided by a routing library.
- * @returns {Promise<Array|Object>} - A Promise that resolves to an array containing user details if successful, or an empty array if the response is not OK.
- * If an error occurs during the fetch request, it returns an empty object.
-*/
-export const getUserDetails = async (userID, navigate) => {
+ * @returns {Promise<Object|null>} - A Promise that resolves to the user details object if successful, or null if there was an error.
+ */
+export const getUserDetails = async (userID) => {
   try {
     const response = await fetch("/users/get-user-info?userID=" + userID);
     if (!response.ok) {
-      navigate("/");
-      return [];
+      return null;
     }
     const data = await response.json();
     // console.log(data);
     return data;
   } catch (error) {
     console.error(error);
-    return {};
+    return null;
   }
 };
