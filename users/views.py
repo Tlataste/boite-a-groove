@@ -283,7 +283,7 @@ class GetUserInfo(APIView):
             user = get_object_or_404(CustomUser, id=user_id)
             serializer = CustomUserSerializer(user)
             response = {}
-            response['user'] = serializer.data
+            response = serializer.data
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({'Bad Request': 'User ID not found in request'}, status=status.HTTP_400_BAD_REQUEST)

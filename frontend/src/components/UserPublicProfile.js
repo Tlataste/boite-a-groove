@@ -4,6 +4,10 @@ import MenuAppBar from "./Menu";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getUserDetails } from "./UsersUtils";
+import { Typography } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import AlbumIcon from "@mui/icons-material/Album";
+import Grid from "@mui/material/Grid";
 
 export default function UserPublicProfile() {
   // States & Variables
@@ -23,6 +27,7 @@ export default function UserPublicProfile() {
     getUserDetails(userID, navigate)
       .then((data) => {
         setUserInfo(data);
+        console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -32,6 +37,68 @@ export default function UserPublicProfile() {
   return (
     <>
       <MenuAppBar />
+      <Box sx={{ padding: "16px" }}>
+        {userInfo ? (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "left",
+                gap: "10px",
+              }}
+            >
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={8}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      letterSpacing: "0.3rem",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {userInfo.username}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Avatar
+                    src={userInfo.profile_picture}
+                    alt={userInfo.username}
+                    sx={{
+                      width: "40px",
+                      height: "40px",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      {userInfo.points}
+                    </Typography>
+                    <AlbumIcon
+                      sx={{
+                        color: "#fa4000",
+                      }}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Typography variant="subtitle2">
+                {" autres pépites partagées par cet utilisateur"}
+              </Typography>
+            </Box>
+          </>
+        ) : (
+          <Typography variant="h1">Loading...</Typography>
+        )}
+      </Box>
     </>
   );
 }

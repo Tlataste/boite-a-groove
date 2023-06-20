@@ -238,7 +238,7 @@ export default function UserProfilePage() {
               <Avatar
                 style={styles.avatar}
                 src={user.profile_picture_url}
-                alt="User Avatar"
+                alt={user.username}
                 component="span"
               />
               <EditIcon style={styles.editIcon} />
