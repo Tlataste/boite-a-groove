@@ -5,9 +5,9 @@ from datetime import date, timedelta
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
-from .serializers import BoxSerializer, SongSerializer, DepositSerializer
+from .serializers import *
 from .models import *
-from .util import normalize_string, calculate_distance
+from .util import calculate_distance, normalize_string, calculate_distance
 from utils import NB_POINTS_ADD_SONG, NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX, NB_POINTS_FIRST_SONG_DEPOSIT_BOX, NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL, NB_POINTS_CONSECUTIVE_DAYS_BOX
 from django.shortcuts import render, get_object_or_404
 import json
@@ -95,7 +95,8 @@ class GetBox(APIView):
 
         # Verify if the song already exists
         try:
-            song = Song.objects.filter(song_id=song_id, title=song_name, artist=song_author, platform_id=song_platform_id).get()
+            song = Song.objects.filter(song_id=song_id, title=song_name, artist=song_author,
+                                       platform_id=song_platform_id).get()
             song.n_deposits += 1
             song.save()
 
@@ -104,7 +105,8 @@ class GetBox(APIView):
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
-            song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image, duration=song_duration,
+            song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image,
+                        duration=song_duration,
                         platform_id=song_platform_id, n_deposits=1)
             song.save()
 
@@ -243,7 +245,8 @@ class CurrentBoxManagement(APIView):
             request.session['current_box_name'] = current_box_name
             request.session.modified = True
 
-            return Response({'status': 'Le nom de la boîte actuelle a été modifié avec succès.'}, status=status.HTTP_200_OK)
+            return Response({'status': 'Le nom de la boîte actuelle a été modifié avec succès.'},
+                            status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -276,3 +279,43 @@ class UpdateVisibleDeposits(APIView):
             for deposit in deposits_to_add:
                 VisibleDeposit(deposit_id=deposit).save()
         return Response({'success': True}, status=status.HTTP_200_OK)
+
+
+class ManageDiscoveredSongs(APIView):
+    """Class used to update and get the discovered songs of the user"""
+
+    def post(self, request):
+        user = request.user
+
+        # Check if the user is authenticated
+        if not user.is_authenticated:
+            return Response({'error': 'Vous devez être connecté pour effectuer cette action.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            # Add the deposit to the user's discovered songs
+            deposit_id = request.data.get('visible_deposit').get('id')
+            deposit = Deposit.objects.filter(id=deposit_id).get()
+            # Create a new discovered song linked to the user
+            DiscoveredSong(user_id=user, deposit_id=deposit).save()
+            return Response({'success': True}, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        # Get the user
+        user = request.user
+        # Check if the user is authenticated
+        if not user.is_authenticated:
+            return Response({'error': 'Vous devez être connecté pour effectuer cette action.'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            # Get the discovered songs of the user
+            discovered_deposits = DiscoveredSong.objects.filter(user_id=user).order_by('-deposit_id__deposited_at')
+            discovered_songs = []
+            # Get the songs from the discovered deposits
+            for deposit in discovered_deposits:
+                deposit_id = deposit.deposit_id
+                song = Song.objects.filter(deposit=deposit_id).get()
+                discovered_songs.append(song)
+
+        # Serialize the discovered songs
+        serializer = SongSerializer(discovered_songs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

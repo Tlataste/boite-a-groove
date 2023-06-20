@@ -78,3 +78,11 @@ class VisibleDeposit(models.Model):
 
     def __str__(self):
         return str(self.id) + '-' + str(self.deposit_id)
+
+
+class DiscoveredSong(models.Model):
+    deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user_id) + ' - ' + str(self.deposit_id)

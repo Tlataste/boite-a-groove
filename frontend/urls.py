@@ -13,5 +13,6 @@ urlpatterns = [
     path('register', index),
     path('login', index),
     path('profile', index, name='profile'),
-    path('box/<str:boxName>', index)
+    path('box/<str:boxName>', index),
+    path('profile/<int:userID>', index)
 ]

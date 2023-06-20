@@ -11,6 +11,7 @@ import { checkUserStatus } from "./UsersUtils";
 import { isMobile } from "react-device-detect";
 import SuccessfulLogout from "./SuccessfulLogout";
 import { Footer } from "./Common/footer";
+import UserPublicProfile from "./UserPublicProfile";
 
 import {
   BrowserRouter as Router,
@@ -97,6 +98,10 @@ export default function App() {
             <Route
               path="/box/:boxName"
               element={isMobile ? <MusicBox /> : <RedirectToMobile />}
+            />
+            <Route
+              path="/profile/:userID"
+              element={isMobile ? <UserPublicProfile /> : <RedirectToMobile />}
             />
           </Routes>
         </UserContext.Provider>

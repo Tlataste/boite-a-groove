@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
 from social_django.models import UserSocialAuth
+from .serializer import CustomUserSerializer
+from .models import CustomUser
+from box_management.models import Deposit
 
 
 class LoginUser(APIView):
@@ -269,6 +272,24 @@ class GetUserPoints(APIView):
         points = user.points
 
         return Response({'points': points}, status=status.HTTP_200_OK)
+
+
+class GetUserInfo(APIView):
+    lookup_url_kwarg = 'userID'
+    serializer_class = CustomUserSerializer
+
+    def get(self, request, format=None):
+        user_id = request.GET.get(self.lookup_url_kwarg)
+        if user_id is not None:
+            user = get_object_or_404(CustomUser, id=user_id)
+            serializer = CustomUserSerializer(user)
+            total_deposits = Deposit.objects.filter(user=user).count()
+            response = {}
+            response = serializer.data
+            response['total_deposits'] = total_deposits
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            return Response({'Bad Request': 'User ID not found in request'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def example(request):

@@ -7,7 +7,11 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { checkSpotifyAuthentication } from "./SpotifyUtils";
 import { checkDeezerAuthentication } from "./DeezerUtils";
-import { getBoxDetails, setCurrentBoxName, updateVisibleDeposits } from "./BoxUtils";
+import {
+  getBoxDetails,
+  setCurrentBoxName,
+  updateVisibleDeposits,
+} from "./BoxUtils";
 import SongCard from "./SongCard";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
@@ -34,6 +38,9 @@ export default function MusicBox() {
   const [dispSong, setDispSong] = useState("");
 
   const [searchSong, setSearchSong] = useState("");
+
+  // The ID of the user who deposited the music selected by the current user
+  const [depositedBy, setDepositedBy] = useState(null);
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
@@ -67,10 +74,7 @@ export default function MusicBox() {
         )}
         {stage === 2 && (
           <>
-            <DispHiddenSongs
-              deposits={boxInfo}
-              isDeposited={isDeposited}
-            />
+            <DispHiddenSongs deposits={boxInfo} isDeposited={isDeposited} />
             <LiveSearch
               isSpotifyAuthenticated={isSpotifyAuthenticated}
               isDeezerAuthenticated={isDeezerAuthenticated}
@@ -83,21 +87,20 @@ export default function MusicBox() {
           </>
         )}
         {stage === 3 && (
-            <>
-              <SongCard
+          <>
+            <SongCard
               deposits={boxInfo}
               isDeposited={isDeposited}
               setStage={setStage}
               setDispSong={setDispSong}
-              searchSong = {searchSong}
+              searchSong={searchSong}
+              setDepositedBy={setDepositedBy}
             />
-            </>
+          </>
         )}
         {stage === 4 && (
-            <>
-              <SongDisplay
-              dispSong = {dispSong}
-            />
+          <>
+            <SongDisplay dispSong={dispSong} depositedBy={depositedBy} />
           </>
         )}
       </Box>
