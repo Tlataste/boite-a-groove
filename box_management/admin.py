@@ -30,21 +30,21 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         writer.writerow(['Month', 'Week', 'Day', 'Total Deposits'])
 
         # Perform database queries to get deposit counts by month, week, and day
-        deposits_by_month = Deposit.objects.annotate(month=TruncMonth('deposited_at')).values('month').annotate(
-            total=Count('id')).values('month', 'total')
-        deposits_by_week = Deposit.objects.annotate(week=TruncWeek('deposited_at')).values('week').annotate(
-            total=Count('id')).values('week', 'total')
-        deposits_by_day = Deposit.objects.annotate(day=TruncDay('deposited_at')).values('day').annotate(
-            total=Count('id')).values('day', 'total')
+        deposits_by_month = Deposit.objects.values('deposited_at__month').annotate(total=Count('id')).values(
+            'deposited_at__month', 'total')
+        deposits_by_week = Deposit.objects.values('deposited_at__week').annotate(total=Count('id')).values(
+            'deposited_at__week', 'total')
+        deposits_by_day = Deposit.objects.values('deposited_at__date').annotate(total=Count('id')).values(
+            'deposited_at__date', 'total')
         total_deposits = Deposit.objects.count()
 
         # Write data to CSV
         for month in deposits_by_month:
-            writer.writerow([month['month'].strftime('%B %Y'), '', '', month['total']])
+            writer.writerow([month['deposited_at__month'], '', '', month['total']])
         for week in deposits_by_week:
-            writer.writerow(['', week['week'].strftime('%U, %Y'), '', week['total']])
+            writer.writerow(['', week['deposited_at__week'], '', week['total']])
         for day in deposits_by_day:
-            writer.writerow(['', '', day['day'].strftime('%Y-%m-%d'), day['total']])
+            writer.writerow(['', '', day['deposited_at__date'], day['total']])
         writer.writerow(['', '', '', total_deposits])
 
         return response
