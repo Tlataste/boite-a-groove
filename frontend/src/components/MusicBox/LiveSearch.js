@@ -139,10 +139,13 @@ export default function LiveSearch({
         "X-CSRFToken": csrftoken,
       },
       body: jsonData,
-    }).then((response) => response.json())
-        .then((data_resp) => {
-    setSearchSong(data_resp);
-  });
+    })
+      .then((response) => response.json())
+      .then((data_resp) => {
+        //console.log(data_resp);
+        //console.log(data_resp.new_deposit);
+        setSearchSong(data_resp.new_deposit);
+      });
     setIsDeposited(true);
     setStage(3);
   }

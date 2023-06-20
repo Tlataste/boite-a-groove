@@ -60,6 +60,7 @@ export default function SongDisplay({ dispSong, depositedBy }) {
     setSelectedProvider(event.target.value);
   }
 
+  // Gets the info of the user who has depisoted the song discovered
   useEffect(() => {
     getUserDetails(depositedBy, navigate)
       .then((data) => {
@@ -134,6 +135,7 @@ export default function SongDisplay({ dispSong, depositedBy }) {
           />
         </Box>
       </Card>
+      <Typography variant="h6">Auteur de dépôt :</Typography>
       {userInfo ? (
         <Box
           sx={{
@@ -181,7 +183,7 @@ export default function SongDisplay({ dispSong, depositedBy }) {
           </Button>
         </Box>
       ) : (
-        <></>
+        <Typography variant="subtitle1">Utilisateur non conneté</Typography>
       )}
     </>
   );
