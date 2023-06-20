@@ -1,11 +1,16 @@
 from django.contrib.auth.models import AnonymousUser
+from django.middleware.csrf import get_token
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
 from .util import normalize_string, calculate_distance
+from utils import NB_POINTS_ADD_SONG
 from django.shortcuts import render, get_object_or_404
+import json
+import requests
 
 
 class GetBox(APIView):
@@ -72,6 +77,22 @@ class GetBox(APIView):
         box = Box.objects.filter(name=box_name).get()
         user = request.user if not isinstance(request.user, AnonymousUser) else None
         new_deposit = Deposit(song_id=song, box_id=box, user=user)
+
+        # Ajout de points
+        cookies = request.COOKIES
+        csrf_token = get_token(request)
+        # Get the complete URL for the add-points endpoint using reverse
+        add_points_url = request.build_absolute_uri(reverse('add-points'))
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf_token
+        }
+
+        requests.post(add_points_url, cookies=cookies, headers=headers, data=json.dumps({
+            "points": NB_POINTS_ADD_SONG
+        })).json()
+
         new_deposit.save()
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
