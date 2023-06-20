@@ -39,8 +39,11 @@ export default function MusicBox() {
 
   const [searchSong, setSearchSong] = useState("");
 
-  // The ID of the user who deposited the music selected by the current user
+  // The ID of the user who has deposited the music selected by the current user
   const [depositedBy, setDepositedBy] = useState(null);
+
+  // The achievements the user obtains
+  const [achievements, setAchievements] = useState({});
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
@@ -83,6 +86,7 @@ export default function MusicBox() {
               user={user}
               setStage={setStage}
               setSearchSong={setSearchSong}
+              setAchievements={setAchievements}
             />
           </>
         )}

@@ -185,6 +185,7 @@ export default function SongDisplay({ dispSong, depositedBy }) {
       ) : (
         <Typography variant="subtitle1">Utilisateur non conneté</Typography>
       )}
+      <Typography variant="h6">Succès débloqués : </Typography>
     </>
   );
 }
