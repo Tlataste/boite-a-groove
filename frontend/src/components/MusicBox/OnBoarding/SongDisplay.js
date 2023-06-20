@@ -21,7 +21,6 @@ import { getCookie } from "../../Security/TokensUtils";
 export default function SongDisplay({dispSong}) {
   // States
   const [selectedProvider, setSelectedProvider] = useState("spotify");
-  console.log(dispSong)
   /**
    * Handles the click event for the "Go to link" button.
    */
