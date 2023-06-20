@@ -91,7 +91,8 @@ export default function UserPublicProfile() {
               </Grid>
 
               <Typography variant="subtitle2">
-                {" autres pépites partagées par cet utilisateur"}
+                {userInfo.total_deposits +
+                  " autres pépites partagées par cet utilisateur"}
               </Typography>
             </Box>
           </>

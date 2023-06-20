@@ -10,6 +10,7 @@ from .forms import RegisterUserForm
 from social_django.models import UserSocialAuth
 from .serializer import CustomUserSerializer
 from .models import CustomUser
+from box_management.models import Deposit
 
 
 class LoginUser(APIView):
@@ -282,8 +283,10 @@ class GetUserInfo(APIView):
         if user_id is not None:
             user = get_object_or_404(CustomUser, id=user_id)
             serializer = CustomUserSerializer(user)
+            total_deposits = Deposit.objects.filter(user=user).count()
             response = {}
             response = serializer.data
+            response['total_deposits'] = total_deposits
             return Response(response, status=status.HTTP_200_OK)
         else:
             return Response({'Bad Request': 'User ID not found in request'}, status=status.HTTP_400_BAD_REQUEST)
