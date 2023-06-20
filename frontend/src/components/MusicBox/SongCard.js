@@ -44,28 +44,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
     }
   }
 
-  /**
-   * Handles the click event for the "Go to link" button.
-   */
-  function redirectToLink() {
-    const csrftoken = getCookie("csrftoken");
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      body: JSON.stringify({
-        song: deposits.last_deposits_songs[depositIndex],
-        platform: selectedProvider,
-      }),
-    };
-
-    fetch("../api_agg/aggreg", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        window.location.href = data;
-      });
-  }
-
-
   function replaceVisibleDeposit() {
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
@@ -84,14 +62,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
       }).then(()=>setDispSong(deposits.last_deposits_songs[depositIndex])).then(() => setStage(4))
 
     fetch("../box-management/discovered-songs", requestOptions)
-  }
-
-  /**
-   * Handles the change event for the provider selection dropdown.
-   * @param {React.ChangeEvent<HTMLSelectElement>} event - The change event object.
-   */
-  function handleProviderChange(event) {
-    setSelectedProvider(event.target.value);
   }
 
   return (
@@ -133,15 +103,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
               </Box>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <button
-              onClick={redirectToLink}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                marginLeft: "10px",
-              }}
-            >
 
               <CardMedia
                 component="img"
@@ -149,7 +110,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
                 image={deposits.last_deposits_songs[depositIndex].image_url}
                 alt="Track cover"
               />
-            </button>
+
           </Box>
         </Card>
       ) : (
