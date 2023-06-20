@@ -103,15 +103,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
               </Box>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <button
-              onClick={redirectToLink}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                marginLeft: "10px",
-              }}
-            >
 
               <CardMedia
                 component="img"
@@ -119,7 +110,7 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
                 image={deposits.last_deposits_songs[depositIndex].image_url}
                 alt="Track cover"
               />
-            </button>
+
           </Box>
         </Card>
       ) : (
