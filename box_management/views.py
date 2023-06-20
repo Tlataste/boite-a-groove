@@ -1,16 +1,51 @@
 from django.contrib.auth.models import AnonymousUser
 from django.middleware.csrf import get_token
 from django.urls import reverse
+from datetime import date, timedelta
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import BoxSerializer, SongSerializer, DepositSerializer
 from .models import *
 from .util import normalize_string, calculate_distance
-from utils import NB_POINTS_ADD_SONG
+from utils import NB_POINTS_ADD_SONG, NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX, NB_POINTS_FIRST_SONG_DEPOSIT_BOX, NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL, NB_POINTS_CONSECUTIVE_DAYS_BOX
 from django.shortcuts import render, get_object_or_404
 import json
 import requests
+
+
+def is_first_user_deposit(user, box):
+    deposits = Deposit.objects.filter(user=user, box_id=box)
+    return not deposits.exists()
+
+
+def is_first_song_deposit_global(song):
+    song_deposits = Deposit.objects.filter(song_id=song)
+    return not song_deposits.exists()
+
+
+def is_first_song_deposit(song, box):
+    song_deposits = Deposit.objects.filter(song_id=song, box_id=box)
+    return not song_deposits.exists()
+
+
+def get_consecutive_deposit_days(user, box):
+    # Retrieve all deposits made by the user on the box, ordered by deposited_at in descending order
+    deposits = Deposit.objects.filter(user=user, box_id=box).order_by('-deposited_at')
+
+    # Get the current date
+    current_date = date.today()
+
+    # Calculate the previous date
+    previous_date = current_date - timedelta(days=1)
+
+    consecutive_days = 0
+    for deposit in deposits:
+        if deposit.deposited_at.date() == previous_date:
+            consecutive_days += 1
+            previous_date -= timedelta(days=1)
+
+    return consecutive_days
 
 
 class GetBox(APIView):
@@ -76,9 +111,37 @@ class GetBox(APIView):
         # Create a new deposit
         box = Box.objects.filter(name=box_name).get()
         user = request.user if not isinstance(request.user, AnonymousUser) else None
-        new_deposit = Deposit(song_id=song, box_id=box, user=user)
+        note = 'rire'
+        new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note)
 
         # Ajout de points
+        points_to_add = NB_POINTS_ADD_SONG  # Default minimum points gained by deposit
+
+        # Achievements check :
+        box = Box.objects.filter(name=box_name).get()
+        successes: dict = {}
+        # check if it's the first time a user makes a deposit in a specific box
+        if is_first_user_deposit(user, box):
+            points_to_add += NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
+            successes['first_user_deposit_box'] = NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
+
+        # check if it's the first time that a song is deposited to a specific box
+        if is_first_song_deposit(song, box):
+            points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+            successes['first_song_deposit_box'] = NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+            # if it's the first time that a song is deposited on a box, we check all the network
+            if is_first_song_deposit_global(song):
+                points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                successes['first_song_deposit_global'] = NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+
+        # check if the user made deposits on consecutive dates
+        nb_consecutive_days: int = get_consecutive_deposit_days(user, box)
+        if nb_consecutive_days:
+            consecutive_days_points = nb_consecutive_days * NB_POINTS_CONSECUTIVE_DAYS_BOX
+            points_to_add += consecutive_days_points
+            successes['user_consecutive_days_box'] = consecutive_days_points
+            successes['nb_consecutive_days'] = nb_consecutive_days
+
         cookies = request.COOKIES
         csrf_token = get_token(request)
         # Get the complete URL for the add-points endpoint using reverse
@@ -90,13 +153,18 @@ class GetBox(APIView):
         }
 
         requests.post(add_points_url, cookies=cookies, headers=headers, data=json.dumps({
-            "points": NB_POINTS_ADD_SONG
+            "points": points_to_add
         })).json()
 
         new_deposit.save()
         new_deposit = DepositSerializer(new_deposit).data
         # Rediriger vers la page de détails de la boîte
-        return Response(new_deposit, status=status.HTTP_200_OK)
+
+        response = {
+            'new_deposit': new_deposit,
+            'achievements': successes
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class ReplaceVisibleDeposits(APIView):

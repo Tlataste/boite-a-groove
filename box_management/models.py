@@ -35,13 +35,26 @@ class Song(models.Model):
 class Deposit(models.Model):
     # Overriding of the save() method in order to avoid 'auto_now_add=True' which makes DateTimeField uneditable
     def save(self, *args, **kwargs):
-        self.deposited_at = timezone.now()
+        if not self.pk:  # Check if it's the first save
+            self.deposited_at = timezone.now()
 
         super().save(*args, **kwargs)  # calling the save() method of the parent class (which is User)
+
+    NOTE_CHOICES = [
+        ('calme', 'Cette chanson m\'apaise et me détend !'),
+        ('danse', 'Cette chanson me donne envie de danser !'),
+        ('inspire', 'Cette chanson me pousse à être créatif !'),
+        ('joie', 'Cette chanson me met de bonne humeur !'),
+        ('motive', 'Cette chanson me motive pour la journée !'),
+        ('reflexion', 'Cette chanson me fait réfléchir sur la vie.'),
+        ('rire', 'Cette chanson me fait rire !'),
+        ('triste', 'Cette chanson me rend mélancolique !'),
+    ]
 
     song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    note = models.CharField(max_length=50, choices=NOTE_CHOICES, blank=True)
     # user_id = models.IntegerField()
     deposited_at = models.DateTimeField()
 
