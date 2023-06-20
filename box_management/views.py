@@ -116,8 +116,14 @@ class GetBox(APIView):
         note = 'rire'
         new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note)
 
-        # Ajout de points
+        # Adding points
         points_to_add = NB_POINTS_ADD_SONG  # Default minimum points gained by deposit
+        default_deposit = {
+            'name': "Pépite",
+            'desc': "Tu as partagé une chanson",
+            'points': NB_POINTS_ADD_SONG
+        }
+        successes['default_deposit'] = default_deposit
 
         # Achievements check :
         box = Box.objects.filter(name=box_name).get()
@@ -125,24 +131,44 @@ class GetBox(APIView):
         # check if it's the first time a user makes a deposit in a specific box
         if is_first_user_deposit(user, box):
             points_to_add += NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
-            successes['first_user_deposit_box'] = NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
+            # Create the dictionaries for each identity
+            first_user_deposit_box = {
+                'name': "Conquérant",
+                'desc': "Tu n'as jamais déposé ici",
+                'points': NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
+            }
+            successes['first_user_deposit_box'] = first_user_deposit_box
 
         # check if it's the first time that a song is deposited to a specific box
         if is_first_song_deposit(song, box):
             points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_BOX
-            successes['first_song_deposit_box'] = NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+            first_song_deposit = {
+                'name': "Far West",
+                'desc': "Ce son n'a jamais été déposé ici",
+                'points': NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+            }
+            successes['first_song_deposit'] = first_song_deposit
             # if it's the first time that a song is deposited on a box, we check all the network
             if is_first_song_deposit_global(song):
                 points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
-                successes['first_song_deposit_global'] = NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                first_song_deposit_global = {
+                    'name': "Far West",
+                    'desc': "Ce son n'a jamais été déposé sur notre réseau",
+                    'points': NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                }
+                successes['first_song_deposit_global'] = first_song_deposit_global
 
         # check if the user made deposits on consecutive dates
         nb_consecutive_days: int = get_consecutive_deposit_days(user, box)
         if nb_consecutive_days:
             consecutive_days_points = nb_consecutive_days * NB_POINTS_CONSECUTIVE_DAYS_BOX
             points_to_add += consecutive_days_points
-            successes['user_consecutive_days_box'] = consecutive_days_points
-            successes['nb_consecutive_days'] = nb_consecutive_days
+            consecutive_days = {
+                'name': "L'amour fou",
+                'desc': f"{nb_consecutive_days} jours consécutifs avec cette boite",
+                'points': consecutive_days_points
+            }
+            successes['consecutive_days'] = consecutive_days
 
         cookies = request.COOKIES
         csrf_token = get_token(request)
