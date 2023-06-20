@@ -61,8 +61,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
     fetch("../api_agg/aggreg", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        // window.open(data);
         window.location.href = data;
       });
   }
@@ -70,8 +68,6 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
 
   function replaceVisibleDeposit() {
     const csrftoken = getCookie("csrftoken");
-    console.log(deposits.last_deposits[depositIndex]);
-    console.log(searchSong)
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
@@ -86,6 +82,8 @@ export default function SongCard({ deposits, isDeposited, setStage, setDispSong,
       .then((data) => {
         console.log(data);
       }).then(()=>setDispSong(deposits.last_deposits_songs[depositIndex])).then(() => setStage(4))
+
+    fetch("../box-management/discovered-songs", requestOptions)
   }
 
   /**
