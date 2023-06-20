@@ -39,6 +39,9 @@ export default function MusicBox() {
 
   const [searchSong, setSearchSong] = useState("");
 
+  // The ID of the user who deposited the music selected by the current user
+  const [depositedBy, setDepositedBy] = useState(null);
+
   /**
    * Function to be executed when the component is mounted and the page is loaded
    * Check at page load (only) if user is authenticated with spotify and get the box's details
@@ -91,12 +94,13 @@ export default function MusicBox() {
               setStage={setStage}
               setDispSong={setDispSong}
               searchSong={searchSong}
+              setDepositedBy={setDepositedBy}
             />
           </>
         )}
         {stage === 4 && (
           <>
-            <SongDisplay dispSong={dispSong} />
+            <SongDisplay dispSong={dispSong} depositedBy={depositedBy} />
           </>
         )}
       </Box>
