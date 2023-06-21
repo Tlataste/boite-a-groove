@@ -153,7 +153,6 @@ export const updateVisibleDeposits = async (boxName) => {
       requestOptions
     );
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
       return [];
     }
@@ -178,7 +177,6 @@ export const setDepositNote = async (depositID, note) => {
       }),
     };
     const response = await fetch("/box-management/add-note", requestOptions);
-    console.log(response);
   } catch (error) {
     console.error(error);
   }

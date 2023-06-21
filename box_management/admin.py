@@ -4,10 +4,16 @@ from .models import *
 
 
 class BoxAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """
+    Class goal: This class represents a Music Box used in the admin interface to import/export data.
+    """
     list_display = ('name', 'description', 'url', 'image_url', 'client_name')
 
 
 class LocationPointAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """
+    Class goal: This class represents a Location Point used in the admin interface to import/export data.
+    """
     list_display = ('box_id', 'latitude', 'longitude', 'dist_location')
 
 

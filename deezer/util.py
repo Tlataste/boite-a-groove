@@ -1,9 +1,5 @@
 from .models import DeezerToken
-from django.utils import timezone
-from datetime import timedelta
 from requests import post, put, get
-from .credentials import APP_ID, APP_SECRET
-import json
 import requests
 
 BASE_URL = "https://api.deezer.com/"
@@ -32,7 +28,7 @@ def get_user_tokens(user):
             return user_tokens[0]
         else:
             return None
-
+    # Return None if the user is not authenticated
     except TypeError:
         return None
 
@@ -81,6 +77,7 @@ def disconnect_user(user):
     Disconnects the user from Deezer.
     """
     tokens = get_user_tokens(user)
+    # Delete the tokens associated with the user session if they exist
     if tokens:
         tokens.delete()
 
@@ -127,4 +124,5 @@ def execute_deezer_api_request(user, endpoint, post_=False, put_=False, recent=F
                                     params=user_params)
         else:
             response = requests.get(BASE_URL + endpoint, headers=headers, params=user_params)
+    # Return the JSON response
     return response

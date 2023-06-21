@@ -131,25 +131,44 @@ export default function UserProfilePage() {
     getDiscoveredSongs(setDiscoveredSongs);
   }, []);
 
+  /**
+   * Function that handles the click event for the connect button for Spotify.
+   */
   const handleButtonClickConnectSpotify = () => {
     authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
   };
 
+  /**
+   * Function that handles the click event for the disconnect button for Spotify.
+   */
   const handleButtonClickDisconnectSpotify = () => {
     disconnectSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+    // Relaod the page to update the UI
     window.location.reload();
   };
 
+  /**
+   * Function that handles the click event for the connect button for Deezer.
+   */
   const handleButtonClickConnectDeezer = () => {
     authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
   };
 
+  /**
+   * Function that handles the click event for the disconnect button for Deezer.
+   */
   const handleButtonClickDisconnectDeezer = () => {
     disconnectDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
+    // Relaod the page to update the UI
     window.location.reload();
   };
 
+  /**
+   * Function that returns the list of discovered songs.
+   * @param setDiscoveredSongs - The function to set the list of discovered songs.
+   */
   const getDiscoveredSongs = async (setDiscoveredSongs) => {
+    // Fetch the list of discovered songs
     const response = await fetch("../box-management/discovered-songs");
     const data = await response.json();
     if (response.ok) {
@@ -159,6 +178,10 @@ export default function UserProfilePage() {
     }
   }
 
+  /**
+   * Function that handles the change event for the provider selection.
+   * @param event - The event that triggered the function call.
+   */
   function handleProviderChange(event) {
     setSelectedProvider(event.target.value);
   }
@@ -176,7 +199,7 @@ export default function UserProfilePage() {
         platform: selectedProvider,
       }),
     };
-
+    // Send the request to the server
     fetch("../api_agg/aggreg", requestOptions)
       .then((response) => response.json())
       .then((data) => {
