@@ -22,7 +22,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),  # Any address with /api/...
     path('', include('frontend.urls')),
     path('spotify/', include('spotify.urls')),  # Any address with /spotify/...
     path('box-management/', include('box_management.urls')),

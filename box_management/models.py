@@ -5,6 +5,19 @@ from users.models import CustomUser
 
 
 class Box(models.Model):
+    """
+    Class goal: This class represents a Music Box.
+
+    Attributes:
+        name        : The name of the box.
+        description : The description of the box.
+        url         : The URL of the box.
+        image_url   : The URL of the image of the box.
+        created_at  : The date of creation of the box.
+        updated_at  : The date of the last update of the box.
+        client_name : The name of the client.
+        max_deposits: The maximum number of deposits allowed in the box.
+    """
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=150, blank=True)
     url = models.SlugField(blank=True)
@@ -15,10 +28,26 @@ class Box(models.Model):
     max_deposits = models.IntegerField(default=5)
 
     def __str__(self):
+        """
+        Method goal: Returns the name of the box used to display it in the admin interface.
+        """
         return self.name
 
 
 class Song(models.Model):
+    """
+    Class goal: This class represents a song.
+
+    Attributes:
+        song_id   : The id of the song.
+        title     : The title of the song.
+        artist    : The artist of the song.
+        url       : The URL of the song.
+        image_url : The URL of the image of the song.
+        duration  : The duration of the song.
+        platform_id: The id of the platform on which the song is available.
+        n_deposits: The number of deposits of the song.
+    """
     song_id = models.CharField(max_length=15)
     title = models.CharField(max_length=50)
     artist = models.CharField(max_length=50)
@@ -29,19 +58,35 @@ class Song(models.Model):
     n_deposits = models.IntegerField(default=0)
 
     def __str__(self):
+        """
+        Method goal: Returns the title and the artist of the song used to display it in the admin interface.
+        """
         return self.title + ' - ' + self.artist
 
 
 class Deposit(models.Model):
     # Overriding of the save() method in order to avoid 'auto_now_add=True' which makes DateTimeField uneditable
     def save(self, *args, **kwargs):
-        self.deposited_at = timezone.now()
+        if not self.pk:  # Check if it's the first save
+            self.deposited_at = timezone.now()
 
         super().save(*args, **kwargs)  # calling the save() method of the parent class (which is User)
+
+    NOTE_CHOICES = [
+        ('calme', 'Cette chanson m\'apaise et me détend !'),
+        ('danse', 'Cette chanson me donne envie de danser !'),
+        ('inspire', 'Cette chanson me pousse à être créatif !'),
+        ('joie', 'Cette chanson me met de bonne humeur !'),
+        ('motive', 'Cette chanson me motive pour la journée !'),
+        ('reflexion', 'Cette chanson me fait réfléchir sur la vie.'),
+        ('rire', 'Cette chanson me fait rire !'),
+        ('triste', 'Cette chanson me rend mélancolique !'),
+    ]
 
     song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    note = models.CharField(max_length=50, choices=NOTE_CHOICES, blank=True)
     # user_id = models.IntegerField()
     deposited_at = models.DateTimeField()
 
@@ -50,12 +95,25 @@ class Deposit(models.Model):
 
 
 class LocationPoint(models.Model):
+    """
+    Class goal: This class represents a location point.
+
+    Attributes:
+        box_id       : The id of the box.
+        latitude     : The latitude of the location point.
+        longitude    : The longitude of the location point.
+        dist_location: The maximum distance between the user and the location point.
+    """
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
     latitude = models.FloatField()
     longitude = models.FloatField()
     dist_location = models.IntegerField(default=100)
 
     def __str__(self):
+        """
+        Method goal: Returns the name of the box, the latitude and the longitude of the location point
+        used to display it in the admin interface.
+        """
         box_name = Box.objects.get(id=self.box_id_id).name
         return box_name + ' - ' + str(self.latitude) + ' - ' + str(self.longitude)
 
@@ -65,3 +123,21 @@ class VisibleDeposit(models.Model):
 
     def __str__(self):
         return str(self.id) + '-' + str(self.deposit_id)
+
+
+class DiscoveredSong(models.Model):
+    """
+    Class goal: This class represents a discovered song.
+
+    Attributes:
+        song_id   : The id of the song.
+        user_id   : The id of the user.
+    """
+    deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        """
+        Method goal: Returns the id of the user and the id of the deposit used to display it in the admin interface.
+        """
+        return str(self.user_id) + ' - ' + str(self.deposit_id)

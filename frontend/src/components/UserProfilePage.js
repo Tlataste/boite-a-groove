@@ -23,6 +23,7 @@ import {
   disconnectSpotifyUser,
 } from "./MusicBox/SpotifyUtils";
 import { useNavigate } from "react-router-dom";
+import CardMedia from "@mui/material/CardMedia";
 
 // Styles
 const styles = {
@@ -76,12 +77,43 @@ const styles = {
       border: "none",
     },
   },
+  musicBox: {
+    marginTop: "16px",
+    border: "1px solid gray",
+    padding: "16px",
+    borderRadius: "4px",
+    marginBottom: "5px",
+  },
+  musicBoxTitle: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginBottom: "8px",
+  },
+  musicBoxContent: {
+    marginBottom: "8px",
+  },
+  disconnectButton: {
+    margin: "10px 10px",
+     borderRadius: "20px",
+    backgroundImage: "linear-gradient(to right, #fa9500, #fa4000)",
+    color: "white",
+    border: "none",
+    textTransform: "none",
+    "&:hover": {
+      border: "none",
+    },
+  }
 };
 
 export default function UserProfilePage() {
   // States & Variables
   const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
   const [isDeezerAuthenticated, setIsDeezerAuthenticated] = useState(false);
+
+  const [discoveredSongs, setDiscoveredSongs] = useState([]);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+
+  const [selectedProvider, setSelectedProvider] = useState("spotify");
 
   const { user, setUser, setIsAuthenticated } = useContext(UserContext);
 
@@ -96,26 +128,84 @@ export default function UserProfilePage() {
   useEffect(() => {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
     checkDeezerAuthentication(setIsDeezerAuthenticated);
+    getDiscoveredSongs(setDiscoveredSongs);
   }, []);
 
+  /**
+   * Function that handles the click event for the connect button for Spotify.
+   */
   const handleButtonClickConnectSpotify = () => {
     authenticateSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
   };
 
+  /**
+   * Function that handles the click event for the disconnect button for Spotify.
+   */
   const handleButtonClickDisconnectSpotify = () => {
     disconnectSpotifyUser(isSpotifyAuthenticated, setIsSpotifyAuthenticated);
+    // Relaod the page to update the UI
     window.location.reload();
   };
 
+  /**
+   * Function that handles the click event for the connect button for Deezer.
+   */
   const handleButtonClickConnectDeezer = () => {
     authenticateDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
   };
 
+  /**
+   * Function that handles the click event for the disconnect button for Deezer.
+   */
   const handleButtonClickDisconnectDeezer = () => {
     disconnectDeezerUser(isDeezerAuthenticated, setIsDeezerAuthenticated);
+    // Relaod the page to update the UI
     window.location.reload();
   };
 
+  /**
+   * Function that returns the list of discovered songs.
+   * @param setDiscoveredSongs - The function to set the list of discovered songs.
+   */
+  const getDiscoveredSongs = async (setDiscoveredSongs) => {
+    // Fetch the list of discovered songs
+    const response = await fetch("../box-management/discovered-songs");
+    const data = await response.json();
+    if (response.ok) {
+      setDiscoveredSongs(data);
+    } else {
+        console.log(data);
+    }
+  }
+
+  /**
+   * Function that handles the change event for the provider selection.
+   * @param event - The event that triggered the function call.
+   */
+  function handleProviderChange(event) {
+    setSelectedProvider(event.target.value);
+  }
+
+/**
+   * Handles the click event for the "Go to link" button.
+ */
+  function redirectToLink() {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
+      body: JSON.stringify({
+        song: discoveredSongs[currentSongIndex],
+        platform: selectedProvider,
+      }),
+    };
+    // Send the request to the server
+    fetch("../api_agg/aggreg", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        window.location.href = data;
+      });
+  }
   const handlePasswordChange = () => {
     setShowPasswordForm(true);
   };
@@ -238,7 +328,7 @@ export default function UserProfilePage() {
               <Avatar
                 style={styles.avatar}
                 src={user.profile_picture_url}
-                alt="User Avatar"
+                alt={user.username}
                 component="span"
               />
               <EditIcon style={styles.editIcon} />
@@ -485,11 +575,81 @@ export default function UserProfilePage() {
             </Grid>
           </Grid>
         </Grid>
-
+          <Grid container spacing={2}>
+             <Grid item xs={12}>
+              <Box style={styles.musicBox}>
+                <Typography variant="h6" style={styles.musicBoxTitle}>
+                  Chansons découvertes
+                </Typography>
+                {discoveredSongs.length > 0 ? (
+                  <div>
+                    <Typography variant="body1" style={styles.musicBoxContent}>
+                      <strong>Titre :</strong> {discoveredSongs[currentSongIndex].title}
+                    </Typography>
+                    <Typography variant="body1" style={styles.musicBoxContent}>
+                      <strong>Artiste :</strong> {discoveredSongs[currentSongIndex].artist}
+                    </Typography>
+                   <CardMedia
+                      component="img"
+                      sx={{ width: 150 }}
+                      image={discoveredSongs[currentSongIndex].image_url}
+                      alt="Track cover"
+                    />
+                    <Box sx={{ flex: "1 0 auto", display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+              <select value={selectedProvider} onChange={handleProviderChange}>
+                <option value="spotify">
+                  Spotify
+                </option>
+                <option value="deezer">
+                  Deezer
+                </option>
+              </select>
+              </Box>
+              <Box sx={{ flex: "1 0 auto" }}>
+                <button
+                  onClick={() => {redirectToLink()}}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Aller vers ...
+                </button>
+              </Box>
+                  </div>
+                ) : (
+                  <Typography variant="body1" style={styles.musicBoxContent}>
+                    Vous n'avez pas encore découvert de chansons.
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
+          <Grid item xs={12}>
+            <Box style={styles.navigationButtons}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={currentSongIndex === 0 || discoveredSongs.length === 0}
+                onClick={() => setCurrentSongIndex(currentSongIndex - 1)}
+              >
+                Chanson précédente
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={currentSongIndex === discoveredSongs.length - 1 || discoveredSongs.length === 0}
+                onClick={() => setCurrentSongIndex(currentSongIndex + 1)}
+              >
+                Chanson suivante
+              </Button>
+              </Box>
+            </Grid>
+          </Grid>
         <Button
           variant="contained"
           onClick={() => logoutUser(setUser, setIsAuthenticated)}
-          style={styles.basicButton}
+          style={styles.disconnectButton}
         >
           Déconnexion
         </Button>

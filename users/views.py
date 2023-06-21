@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .forms import RegisterUserForm
 from social_django.models import UserSocialAuth
+from .serializer import CustomUserSerializer
+from .models import CustomUser
+from box_management.models import Deposit
 
 
 class LoginUser(APIView):
@@ -51,7 +54,7 @@ class LogoutUser(APIView):
     '''
 
     def get(self, request, format=None):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated:  # if user is connected
             logout(request)
             is_logged_out = True
             return Response({'status': is_logged_out},
@@ -144,6 +147,10 @@ class ChangePasswordUser(APIView):
 
 
 class ChangeProfilePicture(APIView):
+    '''
+    Class goal :
+    While logged in, change your profile picture (will erase the old one from the DB)
+    '''
     def post(self, request, format=None):
         # Guard clause that checks if user is logged in
         if not request.user.is_authenticated:
@@ -170,6 +177,9 @@ class ChangeProfilePicture(APIView):
 
 
 class ChangePreferredPlatform(APIView):
+    '''
+    Class goal : In your profile section, select your preferred platform (eg. Deezer or Spotify)
+    '''
     def post(self, request, format=None):
         # Guard clause that checks if user is logged in
         if not request.user.is_authenticated:
@@ -196,6 +206,9 @@ class ChangePreferredPlatform(APIView):
 
 
 class CheckAuthentication(APIView):
+    '''
+    Class goal : check if the user is authenticated
+    '''
     def get(self, request, format=None):
         if request.user.is_authenticated:
             user = request.user
@@ -238,6 +251,9 @@ class CheckAuthentication(APIView):
 
 
 class AddUserPoints(APIView):
+    '''
+    Class goal : add (or delete) points to the user connected
+    '''
     def post(self, request, format=None):
         # Guard clause that checks if user is logged in
         if not request.user.is_authenticated:
@@ -260,6 +276,9 @@ class AddUserPoints(APIView):
 
 
 class GetUserPoints(APIView):
+    '''
+    Class goal : retrieve number of points of the user connected
+    '''
     def get(self, request, format=None):
         # Guard clause that checks if user is logged in
         if not request.user.is_authenticated:
@@ -271,5 +290,22 @@ class GetUserPoints(APIView):
         return Response({'points': points}, status=status.HTTP_200_OK)
 
 
-def example(request):
-    return render(request, 'connect.html', {})
+class GetUserInfo(APIView):
+    '''
+    Class goal : get users info
+    '''
+    lookup_url_kwarg = 'userID'
+    serializer_class = CustomUserSerializer
+
+    def get(self, request, format=None):
+        user_id = request.GET.get(self.lookup_url_kwarg)
+        if user_id is not None:
+            user = get_object_or_404(CustomUser, id=user_id)
+            serializer = CustomUserSerializer(user)
+            total_deposits = Deposit.objects.filter(user=user).count()
+            response = {}
+            response = serializer.data
+            response['total_deposits'] = total_deposits
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            return Response({'Bad Request': 'User ID not found in request'}, status=status.HTTP_400_BAD_REQUEST)

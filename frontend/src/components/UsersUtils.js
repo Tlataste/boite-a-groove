@@ -85,3 +85,23 @@ export const setPreferredPlatform = async (new_preferred_platform) => {
     return false;
   }
 };
+
+/**
+ * Retrieves user details from the server using the provided userID.
+ * @param {string} userID - The ID of the user to fetch details for.
+ * @returns {Promise<Object|null>} - A Promise that resolves to the user details object if successful, or null if there was an error.
+ */
+export const getUserDetails = async (userID) => {
+  try {
+    const response = await fetch("/users/get-user-info?userID=" + userID);
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    // console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

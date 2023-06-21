@@ -16,6 +16,7 @@ export default function LiveSearch({
   user,
   setStage,
   setSearchSong,
+  setAchievements,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
@@ -47,10 +48,11 @@ export default function LiveSearch({
    */
   useEffect(() => {
     const getData = setTimeout(() => {
-      // console.log("Live search - Auth ? " + isSpotifyAuthenticated);
-      // console.log("Live search - Auth ? " + isDeezerAuthenticated);
+      // Check if the user has selected spotify or deezer
       if (selectedStreamingService === "spotify") {
+        // Check if the search bar is empty
         if (searchValue === "") {
+          // Check if the user is authenticated with spotify
           if (isSpotifyAuthenticated) {
             fetch("/spotify/recent-tracks")
               .then((response) => response.json())
@@ -82,9 +84,11 @@ export default function LiveSearch({
             });
         }
       }
-
+      // Check if the user has selected deezer
       if (selectedStreamingService === "deezer") {
+        // Check if the search bar is empty
         if (searchValue === "") {
+          // Check if the user is authenticated with deezer
           if (isDeezerAuthenticated) {
             fetch("/deezer/recent-tracks")
               .then((response) => response.json())
@@ -107,7 +111,7 @@ export default function LiveSearch({
               search_query: searchValue,
             }),
           };
-
+          // Perform a search using the searchValue and set the results to the jsonResults state variable
           fetch("/deezer/search", requestOptions)
             .then((response) => response.json())
             .then((data) => {
@@ -126,6 +130,11 @@ export default function LiveSearch({
     isSpotifyAuthenticated,
   ]);
 
+  /**
+   * Handles the deposit of a song to a box.
+   * @param option - The selected option.
+   * @param boxName - The name of the box.
+   */
   function handleButtonClick(option, boxName) {
     const data = { option, boxName };
     // console.log(option);
@@ -139,13 +148,22 @@ export default function LiveSearch({
         "X-CSRFToken": csrftoken,
       },
       body: jsonData,
-    }).then((response) => response.json())
-        .then((data_resp) => {
-    setSearchSong(data_resp);
-  });
+    })
+      .then((response) => response.json())
+      .then((data_resp) => {
+        console.log(data_resp);
+        // Set the search song to the new deposit
+        setSearchSong(data_resp.new_deposit);
+        setAchievements(data_resp.achievements);
+      });
     setIsDeposited(true);
     setStage(3);
   }
+
+  /**
+   * Handles the change of the streaming service.
+   * @param service - The selected streaming service.
+   */
   function handleStreamingServiceChange(service) {
     setSelectedStreamingService(service);
   }
