@@ -117,6 +117,7 @@ class GetBox(APIView):
         new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note)
 
         # Adding points
+        successes: dict = {}
         points_to_add = NB_POINTS_ADD_SONG  # Default minimum points gained by deposit
         default_deposit = {
             'name': "Pépite",
@@ -127,7 +128,6 @@ class GetBox(APIView):
 
         # Achievements check :
         box = Box.objects.filter(name=box_name).get()
-        successes: dict = {}
         # check if it's the first time a user makes a deposit in a specific box
         if is_first_user_deposit(user, box):
             points_to_add += NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
