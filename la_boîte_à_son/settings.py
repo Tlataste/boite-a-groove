@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from spotify.credentials import CLIENT_ID, CLIENT_SECRET
-from deezer.credentials import APP_ID, APP_SECRET
+from deezer.credentials import LOGIN_APP_ID, LOGIN_APP_SECRET
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'import_export',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig',
     'frontend.apps.FrontendConfig',
     'rest_framework',
     'django_extensions',
@@ -175,7 +174,7 @@ SOCIAL_AUTH_SPOTIFY_EXTRA_DATA = [('email', 'email')]
 
 # Social-Auth settings for Deezer provider
 
-SOCIAL_AUTH_DEEZER_KEY = APP_ID
-SOCIAL_AUTH_DEEZER_SECRET = APP_SECRET
+SOCIAL_AUTH_DEEZER_KEY = LOGIN_APP_ID
+SOCIAL_AUTH_DEEZER_SECRET = LOGIN_APP_SECRET
 SOCIAL_AUTH_DEEZER_SCOPE = ['user-read-email']
 SOCIAL_AUTH_DEEZER_EXTRA_DATA = [('email', 'email')]

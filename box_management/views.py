@@ -317,10 +317,11 @@ class ManageDiscoveredSongs(APIView):
         get: Get the discovered songs of the user
         post: Add a deposit to the discovered songs of the user
     """
+    '''Class goal : manage the discovered songs of the user'''
 
     def post(self, request):
         """
-        Add a deposit to the discovered songs of the user
+        Method goal : Add a deposit to the discovered songs of the user
 
             Args:
                 request: The request sent by the user
@@ -383,6 +384,9 @@ class ManageDiscoveredSongs(APIView):
 
 
 class AddDepositNote(APIView):
+    '''
+    Class goal : add a note to a deposit
+    '''
     def post(self, request, format=None):
         note = request.data.get('note')
 
