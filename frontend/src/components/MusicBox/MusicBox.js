@@ -109,7 +109,11 @@ export default function MusicBox() {
         )}
         {stage === 5 && (
           <>
-            <SongDisplay dispSong={dispSong} depositedBy={depositedBy} />
+            <SongDisplay
+              dispSong={dispSong}
+              depositedBy={depositedBy}
+              achievements={achievements}
+            />
           </>
         )}
       </Box>
