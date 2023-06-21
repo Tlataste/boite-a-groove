@@ -138,6 +138,10 @@ export const navigateToCurrentBox = async (navigate) => {
   }
 };
 
+/**
+ * Retrieves the list of all the Music Boxes.
+ * @param boxName - The name of the box to retrieve details for.
+ */
 export const updateVisibleDeposits = async (boxName) => {
   try {
     const csrftoken = getCookie("csrftoken");
@@ -148,6 +152,7 @@ export const updateVisibleDeposits = async (boxName) => {
         boxName: boxName,
       }),
     };
+    // update the list of visible deposits
     const response = await fetch(
       "../box-management/update-visible-deposits",
       requestOptions
