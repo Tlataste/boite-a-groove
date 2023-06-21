@@ -2,7 +2,7 @@ import csv
 
 from django.contrib import admin
 from django.db.models import Count
-from django.db.models.functions import TruncMonth, TruncWeek, TruncDay
+from django.db.models.functions import TruncMonth, TruncWeek, TruncDay, TruncDate
 from django.http import HttpResponse
 from import_export.admin import ImportExportModelAdmin
 from .models import *
@@ -79,36 +79,21 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         response['Content-Disposition'] = 'attachment; filename="active_users.csv"'
 
         writer = csv.writer(response)
-        writer.writerow(['User', 'Box', 'Period', 'Number of Deposits'])
+        writer.writerow(['User', 'Box', 'Date', 'Number of Deposits'])
 
-        # Export active users globally by month
-        active_users_month = CustomUser.objects.filter(deposit__isnull=False).annotate(
-            period=TruncMonth('deposit__deposited_at')).values('username', 'period').annotate(
+        # Export active users globally by date
+        active_users_date = CustomUser.objects.filter(deposit__isnull=False).annotate(
+            date=TruncDate('deposit__deposited_at')).values('username', 'date').annotate(count=Count('deposit__id'))
+        for user in active_users_date:
+            writer.writerow([user['username'], 'Global', user['date'].strftime('%Y-%m-%d'), user['count']])
+
+        # Export active users by box and date
+        active_users_box_date = CustomUser.objects.filter(deposit__isnull=False).annotate(
+            date=TruncDate('deposit__deposited_at')).values('username', 'deposit__box_id__name', 'date').annotate(
             count=Count('deposit__id'))
-        for user in active_users_month:
-            writer.writerow([user['username'], 'Global', user['period'].strftime('%Y-%m'), user['count']])
-
-        # Export active users globally by week
-        active_users_week = CustomUser.objects.filter(deposit__isnull=False).annotate(
-            period=TruncWeek('deposit__deposited_at')).values('username', 'period').annotate(count=Count('deposit__id'))
-        for user in active_users_week:
-            writer.writerow([user['username'], 'Global', user['period'].strftime('%Y-%W'), user['count']])
-
-        # Export active users by box and month
-        active_users_box_month = CustomUser.objects.filter(deposit__isnull=False).annotate(
-            period=TruncMonth('deposit__deposited_at')).values('username', 'deposit__box_id__name', 'period').annotate(
-            count=Count('deposit__id'))
-        for user in active_users_box_month:
+        for user in active_users_box_date:
             writer.writerow(
-                [user['username'], user['deposit__box_id__name'], user['period'].strftime('%Y-%m'), user['count']])
-
-        # Export active users by box and week
-        active_users_box_week = CustomUser.objects.filter(deposit__isnull=False).annotate(
-            period=TruncWeek('deposit__deposited_at')).values('username', 'deposit__box_id__name', 'period').annotate(
-            count=Count('deposit__id'))
-        for user in active_users_box_week:
-            writer.writerow(
-                [user['username'], user['deposit__box_id__name'], user['period'].strftime('%Y-%W'), user['count']])
+                [user['username'], user['deposit__box_id__name'], user['date'].strftime('%Y-%m-%d'), user['count']])
 
         return response
 
