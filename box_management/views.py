@@ -310,9 +310,10 @@ class UpdateVisibleDeposits(APIView):
 
 
 class ManageDiscoveredSongs(APIView):
-    """Class used to update and get the discovered songs of the user"""
+    '''Class goal : manage the discovered songs of the user'''
 
     def post(self, request):
+        '''Method goal : update the discovered songs'''
         user = request.user
 
         # Check if the user is authenticated
@@ -337,6 +338,7 @@ class ManageDiscoveredSongs(APIView):
                 return Response({'success': True}, status=status.HTTP_200_OK)
 
     def get(self, request):
+        '''Method goal : get the currently discovered songs'''
         # Get the user
         user = request.user
         # Check if the user is authenticated
@@ -359,6 +361,9 @@ class ManageDiscoveredSongs(APIView):
 
 
 class AddDepositNote(APIView):
+    '''
+    Class goal : add a note to a deposit
+    '''
     def post(self, request, format=None):
         note = request.data.get('note')
 
