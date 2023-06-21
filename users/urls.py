@@ -11,6 +11,5 @@ urlpatterns = [
     path('change-preferred-platform', views.ChangePreferredPlatform.as_view(), name="change-preferred-platform"),
     path('add-points', views.AddUserPoints.as_view(), name='add-points'),
     path('get-points', views.GetUserPoints.as_view(), name='get-points'),
-    path('get-user-info', views.GetUserInfo.as_view(), name='get-user-info'),
-    path('example', views.example, name="example"),
+    path('get-user-info', views.GetUserInfo.as_view(), name='get-user-info')
 ]
