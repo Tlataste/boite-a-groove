@@ -310,9 +310,25 @@ class UpdateVisibleDeposits(APIView):
 
 
 class ManageDiscoveredSongs(APIView):
-    """Class used to update and get the discovered songs of the user"""
+    """
+    Class used to update and get the discovered songs of the user
+
+    Methods:
+        get: Get the discovered songs of the user
+        post: Add a deposit to the discovered songs of the user
+    """
 
     def post(self, request):
+        """
+        Add a deposit to the discovered songs of the user
+
+            Args:
+                request: The request sent by the user
+
+            Returns:
+                A response with the status of the request
+        """
+        # Get the user
         user = request.user
 
         # Check if the user is authenticated
@@ -337,6 +353,14 @@ class ManageDiscoveredSongs(APIView):
                 return Response({'success': True}, status=status.HTTP_200_OK)
 
     def get(self, request):
+        """ Get the discovered songs of the user
+
+            Args:
+                request: The request sent by the user
+
+            Returns:
+                A response with the discovered songs of the user
+        """
         # Get the user
         user = request.user
         # Check if the user is authenticated
