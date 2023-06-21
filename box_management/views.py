@@ -113,8 +113,7 @@ class GetBox(APIView):
         # Create a new deposit
         box = Box.objects.filter(name=box_name).get()
         user = request.user if not isinstance(request.user, AnonymousUser) else None
-        note = 'rire'
-        new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note)
+        new_deposit = Deposit(song_id=song, box_id=box, user=user)
 
         # Adding points
         successes: dict = {}
@@ -163,6 +162,7 @@ class GetBox(APIView):
         if nb_consecutive_days:
             consecutive_days_points = nb_consecutive_days * NB_POINTS_CONSECUTIVE_DAYS_BOX
             points_to_add += consecutive_days_points
+            nb_consecutive_days += 1  # If we win 2*NB_points it means that we used the box for 3 days so we add 1 for display purposes
             consecutive_days = {
                 'name': "L'amour fou",
                 'desc': f"{nb_consecutive_days} jours consécutifs avec cette boite",
@@ -345,3 +345,28 @@ class ManageDiscoveredSongs(APIView):
         # Serialize the discovered songs
         serializer = SongSerializer(discovered_songs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AddDepositNote(APIView):
+    def post(self, request, format=None):
+        note = request.data.get('note')
+
+        # A note is optional
+        if not note:
+            return Response({'status': 'Pas de note choisie'}, status=status.HTTP_200_OK)
+
+        try:
+            deposit_id = request.data.get('deposit_id')
+            deposit = Deposit.objects.get(id=deposit_id)
+
+            # Guard clause that checks if the note is a valid choice
+            if note not in dict(deposit.NOTE_CHOICES):
+                return Response({'status': 'Cette note n\'existe pas'}, status=status.HTTP_400_BAD_REQUEST)
+
+            deposit.note = note
+            deposit.save()
+
+            return Response({'status': 'Note ajoutée avec succès'}, status=status.HTTP_200_OK)
+
+        except Deposit.DoesNotExist:
+            return Response({'status': 'Dépôt introuvable'}, status=status.HTTP_401_UNAUTHORIZED)
