@@ -81,9 +81,9 @@ class ReplaceVisibleDeposits(APIView):
         box_id = request.data.get('visible_deposit').get('box_id')
         visible_deposit_id = request.data.get('visible_deposit').get('id')
         search_deposit_id = request.data.get('search_deposit').get('id')
-
+        visible_deposit_id = Song.objects.filter(id=visible_deposit_id).get()
         # Delete the visible deposit disclosed by the user
-        VisibleDeposit.objects.filter(deposit_id_id=visible_deposit_id).delete()
+        VisibleDeposit.objects.filter(deposit_id__song_id=visible_deposit_id).delete()
 
         # Get the most recent deposit that is not in the visible deposits
         i = 0
