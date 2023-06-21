@@ -65,6 +65,7 @@ class GetBox(APIView):
                                                       .values('deposit_id')).order_by('-deposited_at')
                 # Get the names of the songs corresponding to the deposits
                 songs = Song.objects.filter(id__in=last_deposit.values('song_id')).order_by('-id')
+                # Serialize the objects
                 songs = SongSerializer(songs, many=True).data
                 last_deposit = DepositSerializer(last_deposit, many=True).data
 
@@ -89,14 +90,9 @@ class GetBox(APIView):
         song_platform_id = option.get('platform_id')
         box_name = request.data.get('boxName')
 
-        # # Normalise the song and artist names
-        # song_name = normalize_string(song_name)
-        # song_author = normalize_string(song_author)
-
         # Verify if the song already exists
         try:
-            song = Song.objects.filter(song_id=song_id, title=song_name, artist=song_author,
-                                       platform_id=song_platform_id).get()
+            song = Song.objects.filter(title=song_name, artist=song_author).get()
             song.n_deposits += 1
             song.save()
 
@@ -201,9 +197,9 @@ class ReplaceVisibleDeposits(APIView):
         box_id = request.data.get('visible_deposit').get('box_id')
         visible_deposit_id = request.data.get('visible_deposit').get('id')
         search_deposit_id = request.data.get('search_deposit').get('id')
-
+        visible_deposit_id = Song.objects.filter(id=visible_deposit_id).get()
         # Delete the visible deposit disclosed by the user
-        VisibleDeposit.objects.filter(deposit_id_id=visible_deposit_id).delete()
+        VisibleDeposit.objects.filter(deposit_id__song_id=visible_deposit_id).delete()
 
         # Get the most recent deposit that is not in the visible deposits
         i = 0
@@ -213,8 +209,12 @@ class ReplaceVisibleDeposits(APIView):
 
         # Create a new visible deposit with the search deposit
         search_deposit = Deposit.objects.filter(id=search_deposit_id).get()
-        VisibleDeposit(deposit_id=search_deposit).save()
-        return Response({'success': True}, status=status.HTTP_200_OK)
+        # Check if the search deposit is not already visible
+        if len(VisibleDeposit.objects.filter(deposit_id__song_id=search_deposit.song_id)) == 0:
+            VisibleDeposit(deposit_id=search_deposit).save()
+            return Response({'success': True}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'The search deposit is already visible'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Location(APIView):
@@ -300,10 +300,12 @@ class UpdateVisibleDeposits(APIView):
             n_deposits_to_add = max_deposits - n_visible_deposits
             # Get the last n_deposits_to_add deposits of the box that are not visible
             deposits_to_add = Deposit.objects.filter(box_id=box).exclude(
-                id__in=visible_deposits.values('deposit_id')).order_by('-deposited_at')[:n_deposits_to_add]
+                song_id__in=visible_deposits.values('deposit_id__song_id')).order_by('-deposited_at')[:n_deposits_to_add]
             # Add the deposits to the visible deposits
             for deposit in deposits_to_add:
-                VisibleDeposit(deposit_id=deposit).save()
+                # check if the song is already linked to a visible deposit
+                if not VisibleDeposit.objects.filter(deposit_id__song_id=deposit.song_id).exists():
+                    VisibleDeposit(deposit_id=deposit).save()
         return Response({'success': True}, status=status.HTTP_200_OK)
 
 
@@ -321,9 +323,18 @@ class ManageDiscoveredSongs(APIView):
             # Add the deposit to the user's discovered songs
             deposit_id = request.data.get('visible_deposit').get('id')
             deposit = Deposit.objects.filter(id=deposit_id).get()
-            # Create a new discovered song linked to the user
-            DiscoveredSong(user_id=user, deposit_id=deposit).save()
-            return Response({'success': True}, status=status.HTTP_200_OK)
+            # Get the song_id linked to the deposit of the user
+            song_id = deposit.song_id
+            # Check if the song is linked to another deposit
+            if DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_id.artist,
+                                             deposit_id__song_id__title=song_id.title).exists():
+                # The song is already linked to another deposit
+                return Response({'error': 'Cette chanson est déjà liée à un autre dépôt.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # Create a new discovered song linked to the user
+                DiscoveredSong(user_id=user, deposit_id=deposit).save()
+                return Response({'success': True}, status=status.HTTP_200_OK)
 
     def get(self, request):
         # Get the user

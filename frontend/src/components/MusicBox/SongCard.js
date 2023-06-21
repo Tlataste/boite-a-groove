@@ -56,7 +56,7 @@ export default function SongCard({
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
-        visible_deposit: deposits.last_deposits[depositIndex],
+        visible_deposit: deposits.last_deposits_songs[depositIndex],
         search_deposit: searchSong,
       }),
     };
