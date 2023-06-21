@@ -8,21 +8,16 @@ import requests
 BASE_URL = "https://api.spotify.com/v1/me/"
 
 
-# Check if the user already exists
-
-
 def get_user_tokens(user):
     """
-    Retrieves the Spotify tokens associated with a user session.
+    Retrieves the Spotify tokens associated with a user.
 
     Args:
-        user: The username of the user.
+        user: CustomUser object.
 
     Returns:
-        The SpotifyToken object associated with the user session, or None if no tokens are found.
+        The SpotifyToken object associated with the user, or None if no tokens are found.
     """
-
-    # Query the SpotifyToken objects for tokens associated with the user session
     try:
         user_tokens = SpotifyToken.objects.filter(user=user)
         # Check if any tokens exist for the user session
@@ -36,10 +31,10 @@ def get_user_tokens(user):
 
 def update_or_create_user_tokens(user, access_token, token_type, expires_in, refresh_token):
     """
-    Updates or creates Spotify tokens for a user session.
+    Updates or creates Spotify tokens for a user.
 
     Args:
-        user: The username of the user.
+        user: CustomUser object.
         access_token: The access token received from Spotify.
         token_type: The type of access token (e.g., "Bearer").
         expires_in: The expiration time of the access token in seconds.
@@ -49,7 +44,7 @@ def update_or_create_user_tokens(user, access_token, token_type, expires_in, ref
         None
     """
 
-    # Retrieve existing tokens associated with the user session
+    # Retrieve existing tokens associated with the user
     tokens = get_user_tokens(user)
 
     # Calculate the expiration time for the access token
@@ -71,15 +66,15 @@ def update_or_create_user_tokens(user, access_token, token_type, expires_in, ref
 
 def is_spotify_authenticated(user):
     """
-    Checks if a user session is authenticated with Spotify.
+    Checks if a user is authenticated with Spotify.
 
     Args:
-        user: The username of the user.
+        user: CustomUser object.
     Returns:
-        True if the user session is authenticated with Spotify, False otherwise.
+        True if the user is authenticated with Spotify, False otherwise.
     """
 
-    # Retrieve the Spotify tokens associated with the user session
+    # Retrieve the Spotify tokens associated with the user
     if user.is_authenticated:
         tokens = get_user_tokens(user)
 
@@ -109,15 +104,15 @@ def disconnect_user(user):
 
 def refresh_spotify_token(user):
     """
-    Refreshes the Spotify access token for a user session using the refresh token.
+    Refreshes the Spotify access token for a user using the refresh token.
 
     Args:
-        user: The username of the user.
+        user: CustomUser object.
     Returns:
         None
     """
 
-    # Retrieve the refresh token associated with the user session
+    # Retrieve the refresh token associated with the user
     refresh_token = get_user_tokens(user).refresh_token
 
     # Send a POST request to the Spotify API to refresh the access token
@@ -139,10 +134,10 @@ def refresh_spotify_token(user):
 
 def execute_spotify_api_request(user, endpoint, post_=False, put_=False):
     """
-    Executes a request to the Spotify API with the provided session ID, endpoint, and request type.
+    Executes a request to the Spotify API with the provided user, endpoint, and request type.
 
     Args:
-        user: The username of the user.
+        user: CustomUser object.
         endpoint: The API endpoint to request.
         post_: Optional flag to indicate if the request should be a POST request (default: False).
         put_: Optional flag to indicate if the request should be a PUT request (default: False).
@@ -151,7 +146,7 @@ def execute_spotify_api_request(user, endpoint, post_=False, put_=False):
         The JSON response from the Spotify API.
     """
 
-    # Retrieve the Spotify tokens associated with the user session
+    # Retrieve the Spotify tokens associated with the user
     tokens = get_user_tokens(user)
 
     # Prepare the headers for the API request

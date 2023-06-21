@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import redirect
 from .credentials import REDIRECT_URI, APP_ID, APP_SECRET
 from rest_framework.views import APIView
@@ -96,7 +97,7 @@ def deezer_callback(request, format=None):
         update_or_create_user_tokens(user, access_token)
 
     # Update or create the user tokens in the database
-    # Redirect back to the home page
+    # Redirect back to the profile page
     # If we want to redirect to the register page for example we should write frontend:register
     return redirect('frontend:profile')
 
