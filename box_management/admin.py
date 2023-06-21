@@ -12,9 +12,9 @@ class LocationPointAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('song_id', 'box_id', 'deposited_at', 'user', 'note')
-    list_filter = ('song_id', 'box_id', 'deposited_at', 'user', 'note')
-    search_fields = ('song_id__title', 'box_id__name', 'user')
+    list_display = ('id', 'song_id', 'box_id', 'deposited_at', 'user', 'note')
+    list_filter = ('id', 'song_id', 'box_id', 'deposited_at', 'user', 'note')
+    search_fields = ('id', 'song_id__title', 'box_id__name', 'user')
     ordering = ('-deposited_at',)
 
 
