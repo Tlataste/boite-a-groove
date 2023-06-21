@@ -119,6 +119,12 @@ class LocationPoint(models.Model):
 
 
 class VisibleDeposit(models.Model):
+    """
+    Class goal: This class represents a visible deposit, i.e. a deposit that is visible by the user in a box.
+
+    Attributes:
+        deposit_id: The id of the deposit.
+    """
     deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
 
     def __str__(self):
