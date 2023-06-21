@@ -51,6 +51,9 @@ export default function SongCard({
     }
   }
 
+  /**
+   * Handles the click event for the "Reveal" button.
+   */
   function replaceVisibleDeposit() {
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
@@ -61,8 +64,8 @@ export default function SongCard({
         search_deposit: searchSong,
       }),
     };
-    //console.log(requestOptions.body);
-
+ 
+      // Replace the visible deposit in the database
     fetch("../box-management/replace-visible-deposits", requestOptions)
       .then((response) => response.json())
       .then((data) => {

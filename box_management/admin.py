@@ -23,12 +23,27 @@ class LocationPointAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    """
+    Class goal: This class represents a Deposit used in the admin interface to import/export data.
+    From the admin interface, it is possible to export the deposits by box and month in order to study the statistics
+    and create graphs.
+    """
     list_display = ('id', 'song_id', 'box_id', 'deposited_at', 'user', 'note')
     list_filter = ('id', 'song_id', 'box_id', 'deposited_at', 'user', 'note')
     search_fields = ('id', 'song_id__title', 'box_id__name', 'user')
     ordering = ('-deposited_at',)
 
     def export_deposits_global(self, request, queryset):
+        """
+        Method goal: Export the deposits by box and month in order to study the statistics and create graphs.
+        Args:
+            request: empty
+            queryset: empty
+
+        Returns:
+            response: the response containing the csv file
+        """
+
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="deposits_global.csv"'
 
@@ -58,6 +73,16 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     export_deposits_global.short_description = "Export deposits as CSV"
 
     def export_deposits_distribution(self, request, queryset):
+        """
+        Method goal: Export the deposits by box, week and day in order to study the statistics and create graphs.
+        Args:
+            request: empty
+            queryset: empty
+
+        Returns:
+            response: the response containing the csv file
+        """
+
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="deposits_distribution_by_box.csv"'
 
@@ -80,6 +105,15 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     export_deposits_distribution.short_description = "Export deposits distribution as CSV"
 
     def export_active_users_csv(self, request, queryset):
+        """
+        Method goal: Export the active users by box, month and week in order to study the statistics and create graphs.
+        Args:
+            request: empty
+            queryset: empty
+
+        Returns:
+            response: the response containing the csv file
+        """
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="active_users.csv"'
 
@@ -106,6 +140,16 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     export_active_users_csv.short_description = "Export active users as CSV"
 
     def export_popular_songs_csv(self, request, queryset):
+        """
+        Method goal: Export the popular songs by box, month, week and day in order to study the statistics and create
+        graphs.
+        Args:
+            request: empty
+            queryset: empty
+
+        Returns:
+            response: the response containing the csv file
+        """
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="popular_songs.csv"'
 
@@ -133,6 +177,7 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                'export_popular_songs_csv']
 
 
+# Models accessible in the admin interface
 admin.site.site_header = "Administration de la Boîte à Son"
 admin.site.register(Box, BoxAdmin)
 admin.site.register(Deposit, DepositAdmin)

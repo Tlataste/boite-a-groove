@@ -192,7 +192,21 @@ class GetBox(APIView):
 
 
 class ReplaceVisibleDeposits(APIView):
-    def post(self, request, format=None):
+    """
+    Class goal: Replace the visible deposits disclosed by the user
+    """
+
+    def post(self, request):
+        """
+        Function goal: Replace the visible deposits disclosed by the user
+
+        Args:
+            request: the request sent by the user
+
+        Returns:
+            Response: the response containing the new visible deposits or an error message
+        """
+
         # Get the box, the visible deposit disclosed by the user and the search deposit
         box_id = request.data.get('visible_deposit').get('box_id')
         visible_deposit_id = request.data.get('visible_deposit').get('id')
@@ -218,7 +232,20 @@ class ReplaceVisibleDeposits(APIView):
 
 
 class Location(APIView):
-    def post(self, request, format=None):
+    """
+    Class goal: Get the location of the user and check if they are at the box
+    """
+    def post(self, request):
+        """
+        Function goal: Get the location of the user and check if they are at the box
+
+        Args:
+            request: the request sent by the user
+
+        Returns:
+            Response: the response containing the location of the user or an error message
+
+        """
         latitude = float(request.data.get('latitude'))
         longitude = float(request.data.get('longitude'))
         box = request.data.get('box')
@@ -296,7 +323,18 @@ class CurrentBoxManagement(APIView):
 
 
 class UpdateVisibleDeposits(APIView):
-    def post(self, request, format=None):
+    """
+    Class goal: Update the visible deposits of a box when the user discloses a deposit after depositing a song
+    """
+    def post(self, request):
+        """
+        Function goal: Update the visible deposits of a box
+        Args:
+            request: the request sent by the user
+
+        Returns:
+            Response: the response containing the new visible deposits or an error message
+        """
         box_name = request.data.get('boxName')
         box = Box.objects.filter(name=box_name).get()
 
