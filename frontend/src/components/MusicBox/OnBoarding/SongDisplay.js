@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -13,6 +13,8 @@ import { getUserDetails } from "../../UsersUtils";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { checkUserStatus } from "../../UsersUtils";
+import { UserContext } from "../../UserContext";
 
 /**
  * SongCard Component
@@ -27,6 +29,8 @@ import ListItemText from "@mui/material/ListItemText";
 export default function SongDisplay({ dispSong, depositedBy, achievements }) {
   // States
   const [selectedProvider, setSelectedProvider] = useState("spotify");
+
+  const { setUser, setIsAuthenticated } = useContext(UserContext);
 
   // Stores all the information about the user who has deposited the song
   const [userInfo, setUserInfo] = useState({});
@@ -73,6 +77,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
       .catch((error) => {
         console.error(error);
       });
+    checkUserStatus(setUser, setIsAuthenticated);
   }, []); // Empty dependency array ensures the effect is only run once
 
   return (
