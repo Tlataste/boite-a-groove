@@ -17,6 +17,9 @@ export default function UserPublicProfile() {
   // Stores all the information about the user
   const [userInfo, setUserInfo] = useState({});
 
+  /**
+   * Runs the specified callback function after the component has rendered.
+   */
   useEffect(() => {
     getUserDetails(userID)
       .then((data) => {
@@ -31,7 +34,7 @@ export default function UserPublicProfile() {
         console.error(error);
         navigate("/");
       });
-  }, []); // Empty dependency array ensures the effect is only run once
+  }, []);
 
   return (
     <>

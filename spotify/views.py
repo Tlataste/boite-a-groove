@@ -109,9 +109,6 @@ def spotify_callback(request, format=None):
     expires_in = response.get('expires_in')
     error = response.get('error')
 
-    # Create a session if it doesn't exist
-    # if not request.session.exists(request.session.session_key):
-    #     request.session.create()
     user = request.user
     # Update or create the user tokens in the database
     update_or_create_user_tokens(
@@ -121,8 +118,7 @@ def spotify_callback(request, format=None):
         expires_in,
         refresh_token)
 
-    # Redirect back to the home page
-    # If we want to redirect to the register page for example we should write frontend:register
+    # Redirect back to the profile page
     return redirect('frontend:profile')
 
 

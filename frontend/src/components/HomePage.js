@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Menu from "./Menu";
-import LiveSearch from "./MusicBox/LiveSearch";
 
 export default function HomePage() {
   return <div>HomePage</div>;

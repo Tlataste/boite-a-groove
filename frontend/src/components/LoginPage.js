@@ -86,6 +86,11 @@ export default function LoginPage() {
     sendAndProcessData(data);
   };
 
+  /**
+   * Handles multi-platform login by redirecting the user to the appropriate OAuth login page.
+   * @param {string} platform - The platform for which the user wants to perform the login.
+   * @returns {void}
+   */
   const handleMultiplatformLogin = (platform) => {
     window.location.href = "/oauth/login/" + platform;
   };

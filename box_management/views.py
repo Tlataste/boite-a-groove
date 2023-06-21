@@ -249,8 +249,17 @@ class Location(APIView):
 
 
 class CurrentBoxManagement(APIView):
+    """
+    API view for managing the current box name.
+    """
 
     def get(self, request, format=None):
+        """
+        Retrieves the current box name from the user's session.
+        Returns:
+            - 200 OK with the current box name if it exists.
+            - 400 BAD REQUEST if the current box name key does not exist in the session.
+        """
         try:
             current_box_name = request.session['current_box_name']
             return Response({'current_box_name': current_box_name}, status=status.HTTP_200_OK)
@@ -259,6 +268,15 @@ class CurrentBoxManagement(APIView):
             return Response({'error': 'La clé current_box_name n\'existe pas'}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
+        """
+        Updates the current box name in the user's session.
+        Expects:
+            - 'current_box_name' field in the request data.
+        Returns:
+            - 200 OK with a success message if the current box name is updated.
+            - 401 UNAUTHORIZED if 'current_box_name' field is missing in the request data.
+            - 500 INTERNAL SERVER ERROR if an exception occurs during the update.
+        """
 
         # Guard clause that checks if user is logged in
         if 'current_box_name' not in request.data:
@@ -387,6 +405,7 @@ class AddDepositNote(APIView):
     '''
     Class goal : add a note to a deposit
     '''
+
     def post(self, request, format=None):
         note = request.data.get('note')
 

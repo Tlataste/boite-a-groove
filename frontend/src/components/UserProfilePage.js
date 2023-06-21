@@ -94,7 +94,7 @@ const styles = {
   },
   disconnectButton: {
     margin: "10px 10px",
-     borderRadius: "20px",
+    borderRadius: "20px",
     backgroundImage: "linear-gradient(to right, #fa9500, #fa4000)",
     color: "white",
     border: "none",
@@ -102,7 +102,7 @@ const styles = {
     "&:hover": {
       border: "none",
     },
-  }
+  },
 };
 
 export default function UserProfilePage() {
@@ -174,9 +174,9 @@ export default function UserProfilePage() {
     if (response.ok) {
       setDiscoveredSongs(data);
     } else {
-        console.log(data);
+      console.log(data);
     }
-  }
+  };
 
   /**
    * Function that handles the change event for the provider selection.
@@ -186,9 +186,9 @@ export default function UserProfilePage() {
     setSelectedProvider(event.target.value);
   }
 
-/**
+  /**
    * Handles the click event for the "Go to link" button.
- */
+   */
   function redirectToLink() {
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
@@ -206,6 +206,7 @@ export default function UserProfilePage() {
         window.location.href = data;
       });
   }
+
   const handlePasswordChange = () => {
     setShowPasswordForm(true);
   };
@@ -259,6 +260,11 @@ export default function UserProfilePage() {
     sendAndProcessPasswordChange(data);
   };
 
+  /**
+   * Handles the change event of the avatar input element and uploads the selected file as the user's profile picture.
+   * @param {Event} event - The change event object triggered by the avatar input element.
+   * @returns {Promise<void>} - A promise that resolves when the profile picture change is completed.
+   */
   const handleAvatarChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -293,6 +299,11 @@ export default function UserProfilePage() {
     }
   };
 
+  /**
+   * Handles the change of the preferred platform and updates the user's preferred platform accordingly.
+   * @param {string} platform - The new preferred platform value.
+   * @returns {void}
+   */
   function handlePreferredPlatform(platform) {
     setPreferredPlatform(platform)
       .then(() => {
@@ -575,62 +586,75 @@ export default function UserProfilePage() {
             </Grid>
           </Grid>
         </Grid>
-          <Grid container spacing={2}>
-             <Grid item xs={12}>
-              <Box style={styles.musicBox}>
-                <Typography variant="h6" style={styles.musicBoxTitle}>
-                  Chansons découvertes
-                </Typography>
-                {discoveredSongs.length > 0 ? (
-                  <div>
-                    <Typography variant="body1" style={styles.musicBoxContent}>
-                      <strong>Titre :</strong> {discoveredSongs[currentSongIndex].title}
-                    </Typography>
-                    <Typography variant="body1" style={styles.musicBoxContent}>
-                      <strong>Artiste :</strong> {discoveredSongs[currentSongIndex].artist}
-                    </Typography>
-                   <CardMedia
-                      component="img"
-                      sx={{ width: 150 }}
-                      image={discoveredSongs[currentSongIndex].image_url}
-                      alt="Track cover"
-                    />
-                    <Box sx={{ flex: "1 0 auto", display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-              <select value={selectedProvider} onChange={handleProviderChange}>
-                <option value="spotify">
-                  Spotify
-                </option>
-                <option value="deezer">
-                  Deezer
-                </option>
-              </select>
-              </Box>
-              <Box sx={{ flex: "1 0 auto" }}>
-                <button
-                  onClick={() => {redirectToLink()}}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Aller vers ...
-                </button>
-              </Box>
-                  </div>
-                ) : (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Box style={styles.musicBox}>
+              <Typography variant="h6" style={styles.musicBoxTitle}>
+                Chansons découvertes
+              </Typography>
+              {discoveredSongs.length > 0 ? (
+                <div>
                   <Typography variant="body1" style={styles.musicBoxContent}>
-                    Vous n'avez pas encore découvert de chansons.
+                    <strong>Titre :</strong>{" "}
+                    {discoveredSongs[currentSongIndex].title}
                   </Typography>
-                )}
-              </Box>
-            </Grid>
+                  <Typography variant="body1" style={styles.musicBoxContent}>
+                    <strong>Artiste :</strong>{" "}
+                    {discoveredSongs[currentSongIndex].artist}
+                  </Typography>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: 150 }}
+                    image={discoveredSongs[currentSongIndex].image_url}
+                    alt="Track cover"
+                  />
+                  <Box
+                    sx={{
+                      flex: "1 0 auto",
+                      display: "flex",
+                      alignItems: "center",
+                      pl: 1,
+                      pb: 1,
+                    }}
+                  >
+                    <select
+                      value={selectedProvider}
+                      onChange={handleProviderChange}
+                    >
+                      <option value="spotify">Spotify</option>
+                      <option value="deezer">Deezer</option>
+                    </select>
+                  </Box>
+                  <Box sx={{ flex: "1 0 auto" }}>
+                    <button
+                      onClick={() => {
+                        redirectToLink();
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Aller vers ...
+                    </button>
+                  </Box>
+                </div>
+              ) : (
+                <Typography variant="body1" style={styles.musicBoxContent}>
+                  Vous n'avez pas encore découvert de chansons.
+                </Typography>
+              )}
+            </Box>
+          </Grid>
           <Grid item xs={12}>
             <Box style={styles.navigationButtons}>
               <Button
                 variant="contained"
                 color="primary"
-                disabled={currentSongIndex === 0 || discoveredSongs.length === 0}
+                disabled={
+                  currentSongIndex === 0 || discoveredSongs.length === 0
+                }
                 onClick={() => setCurrentSongIndex(currentSongIndex - 1)}
               >
                 Chanson précédente
@@ -638,14 +662,17 @@ export default function UserProfilePage() {
               <Button
                 variant="contained"
                 color="primary"
-                disabled={currentSongIndex === discoveredSongs.length - 1 || discoveredSongs.length === 0}
+                disabled={
+                  currentSongIndex === discoveredSongs.length - 1 ||
+                  discoveredSongs.length === 0
+                }
                 onClick={() => setCurrentSongIndex(currentSongIndex + 1)}
               >
                 Chanson suivante
               </Button>
-              </Box>
-            </Grid>
+            </Box>
           </Grid>
+        </Grid>
         <Button
           variant="contained"
           onClick={() => logoutUser(setUser, setIsAuthenticated)}
