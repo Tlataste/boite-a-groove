@@ -138,7 +138,6 @@ export const navigateToCurrentBox = async (navigate) => {
   }
 };
 
-
 export const updateVisibleDeposits = async (boxName) => {
   try {
     const csrftoken = getCookie("csrftoken");
@@ -146,17 +145,41 @@ export const updateVisibleDeposits = async (boxName) => {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
-        boxName: boxName
+        boxName: boxName,
       }),
     };
-    const response = await fetch("../box-management/update-visible-deposits", requestOptions);
-        const data = await response.json();
-          console.log(data);
-          if (!response.ok) {
-            return [];
-          }
+    const response = await fetch(
+      "../box-management/update-visible-deposits",
+      requestOptions
+    );
+    const data = await response.json();
+    console.log(data);
+    if (!response.ok) {
+      return [];
+    }
   } catch (error) {
     console.log(error);
     return {};
   }
-}
+};
+
+export const setDepositNote = async (depositID, note) => {
+  try {
+    const csrftoken = getCookie("csrftoken");
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({
+        deposit_id: depositID,
+        note: note,
+      }),
+    };
+    const response = await fetch("/box-management/add-note", requestOptions);
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+};

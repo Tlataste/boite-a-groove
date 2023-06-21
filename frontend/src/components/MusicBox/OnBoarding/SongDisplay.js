@@ -63,7 +63,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
     setSelectedProvider(event.target.value);
   }
 
-  // Gets the info of the user who has depisoted the song discovered
+  // Gets the info of the user who has depisoted the song discovered and update the points of the current user
   useEffect(() => {
     getUserDetails(depositedBy, navigate)
       .then((data) => {

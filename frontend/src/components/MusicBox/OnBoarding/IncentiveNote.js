@@ -6,6 +6,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
+import { setDepositNote } from "../BoxUtils";
 
 // Styles
 const styles = {
@@ -29,7 +30,7 @@ export default function IncentiveNote({ setStage, searchSong }) {
   };
 
   function handleAddNoteButtonClick(note) {
-    setStage(4);
+    setDepositNote(searchSong.id, note).then(() => setStage(4));
   }
 
   function Item(note, sentence) {
@@ -91,8 +92,21 @@ export default function IncentiveNote({ setStage, searchSong }) {
           <TabPanel value="1">
             {Item("inspire", "Cette chanson me pousse à être créatif !")}
           </TabPanel>
-          <TabPanel value="2">Item Two</TabPanel>
-          <TabPanel value="3">Item Three</TabPanel>
+          <TabPanel value="1">
+            {Item("joie", "Cette chanson me met de bonne humeur !")}
+          </TabPanel>
+          <TabPanel value="1">
+            {Item("motive", "Cette chanson me motive pour la journée !")}
+          </TabPanel>
+          <TabPanel value="1">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="1">
+            {Item("rire", "Cette chanson me fait rire !")}
+          </TabPanel>
+          <TabPanel value="1">
+            {Item("triste", "Cette chanson me rend mélancolique !")}
+          </TabPanel>
         </TabContext>
       </Box>
       <Button
