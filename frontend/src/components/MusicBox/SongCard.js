@@ -69,7 +69,7 @@ export default function SongCard({
       })
       .then(() => setDispSong(deposits.last_deposits_songs[depositIndex]))
       .then(() => setDepositedBy(deposits.last_deposits[depositIndex].user))
-      .then(() => setStage(4));
+      .then(() => setStage(5));
 
     fetch("../box-management/discovered-songs", requestOptions);
   }

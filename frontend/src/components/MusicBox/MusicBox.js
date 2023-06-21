@@ -17,6 +17,8 @@ import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
 import SongDisplay from "./OnBoarding/SongDisplay";
 import DispHiddenSongs from "./OnBoarding/DispHiddenSongs";
+import Button from "@mui/material/Button";
+import IncentiveNote from "./OnBoarding/IncentiveNote";
 
 export default function MusicBox() {
   // States & Variables
@@ -91,6 +93,9 @@ export default function MusicBox() {
           </>
         )}
         {stage === 3 && (
+          <IncentiveNote setStage={setStage} searchSong={searchSong} />
+        )}
+        {stage === 4 && (
           <>
             <SongCard
               deposits={boxInfo}
@@ -102,9 +107,13 @@ export default function MusicBox() {
             />
           </>
         )}
-        {stage === 4 && (
+        {stage === 5 && (
           <>
-            <SongDisplay dispSong={dispSong} depositedBy={depositedBy} />
+            <SongDisplay
+              dispSong={dispSong}
+              depositedBy={depositedBy}
+              achievements={achievements}
+            />
           </>
         )}
       </Box>

@@ -144,7 +144,6 @@ export default function LiveSearch({
       .then((response) => response.json())
       .then((data_resp) => {
         console.log(data_resp);
-        //console.log(data_resp.new_deposit);
         setSearchSong(data_resp.new_deposit);
         setAchievements(data_resp.achievements);
       });

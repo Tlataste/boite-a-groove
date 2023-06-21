@@ -10,6 +10,9 @@ import { getCookie } from "../../Security/TokensUtils";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import { getUserDetails } from "../../UsersUtils";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
 /**
  * SongCard Component
@@ -21,7 +24,7 @@ import { getUserDetails } from "../../UsersUtils";
  * @param searchSong
  * @returns {JSX.Element} - JSX element representing the SongCard component.
  */
-export default function SongDisplay({ dispSong, depositedBy }) {
+export default function SongDisplay({ dispSong, depositedBy, achievements }) {
   // States
   const [selectedProvider, setSelectedProvider] = useState("spotify");
 
@@ -60,7 +63,7 @@ export default function SongDisplay({ dispSong, depositedBy }) {
     setSelectedProvider(event.target.value);
   }
 
-  // Gets the info of the user who has depisoted the song discovered
+  // Gets the info of the user who has depisoted the song discovered and update the points of the current user
   useEffect(() => {
     getUserDetails(depositedBy, navigate)
       .then((data) => {
@@ -73,7 +76,14 @@ export default function SongDisplay({ dispSong, depositedBy }) {
   }, []); // Empty dependency array ensures the effect is only run once
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "20px",
+      }}
+    >
       <Card
         sx={{
           display: "flex",
@@ -135,7 +145,7 @@ export default function SongDisplay({ dispSong, depositedBy }) {
           />
         </Box>
       </Card>
-      <Typography variant="h6">Auteur de dépôt :</Typography>
+      <Typography variant="h6">Auteur du dépôt :</Typography>
       {userInfo ? (
         <Box
           sx={{
@@ -185,7 +195,36 @@ export default function SongDisplay({ dispSong, depositedBy }) {
       ) : (
         <Typography variant="subtitle1">Utilisateur non conneté</Typography>
       )}
-      <Typography variant="h6">Succès débloqués : </Typography>
-    </>
+      <Typography variant="h6">Succès débloqués :</Typography>
+
+      <Box
+        sx={{
+          marginTop: 2,
+          overflow: "auto",
+          maxHeight: 200,
+          borderRadius: "borderRadius",
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <List sx={{ padding: 1 }}>
+          {Object.keys(achievements).map((achievementKey) => {
+            const achievement = achievements[achievementKey];
+
+            return (
+              <ListItem key={achievementKey} disablePadding>
+                <ListItemText
+                  primary={achievement.name}
+                  secondary={achievement.desc}
+                />
+                <Typography variant="body2">
+                  Points gagnés: {achievement.points}
+                </Typography>
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
+    </Box>
   );
 }

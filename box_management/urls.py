@@ -4,6 +4,7 @@ from .views import *
 
 
 urlpatterns = [
+    path('add-note', AddDepositNote.as_view()),
     path('get-box', GetBox.as_view()),
     path('verify-location', Location.as_view()),
     path('replace-visible-deposits', ReplaceVisibleDeposits.as_view()),
