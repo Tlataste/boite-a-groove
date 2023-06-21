@@ -30,7 +30,8 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
   // States
   const [selectedProvider, setSelectedProvider] = useState("spotify");
 
-  const { setUser, setIsAuthenticated } = useContext(UserContext);
+  const { isAuthenticated, setUser, setIsAuthenticated } =
+    useContext(UserContext);
 
   // Stores all the information about the user who has deposited the song
   const [userInfo, setUserInfo] = useState({});
@@ -200,8 +201,13 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
       ) : (
         <Typography variant="subtitle1">Utilisateur non conneté</Typography>
       )}
-      <Typography variant="h6">Succès débloqués :</Typography>
-
+      {isAuthenticated ? (
+        <Typography variant="h6">Succès débloqués :</Typography>
+      ) : (
+        <Typography variant="subtitle1">
+          Succès débloqués si vous étiez connecté :
+        </Typography>
+      )}
       <Box
         sx={{
           marginTop: 2,
