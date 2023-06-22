@@ -37,7 +37,7 @@ export default function SuccessfulLogout() {
         variant="subtitle1"
         sx={{ color: "#fff", marginBottom: "2rem" }}
       >
-        Pour découvrir d'autres chansons, scan une boîte !
+        Pour découvrir d'autres chansons, scanne une boîte !
       </Typography>
       <Button
         variant="contained"
