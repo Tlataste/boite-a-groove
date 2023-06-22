@@ -16,7 +16,8 @@ import { getCookie } from "../Security/TokensUtils";
  * @param {boolean} isDeposited - A boolean indicating whether the song has been deposited.
  * @param setStage - A function used to set the stage of the page
  * @param setDispSong - A function used to set the song that we will display
- * @param searchSong
+ * @param  {Object} searchSong - An object containing the deposit of the song searched by the user
+ * @param setDepositedBy - A function used to set the user that deposited the song
  * @returns {JSX.Element} - JSX element representing the SongCard component.
  */
 export default function SongCard({
@@ -50,6 +51,9 @@ export default function SongCard({
     }
   }
 
+  /**
+   * Handles the click event for the "Reveal" button.
+   */
   function replaceVisibleDeposit() {
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
@@ -60,8 +64,8 @@ export default function SongCard({
         search_deposit: searchSong,
       }),
     };
-    //console.log(requestOptions.body);
-
+ 
+      // Replace the visible deposit in the database
     fetch("../box-management/replace-visible-deposits", requestOptions)
       .then((response) => response.json())
       .then((data) => {
@@ -70,7 +74,7 @@ export default function SongCard({
       .then(() => setDispSong(deposits.last_deposits_songs[depositIndex]))
       .then(() => setDepositedBy(deposits.last_deposits[depositIndex].user))
       .then(() => setStage(5));
-
+    // Update the list of discovered songs in the database
     fetch("../box-management/discovered-songs", requestOptions);
   }
 

@@ -100,6 +100,11 @@ export const checkLocation = async (data, navigate) => {
   }
 };
 
+/**
+ * Sets the current box name by making a POST request to update the current box management.
+ * @param {string} boxName - The name of the box to set as the current box.
+ * @returns {Promise<void>} - A promise that resolves when the current box name is successfully set.
+ */
 export const setCurrentBoxName = async (boxName) => {
   try {
     const csrftoken = getCookie("csrftoken");
@@ -123,6 +128,11 @@ export const setCurrentBoxName = async (boxName) => {
   }
 };
 
+/**
+ * Navigates to the current box by making a GET request to the server.
+ * @param {function} navigate - The function used for navigation to a specific URL.
+ * @returns {Promise<void>} - A promise that resolves when the navigation is completed.
+ */
 export const navigateToCurrentBox = async (navigate) => {
   try {
     const response = await fetch("/box-management/current-box-management");
@@ -138,6 +148,10 @@ export const navigateToCurrentBox = async (navigate) => {
   }
 };
 
+/**
+ * Retrieves the list of all the Music Boxes.
+ * @param boxName - The name of the box to retrieve details for.
+ */
 export const updateVisibleDeposits = async (boxName) => {
   try {
     const csrftoken = getCookie("csrftoken");
@@ -148,12 +162,12 @@ export const updateVisibleDeposits = async (boxName) => {
         boxName: boxName,
       }),
     };
+    // update the list of visible deposits
     const response = await fetch(
       "../box-management/update-visible-deposits",
       requestOptions
     );
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
       return [];
     }
@@ -163,6 +177,12 @@ export const updateVisibleDeposits = async (boxName) => {
   }
 };
 
+/**
+ * Sets a note for a deposit by making a POST request to the server.
+ * @param {string} depositID - The ID of the deposit to set the note for.
+ * @param {string} note - The note content to be added.
+ * @returns {Promise<void>} - A promise that resolves when the note is successfully set.
+ */
 export const setDepositNote = async (depositID, note) => {
   try {
     const csrftoken = getCookie("csrftoken");
@@ -178,7 +198,6 @@ export const setDepositNote = async (depositID, note) => {
       }),
     };
     const response = await fetch("/box-management/add-note", requestOptions);
-    console.log(response);
   } catch (error) {
     console.error(error);
   }

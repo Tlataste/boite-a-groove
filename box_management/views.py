@@ -53,6 +53,20 @@ class GetBox(APIView):
     serializer_class = BoxSerializer
 
     def get(self, request, format=None):
+        """
+        Retrieves information about a box and its associated deposits and songs.
+
+        Parameters:
+        - request: The HTTP request object.
+        - format (str): The format of the response data (default: None).
+
+        Returns:
+        - Response: The HTTP response containing the box information, deposits, and songs.
+
+        Raises:
+        - HTTP 404 Not Found: If the box name is invalid or not found.
+        - HTTP 400 Bad Request: If the name of the box is not found in the request.
+        """
         name = request.GET.get(self.lookup_url_kwarg)
         if name is not None:
             box = Box.objects.filter(name=name)
@@ -81,7 +95,16 @@ class GetBox(APIView):
             return Response({'Bad Request': 'Name of the box not found in request'}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
-        # Get the data from the request (song name, artist, platform_id, box name)
+        """
+        Handles the POST request for creating a new deposit.
+        Args:
+            request: The HTTP request object.
+            format (str, optional): The format of the response. Defaults to None.
+        Returns:
+            Response: The HTTP response object containing the new deposit and achievements earned by the user.
+        Raises:
+            Song.DoesNotExist: If the song does not exist.
+        """
         option = request.data.get('option')
         song_id = option.get('id')
 
@@ -192,7 +215,21 @@ class GetBox(APIView):
 
 
 class ReplaceVisibleDeposits(APIView):
-    def post(self, request, format=None):
+    """
+    Class goal: Replace the visible deposits disclosed by the user
+    """
+
+    def post(self, request):
+        """
+        Function goal: Replace the visible deposits disclosed by the user
+
+        Args:
+            request: the request sent by the user
+
+        Returns:
+            Response: the response containing the new visible deposits or an error message
+        """
+
         # Get the box, the visible deposit disclosed by the user and the search deposit
         box_id = request.data.get('visible_deposit').get('box_id')
         visible_deposit_id = request.data.get('visible_deposit').get('id')
@@ -218,7 +255,21 @@ class ReplaceVisibleDeposits(APIView):
 
 
 class Location(APIView):
-    def post(self, request, format=None):
+    """
+    Class goal: Get the location of the user and check if they are at the box
+    """
+
+    def post(self, request):
+        """
+        Function goal: Get the location of the user and check if they are at the box
+
+        Args:
+            request: the request sent by the user
+
+        Returns:
+            Response: the response containing the location of the user or an error message
+
+        """
         latitude = float(request.data.get('latitude'))
         longitude = float(request.data.get('longitude'))
         box = request.data.get('box')
@@ -249,8 +300,17 @@ class Location(APIView):
 
 
 class CurrentBoxManagement(APIView):
+    """
+    API view for managing the current box name.
+    """
 
     def get(self, request, format=None):
+        """
+        Retrieves the current box name from the user's session.
+        Returns:
+            - 200 OK with the current box name if it exists.
+            - 400 BAD REQUEST if the current box name key does not exist in the session.
+        """
         try:
             current_box_name = request.session['current_box_name']
             return Response({'current_box_name': current_box_name}, status=status.HTTP_200_OK)
@@ -259,6 +319,15 @@ class CurrentBoxManagement(APIView):
             return Response({'error': 'La clé current_box_name n\'existe pas'}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
+        """
+        Updates the current box name in the user's session.
+        Expects:
+            - 'current_box_name' field in the request data.
+        Returns:
+            - 200 OK with a success message if the current box name is updated.
+            - 401 UNAUTHORIZED if 'current_box_name' field is missing in the request data.
+            - 500 INTERNAL SERVER ERROR if an exception occurs during the update.
+        """
 
         # Guard clause that checks if user is logged in
         if 'current_box_name' not in request.data:
@@ -278,7 +347,19 @@ class CurrentBoxManagement(APIView):
 
 
 class UpdateVisibleDeposits(APIView):
-    def post(self, request, format=None):
+    """
+    Class goal: Update the visible deposits of a box when the user discloses a deposit after depositing a song
+    """
+
+    def post(self, request):
+        """
+        Function goal: Update the visible deposits of a box
+        Args:
+            request: the request sent by the user
+
+        Returns:
+            Response: the response containing the new visible deposits or an error message
+        """
         box_name = request.data.get('boxName')
         box = Box.objects.filter(name=box_name).get()
 
@@ -310,10 +391,26 @@ class UpdateVisibleDeposits(APIView):
 
 
 class ManageDiscoveredSongs(APIView):
+    """
+    Class used to update and get the discovered songs of the user
+
+    Methods:
+        get: Get the discovered songs of the user
+        post: Add a deposit to the discovered songs of the user
+    """
     '''Class goal : manage the discovered songs of the user'''
 
     def post(self, request):
-        '''Method goal : update the discovered songs'''
+        """
+        Method goal : Add a deposit to the discovered songs of the user
+
+            Args:
+                request: The request sent by the user
+
+            Returns:
+                A response with the status of the request
+        """
+        # Get the user
         user = request.user
 
         # Check if the user is authenticated
@@ -338,7 +435,14 @@ class ManageDiscoveredSongs(APIView):
                 return Response({'success': True}, status=status.HTTP_200_OK)
 
     def get(self, request):
-        '''Method goal : get the currently discovered songs'''
+        """ Get the discovered songs of the user
+
+            Args:
+                request: The request sent by the user
+
+            Returns:
+                A response with the discovered songs of the user
+        """
         # Get the user
         user = request.user
         # Check if the user is authenticated
@@ -364,6 +468,7 @@ class AddDepositNote(APIView):
     '''
     Class goal : add a note to a deposit
     '''
+
     def post(self, request, format=None):
         note = request.data.get('note')
 

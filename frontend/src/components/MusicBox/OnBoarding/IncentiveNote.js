@@ -29,10 +29,21 @@ export default function IncentiveNote({ setStage, searchSong }) {
     setValue(newValue);
   };
 
+  /**
+   * Handles the click event of the "Ajouter" button in the Item component, triggering the process of adding a note to a deposit.
+   * @param {string} note - The note to be added.
+   * @returns {void}
+   */
   function handleAddNoteButtonClick(note) {
     setDepositNote(searchSong.id, note).then(() => setStage(4));
   }
 
+  /**
+   * Item component represents a UI element displaying a note and a button to add the note.
+   * @param {string} note - The note to be added.
+   * @param {string} sentence - The sentence to be displayed as a subtitle.
+   * @returns {JSX.Element} - The rendered JSX element representing the item.
+   */
   function Item(note, sentence) {
     return (
       <Box

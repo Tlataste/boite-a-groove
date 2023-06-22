@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+import json
+from django.shortcuts import redirect
 from .credentials import REDIRECT_URI, APP_ID, APP_SECRET
 from rest_framework.views import APIView
 from rest_framework import status
@@ -30,8 +31,7 @@ class AuthURL(APIView):
         format  : The desired format of the response. Defaults to None.
 
         Returns:
-        dict: A dictionary containing the authentication URL.
-
+        response: A response object containing the authentication URL.
         """
         return Response({
             'url': "https://connect.deezer.com/oauth/auth.php?app_id=" + APP_ID + "&redirect_uri=" + REDIRECT_URI + "&perms=email,basic_access,offline_access,listening_history"},
@@ -50,10 +50,12 @@ class Disconnect(APIView):
         format  : The desired format of the response. Defaults to None.
 
         Returns:
-        dict: A dictionary containing the authentication URL.
+        response: A response object confirming the disconnection.
 
         """
+        # Get the username of the user
         user = request.user.username
+        # Disconnect the user from Deezer if the user is authenticated
         if user:
             disconnect_user(user)
         return Response(status=status.HTTP_200_OK)
@@ -62,7 +64,7 @@ class Disconnect(APIView):
 def deezer_callback(request, format=None):
     """
     Callback function for handling the Deezer authorization code flow.
-    This function exchanges the authorization code received from Spotify for access and refresh tokens,
+    This function exchanges the authorization code received from Deezer for access tokens,
     and stores the user tokens in the database.
 
     Args:
@@ -70,17 +72,17 @@ def deezer_callback(request, format=None):
         format: Optional format parameter for specifying the response format.
 
     Returns:
-        A redirect response to the home page.
+        A redirect response to the profile page of the user.
     """
 
     # Extract the authorization code and error from the callback parameters
     code = request.GET.get('code')
     error = request.GET.get('error_reason')
 
+    # If the user denied access, redirect back to the home page
     response = requests.get(url=f'https://connect.deezer.com/oauth/access_token.php?app_id={APP_ID}'
                                 f'&secret={APP_SECRET}&code={code}&output=json').content
     response = response.decode()
-
     response = json.loads(response)
     # Extract the fields from the response
     access_token = response['access_token']
@@ -95,7 +97,7 @@ def deezer_callback(request, format=None):
         update_or_create_user_tokens(user, access_token)
 
     # Update or create the user tokens in the database
-    # Redirect back to the home page
+    # Redirect back to the profile page
     # If we want to redirect to the register page for example we should write frontend:register
     return redirect('frontend:profile')
 
@@ -123,7 +125,7 @@ class IsAuthenticated(APIView):
             None
         """
 
-        # Check if the user is authenticated with Spotify
+        # Check if the user is authenticated with Deezer
         is_authenticated = is_deezer_authenticated(
             self.request.user)
 
@@ -138,9 +140,6 @@ class GetRecentlyPlayedTracks(APIView):
 
     Methods:
         get(request, format=None): Retrieves the recently played tracks of the user.
-
-    Attributes:
-        None
     """
 
     def get(self, request, format=None):
@@ -155,14 +154,11 @@ class GetRecentlyPlayedTracks(APIView):
             A Response object containing the recently played tracks of the user.
         """
 
-        # Execute the Spotify API request to retrieve the recently played tracks
+        # Execute the Deezer API request to retrieve the recently played tracks
         response = execute_deezer_api_request(
             self.request.user,
             '/user/me/history', recent=True)
         results = response.json()
-        # Check if there is an error in the response or if the 'items' key is missing
-        # if 'error' in response or 'items' not in response:
-        #     return Response({}, status=status.HTTP_204_NO_CONTENT)
 
         # Parse and filter the response to extract relevant track information
         tracks = []
