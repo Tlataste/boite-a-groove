@@ -53,6 +53,20 @@ class GetBox(APIView):
     serializer_class = BoxSerializer
 
     def get(self, request, format=None):
+        """
+        Retrieves information about a box and its associated deposits and songs.
+
+        Parameters:
+        - request: The HTTP request object.
+        - format (str): The format of the response data (default: None).
+
+        Returns:
+        - Response: The HTTP response containing the box information, deposits, and songs.
+
+        Raises:
+        - HTTP 404 Not Found: If the box name is invalid or not found.
+        - HTTP 400 Bad Request: If the name of the box is not found in the request.
+        """
         name = request.GET.get(self.lookup_url_kwarg)
         if name is not None:
             box = Box.objects.filter(name=name)
@@ -81,7 +95,16 @@ class GetBox(APIView):
             return Response({'Bad Request': 'Name of the box not found in request'}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
-        # Get the data from the request (song name, artist, platform_id, box name)
+        """
+        Handles the POST request for creating a new deposit.
+        Args:
+            request: The HTTP request object.
+            format (str, optional): The format of the response. Defaults to None.
+        Returns:
+            Response: The HTTP response object containing the new deposit and achievements earned by the user.
+        Raises:
+            Song.DoesNotExist: If the song does not exist.
+        """
         option = request.data.get('option')
         song_id = option.get('id')
 
@@ -235,6 +258,7 @@ class Location(APIView):
     """
     Class goal: Get the location of the user and check if they are at the box
     """
+
     def post(self, request):
         """
         Function goal: Get the location of the user and check if they are at the box
@@ -326,6 +350,7 @@ class UpdateVisibleDeposits(APIView):
     """
     Class goal: Update the visible deposits of a box when the user discloses a deposit after depositing a song
     """
+
     def post(self, request):
         """
         Function goal: Update the visible deposits of a box
