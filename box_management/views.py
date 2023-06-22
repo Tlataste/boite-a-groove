@@ -419,10 +419,9 @@ class ManageDiscoveredSongs(APIView):
                             status=status.HTTP_401_UNAUTHORIZED)
         else:
             # Add the deposit to the user's discovered songs
-            deposit_id = request.data.get('visible_deposit').get('id')
-            deposit = Deposit.objects.filter(id=deposit_id).get()
-            # Get the song_id linked to the deposit of the user
-            song_id = deposit.song_id
+            song_id = request.data.get('visible_deposit').get('id')
+            # Get the song linked to the id
+            song_id = Song.objects.filter(id=song_id).get()
             # Check if the song is linked to another deposit
             if DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_id.artist,
                                              deposit_id__song_id__title=song_id.title).exists():
@@ -430,6 +429,8 @@ class ManageDiscoveredSongs(APIView):
                 return Response({'error': 'Cette chanson est déjà liée à un autre dépôt.'},
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
+                # Get the deposit
+                deposit = Deposit.objects.filter(song_id=song_id).last()
                 # Create a new discovered song linked to the user
                 DiscoveredSong(user_id=user, deposit_id=deposit).save()
                 return Response({'success': True}, status=status.HTTP_200_OK)
