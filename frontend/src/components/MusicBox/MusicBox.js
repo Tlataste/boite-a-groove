@@ -19,6 +19,7 @@ import SongDisplay from "./OnBoarding/SongDisplay";
 import DispHiddenSongs from "./OnBoarding/DispHiddenSongs";
 import Button from "@mui/material/Button";
 import IncentiveNote from "./OnBoarding/IncentiveNote";
+import { ClassNames } from "@emotion/react";
 
 export default function MusicBox() {
   // States & Variables
@@ -68,8 +69,8 @@ export default function MusicBox() {
   return (
     <>
       <MenuAppBar />
-      <Box sx={{ backgroundColor: "#e0e0e0", minHeight: "100vh" }}>
-        {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} />}
+      <Box className="main-content" sx={{ backgroundColor: "blue",}}>
+        {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} className="box-startup"/>}
         {stage === 1 && (
           <EnableLocation
             setStage={setStage}

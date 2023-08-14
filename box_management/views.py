@@ -69,7 +69,7 @@ class GetBox(APIView):
         """
         name = request.GET.get(self.lookup_url_kwarg)
         if name is not None:
-            box = Box.objects.filter(name=name)
+            box = Box.objects.filter(url=name)
             if len(box) > 0:
                 data = BoxSerializer(box[0]).data  # Gets in json the data from the database corresponding to the Box
                 deposit_count = Deposit.objects.filter(box_id=data.get('id')).count()
@@ -361,7 +361,7 @@ class UpdateVisibleDeposits(APIView):
             Response: the response containing the new visible deposits or an error message
         """
         box_name = request.data.get('boxName')
-        box = Box.objects.filter(name=box_name).get()
+        box = Box.objects.filter(url=box_name).get()
 
         # Get the maximum number of deposits to display
         max_deposits = box.max_deposits
