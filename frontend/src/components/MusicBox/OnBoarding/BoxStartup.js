@@ -11,15 +11,12 @@ export default function BoxStartup({ setStage, boxInfo, className }) {
         <Paper
           className={className}
           elevation={3}
-          sx={{
-            background: "blue",
-          }}
         >
           <div className="decoration">
           </div>
           <div className="bottom-content">
-            <div class="bottom-content__wrapper">
-              <button class="btn-secondary">
+            <div className="bottom-content__wrapper">
+              <button className="btn-secondary">
                 <span>
                   {boxInfo.box.name}
                 </span>

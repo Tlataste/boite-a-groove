@@ -13,6 +13,7 @@ import {
   updateVisibleDeposits,
 } from "./BoxUtils";
 import SongCard from "./SongCard";
+import Loader from "./Loader";
 import BoxStartup from "./OnBoarding/BoxStartup";
 import EnableLocation from "./OnBoarding/EnableLocation";
 import SongDisplay from "./OnBoarding/SongDisplay";
@@ -79,6 +80,7 @@ export default function MusicBox() {
               boxInfo={boxInfo}
               navigate={navigate}
             />
+            <Loader/>
           </>
         }
         {stage === 2 && (

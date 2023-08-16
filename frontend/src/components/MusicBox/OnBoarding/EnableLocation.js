@@ -14,38 +14,34 @@ export default function EnableLocation({ setStage, boxInfo, navigate, className 
   function handleButtonClick() {
     setIsButtonClicked(true);
     checkLocation(boxInfo, navigate).then(() => setStage(2));
+    document.getElementById('loader').style.display = "flex";
   }
 
   return (
     <>
       {boxInfo && Object.keys(boxInfo.box || {}).length > 0 ? (
+        <div className={className} >
+          <div className="enable-location__wrapper">
+            <button className="btn-secondary">
+              <span>
+                {boxInfo.box.name}
+              </span>
+            </button>
 
+            <h1>Autoriser la localisation</h1>
 
-        <div
-          className={className}
-        >
+            <p>Confirme que tu es bien à l'arrêt en partageant ta localisation. Ta localisation est uniquement utilisée à l'ouverture d'une boîte.</p>
 
-        <div class="enable-location__wrapper">
-          <button class="btn-secondary">
-            <span>
-              {boxInfo.box.name}
-            </span>
-          </button>
+            <button
+              className="btn-primary"
+              onClick={handleButtonClick}
+            >
+                <span>Autoriser</span>
+            </button>
 
-          <h1>Autoriser la localisation</h1>
-
-          <p>Confirme que tu es bien à l'arrêt en partageant ta localisation. Ta localisation est uniquement utilisée à l'ouverture d'une boîte.</p>
-
-          <button
-            className="btn-primary"
-            onClick={handleButtonClick}
-          >
-              <span>Autoriser</span>
-          </button>
-
+          </div>
         </div>
-
-        </div>
+        
       ) : (
         <div>Loading...</div>
       )}
