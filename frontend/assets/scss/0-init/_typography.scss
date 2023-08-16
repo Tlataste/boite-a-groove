@@ -34,6 +34,18 @@
   font-weight: 700;
 }
 
+p {
+  color: $greyText;
+  text-shadow: 0px 4px 4px $white;
+  /* Paragraph */
+  font-family: Dosis;
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.32px;
+}
+
 /************** FORM **********************/
 /*.label,
 %label {}*/

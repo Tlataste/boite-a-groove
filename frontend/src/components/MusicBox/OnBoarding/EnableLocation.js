@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { checkLocation } from "../BoxUtils";
 import CircularProgress from "@mui/material/CircularProgress";
 
-export default function EnableLocation({ setStage, boxInfo, navigate }) {
+export default function EnableLocation({ setStage, boxInfo, navigate, className }) {
   // States & Variables
 
   const [isButtonClicked, setIsButtonClicked] = useState(false);
@@ -19,81 +19,33 @@ export default function EnableLocation({ setStage, boxInfo, navigate }) {
   return (
     <>
       {boxInfo && Object.keys(boxInfo.box || {}).length > 0 ? (
-        <Paper
-          elevation={3}
-          sx={{
-            background: "white",
-            height: "100%",
-            padding: "10px",
-          }}
+
+
+        <div
+          className={className}
         >
-          <Grid
-            container
-            item
-            spacing={2}
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
+
+        <div class="enable-location__wrapper">
+          <button class="btn-secondary">
+            <span>
+              {boxInfo.box.name}
+            </span>
+          </button>
+
+          <h1>Autoriser la localisation</h1>
+
+          <p>Confirme que tu es bien à l'arrêt en partageant ta localisation. Ta localisation est uniquement utilisée à l'ouverture d'une boîte.</p>
+
+          <button
+            className="btn-primary"
+            onClick={handleButtonClick}
           >
-            <Grid item>
-              <Typography
-                variant="h5"
-                sx={{
-                  background: "linear-gradient(to right, #fa9500, #fa4000)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  borderRadius: "20px",
-                  display: "inline-block",
-                  padding: "5px 10px",
-                  boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)", // Ajout d'une ombre légère
-                }}
-              >
-                {boxInfo.box.name}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h6">Autoriser la localisation</Typography>
-              <Typography variant="subtitle1">
-                Confirme que tu es bien à l'arrêt en partageant ta localisation.
-                Ta localisation est uniquement utilisée à l'ouverture d'une
-                boîte.
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    onClick={handleButtonClick}
-                    sx={{
-                      borderRadius: "20px",
-                      backgroundImage:
-                        "linear-gradient(to right, #fa9500, #fa4000)",
-                      color: "white",
-                      border: "none",
-                      textTransform: "none",
-                      "&:hover": {
-                        border: "none",
-                      },
-                    }}
-                  >
-                    Autoriser
-                  </Button>
-                </Grid>
-                {isButtonClicked && (
-                  <Grid item>
-                    <CircularProgress
-                      size={24}
-                      sx={{
-                        color: "#fa9500",
-                      }}
-                    />
-                  </Grid>
-                )}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
+              <span>Autoriser</span>
+          </button>
+
+        </div>
+
+        </div>
       ) : (
         <div>Loading...</div>
       )}

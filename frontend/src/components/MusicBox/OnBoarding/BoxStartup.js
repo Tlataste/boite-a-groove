@@ -28,12 +28,12 @@ export default function BoxStartup({ setStage, boxInfo, className }) {
               <h1>{boxInfo.deposit_count} chansons sur cet arrêt, échanges-en une pour la découvrir</h1>
         
 
-                <button
-                  className="btn-primary"
-                  onClick={() => setStage(1)}
-                >
-                  <span>Commencer</span>
-                </button>
+              <button
+                className="btn-primary"
+                onClick={() => setStage(1)}
+              >
+                <span>Commencer</span>
+              </button>
 
             </div>
 

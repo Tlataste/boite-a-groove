@@ -64,6 +64,17 @@ h5 {
 h6 {
   font-weight: 700; }
 
+p {
+  color: rgba(0, 0, 0, 0.4);
+  text-shadow: 0px 4px 4px #fff;
+  /* Paragraph */
+  font-family: Dosis;
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.32px; }
+
 /************** FORM **********************/
 /*.label,
 %label {}*/
@@ -523,7 +534,7 @@ html {
  */
 .main-content {
   height: calc(100vh - 64px); }
-  .main-content .box-startup {
+  .main-content .startup {
     height: 100%; }
   .main-content .decoration {
     height: 50%;
@@ -531,6 +542,12 @@ html {
   .main-content .bottom-content {
     height: 50%;
     background: #fff; }
+  .main-content .enable-location {
+    transition: .3s all ease-in-out;
+    position: relative;
+    z-index: 2; }
+  .main-content.stage-1 .enable-location {
+    transform: translateY(-100%); }
 
 /**
  * @file
@@ -633,6 +650,21 @@ html {
     .bottom-content .btn-secondary span {
       position: relative;
       z-index: 2; }
+
+.enable-location {
+  padding: 20px; }
+  .enable-location__wrapper {
+    background: #fff;
+    box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+    border-radius: 26px;
+    height: 50vh;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px; }
+  .enable-location h1 {
+    margin: 0; }
 
 /**
  * @file

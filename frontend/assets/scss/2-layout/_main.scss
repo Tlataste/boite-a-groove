@@ -10,8 +10,7 @@
  .main-content {
     height: calc(100vh - 64px);
 
-    .box-startup {
-      
+    .startup {
         height: 100%;
     }
 
@@ -23,5 +22,18 @@
     .bottom-content {
         height: 50%;
         background: $white;
+    }
+
+    .enable-location {
+        transition: .3s all ease-in-out;
+        position: relative;
+        z-index: 2;
+    }
+
+    &.stage-1 {
+
+        .enable-location {
+            transform: translateY(-100%);
+        }
     }
  }

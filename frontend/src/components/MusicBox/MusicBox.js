@@ -69,15 +69,18 @@ export default function MusicBox() {
   return (
     <>
       <MenuAppBar />
-      <Box className="main-content" sx={{ backgroundColor: "blue",}}>
-        {stage === 0 && <BoxStartup setStage={setStage} boxInfo={boxInfo} className="box-startup"/>}
-        {stage === 1 && (
-          <EnableLocation
-            setStage={setStage}
-            boxInfo={boxInfo}
-            navigate={navigate}
-          />
-        )}
+      <Box className={`main-content stage-${stage}`} sx={{ backgroundColor: "blue",}}>
+        {(stage === 0 || stage === 1) && 
+          <>
+            <BoxStartup setStage={setStage} boxInfo={boxInfo} className="startup"/>
+            <EnableLocation
+              className="enable-location"
+              setStage={setStage}
+              boxInfo={boxInfo}
+              navigate={navigate}
+            />
+          </>
+        }
         {stage === 2 && (
           <>
             <DispHiddenSongs deposits={boxInfo} isDeposited={isDeposited} />
