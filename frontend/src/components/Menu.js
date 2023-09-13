@@ -32,17 +32,6 @@ export default function MenuAppBar() {
           >
             La Boîte à Groove
           </Typography>
-          {isAuthenticated ? (
-            <Typography
-              variant="subtitle1"
-              component="div"
-              sx={{ color: "black" }}
-            >
-              Bienvenue {user.username}
-            </Typography>
-          ) : (
-            <></>
-          )}
         </Box>
         {isAuthenticated ? (
           <>

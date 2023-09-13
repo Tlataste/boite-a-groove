@@ -31,7 +31,7 @@ export default function LiveSearch({
    * @param {Array} dependencies - Triggers the callback function when the user's preferred_platform changes.
    */
   useEffect(() => {
-    // console.log("here");
+     console.log("here");
     if (user.preferred_platform) {
       setSelectedStreamingService(user.preferred_platform);
     }
@@ -50,15 +50,18 @@ export default function LiveSearch({
     const getData = setTimeout(() => {
       // Check if the user has selected spotify or deezer
       if (selectedStreamingService === "spotify") {
+        console.log(searchValue);
         // Check if the search bar is empty
         if (searchValue === "") {
+          console.log('search empty');
           // Check if the user is authenticated with spotify
           if (isSpotifyAuthenticated) {
+            console.log('authenticated');
             fetch("/spotify/recent-tracks")
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                // console.log(data);
+                console.log(data);
               });
           } else {
             setJsonResults([]);
@@ -189,57 +192,46 @@ export default function LiveSearch({
           Deezer
         </Button>
       </Box>
-      <Autocomplete
-        options={jsonResults}
-        getOptionLabel={(option) => `${option.name}`}
-        isOptionEqualToValue={(option, value) => option.name === value.name}
-        noOptionsText={
-          (!isDeezerAuthenticated &&
-            selectedStreamingService === "deezer" &&
-            searchValue === "") ||
-          (!isSpotifyAuthenticated &&
-            selectedStreamingService === "spotify" &&
-            searchValue === "")
-            ? "Connect to unlock recent tracks!"
-            : "No songs available"
-        }
-        renderOption={(props, option) => (
-          <Box component="li" {...props} key={option.id}>
-            <Grid container alignItems="center" spacing={1}>
-              <Grid item xs={3}>
-                <img
-                  src={option.image_url}
-                  alt={option.name}
-                  style={{ width: "100%" }}
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <Box>
-                  <Typography variant="h6">{option.name}</Typography>
-                  <Typography variant="subtitle2">{option.artist}</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={4}>
-                <Box>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleButtonClick(option, boxName)}
-                  >
-                    Déposer
-                  </Button>
-                </Box>
-              </Grid>
+
+
+    <TextField
+      label="Search for a song"
+      onChange={(e) => setSearchValue(e.target.value)}
+    />
+
+    <ul>
+      {jsonResults.map(option => (
+        <Box component="li" key={option.id}>
+          <Grid container alignItems="center" spacing={1}>
+            <Grid item xs={3}>
+              <img
+                src={option.image_url}
+                alt={option.name}
+                style={{ width: "100%" }}
+              />
             </Grid>
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Search for a song"
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
-        )}
-      />
+            <Grid item xs={5}>
+              <Box>
+                <Typography variant="h6">{option.name}</Typography>
+                <Typography variant="subtitle2">{option.artist}</Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={4}>
+              <Box>
+                <Button
+                className="btn-primary"
+                  variant="contained"
+                  onClick={() => handleButtonClick(option, boxName)}
+                >
+                  Déposer
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      ))}
+    </ul>
+
     </Stack>
   );
 }

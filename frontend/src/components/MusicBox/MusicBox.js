@@ -70,7 +70,7 @@ export default function MusicBox() {
   return (
     <>
       <MenuAppBar />
-      <Box className={`main-content stage-${stage}`} sx={{ backgroundColor: "blue",}}>
+      <Box className={`main-content stage-${stage}`}>
         {(stage === 0 || stage === 1) && 
           <>
             <BoxStartup setStage={setStage} boxInfo={boxInfo} className="startup"/>
@@ -85,7 +85,7 @@ export default function MusicBox() {
         }
         {stage === 2 && (
           <>
-            <DispHiddenSongs deposits={boxInfo} isDeposited={isDeposited} />
+            {/* <DispHiddenSongs deposits={boxInfo} isDeposited={isDeposited} /> */}
             <LiveSearch
               isSpotifyAuthenticated={isSpotifyAuthenticated}
               isDeezerAuthenticated={isDeezerAuthenticated}
