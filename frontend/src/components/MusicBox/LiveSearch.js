@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
+import Input from "@mui/material/Input";
 import Stack from "@mui/material/Stack";
-import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { Typography } from "@mui/material";
@@ -172,62 +171,70 @@ export default function LiveSearch({
   }
 
   return (
-    <Stack sx={{ width: 350, margin: "auto", marginTop: "20px" }}>
-      <Box sx={{ marginBottom: "10px" }}>
-        <Button
-          variant={
-            selectedStreamingService === "spotify" ? "contained" : "outlined"
-          }
-          onClick={() => handleStreamingServiceChange("spotify")}
-          sx={{ marginRight: "5px" }}
-        >
-          Spotify
-        </Button>
-        <Button
-          variant={
-            selectedStreamingService === "deezer" ? "contained" : "outlined"
-          }
-          onClick={() => handleStreamingServiceChange("deezer")}
-        >
-          Deezer
-        </Button>
-      </Box>
+    <Stack>
+      <div className="search-song">
+        <h2>Choisi ta chanson à déposer</h2>
+        <div className="search-song__wrapper">
+          
+          <div className="d-flex">
+            <button
+              className="btn-spotify"
+              variant={
+                selectedStreamingService === "spotify" ? "contained" : "outlined"
+              }
+              onClick={() => handleStreamingServiceChange("spotify")}
+              sx={{ marginRight: "5px" }}
+            >
+              Spotify
+            </button>
+            <button
+            className="btn-deezer"
+              variant={
+                selectedStreamingService === "deezer" ? "contained" : "outlined"
+              }
+              onClick={() => handleStreamingServiceChange("deezer")}
+            >
+              Deezer
+            </button>
+          </div>
 
 
-    <TextField
-      label="Search for a song"
-      onChange={(e) => setSearchValue(e.target.value)}
-    />
+          <div className="input-wrapper">
+            <input type="text" 
+              placeholder="Search for a song"
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+          </div>
+          
+        </div>
+      </div>
 
-    <ul>
+
+
+
+    <ul className="search-results">
       {jsonResults.map(option => (
         <Box component="li" key={option.id}>
-          <Grid container alignItems="center" spacing={1}>
-            <Grid item xs={3}>
-              <img
-                src={option.image_url}
-                alt={option.name}
-                style={{ width: "100%" }}
-              />
-            </Grid>
-            <Grid item xs={5}>
-              <Box>
-                <Typography variant="h6">{option.name}</Typography>
-                <Typography variant="subtitle2">{option.artist}</Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={4}>
-              <Box>
-                <Button
-                className="btn-primary"
-                  variant="contained"
-                  onClick={() => handleButtonClick(option, boxName)}
-                >
-                  Déposer
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
+          <div class="img-container">
+            <img
+              src={option.image_url}
+              alt={option.name}
+            />
+          </div>
+
+          <div class="song">
+            <p className="song-title" variant="h6">{option.name}</p>
+            <p className="song-subtitle" variant="subtitle2">{option.artist}</p>
+          </div>
+
+          <button
+          className="btn-tertiary"
+            variant="contained"
+            onClick={() => handleButtonClick(option, boxName)}
+          >
+            <span>Choisir</span>
+          </button>
+        
         </Box>
       ))}
     </ul>

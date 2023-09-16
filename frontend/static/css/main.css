@@ -23,6 +23,41 @@
 /*$body_font : "Arial";*/
 /**
  * @file
+ * Font Variables
+ */
+@font-face {
+  font-family: "icomoon";
+  src: url("../fonts/icomoon/icomoon.eot?76gna5");
+  src: url("../fonts/icomoon/icomoon.eot?76gna5#iefix") format("embedded-opentype"), url("../fonts/icomoon/icomoon.ttf?76gna5") format("truetype"), url("../fonts/icomoon/icomoon.woff?76gna5") format("woff"), url("../fonts/icomoon/icomoon.svg?76gna5#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block; }
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "icomoon" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.icon-search .path1:before {
+  content: "";
+  color: black; }
+
+.icon-search .path2:before {
+  content: "";
+  margin-left: -0.962890625em;
+  color: black;
+  opacity: 0.15; }
+
+/**
+ * @file
  * Color Variables
  */
 /**
@@ -34,8 +69,7 @@
 ****************************************************************************************/
 /************** HEADING **********************/
 .heading1,
-h1,
-h2 {
+h1 {
   font-weight: 700;
   font-size: 2.8rem;
   font-style: normal;
@@ -45,8 +79,13 @@ h2 {
   letter-spacing: 0.56px;
   margin: 3.6rem 0; }
 
-.heading2 {
-  font-weight: 700; }
+.heading2,
+h2 {
+  font-size: 2.4rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.48px; }
 
 .heading3,
 h3 {
@@ -500,6 +539,10 @@ body {
 .alert-danger {
   a, a:hover, a:focus {}
 }*/
+.d-flex {
+  display: flex;
+  gap: 8px; }
+
 /**
  * @file
  * Branding Styling
@@ -548,7 +591,7 @@ html {
     position: relative;
     z-index: 2; }
   .main-content.stage-1 .enable-location {
-    transform: translateY(-100%); }
+    transform: translateY(calc(-100% - 20px)); }
 
 /**
  * @file
@@ -570,6 +613,45 @@ html {
  */
 /* ---------------- DEFAULT -----------------*/
 /* ---------------- CUSTOM -----------------*/
+.input-wrapper {
+  width: 100%;
+  padding: 15px 20px;
+  box-sizing: border-box;
+  border-radius: 66px;
+  background: white;
+  box-shadow: 0px 6px 14px 0px rgba(0, 0, 0, 0.07);
+  display: flex;
+  align-items: center;
+  gap: 13px; }
+  .input-wrapper:before {
+    font-family: "icomoon";
+    content: "";
+    font-size: 2.5rem;
+    background: linear-gradient(to right, #fa9500, #fa4000);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent; }
+  .input-wrapper input[type="text"] {
+    font-size: 1.6rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: 0.48px;
+    border: none;
+    background: #fff;
+    width: 100%; }
+    .input-wrapper input[type="text"]::-moz-placeholder {
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.15); }
+    .input-wrapper input[type="text"]:-ms-input-placeholder {
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.15); }
+    .input-wrapper input[type="text"]::placeholder {
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.15); }
+    .input-wrapper input[type="text"]:focus {
+      outline: none; }
+
 /**
  * @file
  * Icons Component Styling
@@ -593,14 +675,16 @@ html {
  */
 /* ---------------- DEFAULT -----------------*/
 /* ---------------- CUSTOM  -----------------*/
-.btn-primary {
+.btn-primary,
+.btn-tertiary {
   border-radius: 80px;
   border: 3px solid #fff;
   background: linear-gradient(135deg, #F90 0%, #FF6900 52.6%, #FF3D00 100%);
   background-blend-mode: multiply, normal;
   padding: 1.6rem 2.6rem;
   box-shadow: 0px 16px 14px 0px rgba(0, 0, 0, 0.16), 0px 4px 0px 0px #E2E2E2; }
-  .btn-primary span {
+  .btn-primary span,
+  .btn-tertiary span {
     font-family: Dosis;
     font-size: 2.6rem;
     font-style: normal;
@@ -610,7 +694,6 @@ html {
     color: #fff; }
 
 .btn-secondary {
-  font-family: "Roboto","Helvetica","Arial",sans-serif;
   font-weight: 600;
   font-size: 1.6rem;
   line-height: 1.334;
@@ -625,6 +708,28 @@ html {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0; }
+
+.btn-tertiary {
+  padding: 1.2rem 1.6rem; }
+  .btn-tertiary span {
+    font-size: 1.6rem;
+    letter-spacing: 0.4px; }
+
+.btn-spotify {
+  background-color: #1ED760;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  font-size: 1.5rem;
+  border-radius: 7px; }
+
+.btn-deezer {
+  background: linear-gradient(90deg, #ea8a38, #ac3f6e, #2942b7, #50a964);
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  font-size: 1.5rem;
+  border-radius: 7px; }
 
 .bottom-content {
   padding: 0 20px;
@@ -754,6 +859,19 @@ html {
  * Search Form Styling
  */
 /* ---------------- DEFAULT -----------------*/
+.search-song h2 {
+  background: #fff;
+  padding: 20px;
+  text-align: center;
+  margin: 0; }
+
+.search-song__wrapper {
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 13px; }
+
 /**
  * @file
  * Exposed Filters Styling - Views and Facet
@@ -767,6 +885,42 @@ html {
  */
 /* ---------------- DEFAULT -----------------*/
 /* ---------------- CUSTOM -----------------*/
+.search-results {
+  list-style-type: none;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 0; }
+  .search-results li {
+    display: flex;
+    gap: 17px;
+    align-items: center;
+    padding: 16px 0; }
+    .search-results li .img-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url(../images/vinyl.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+      min-width: 76px;
+      height: 76px; }
+      .search-results li .img-container img {
+        width: 17px;
+        border-radius: 50%;
+        margin-top: -3px; }
+    .search-results li p {
+      margin: 0; }
+    .search-results li .song-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      color: #000; }
+    .search-results li .song-subtitle {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.28px;
+      color: rgba(0, 0, 0, 0.4); }
+
 /*************************************************************************************
   Import tous les fichiers _name.scss liés au "component"
   NE PAS APPLIQUER DES STYLES ICI.
