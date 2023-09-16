@@ -34,7 +34,7 @@
     &.stage-1 {
 
         .enable-location {
-            transform: translateY(-100%);
+            transform: translateY(calc(-100% - 20px));
         }
     }
  }
