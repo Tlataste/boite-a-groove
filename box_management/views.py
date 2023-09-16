@@ -130,7 +130,8 @@ class GetBox(APIView):
             song.save()
 
         # Create a new deposit
-        box = Box.objects.filter(name=box_name).get()
+        # TODO change the namings of the different variable ---> boxName for the url of the box is WRONG 
+        box = Box.objects.filter(url=box_name).get()
         user = request.user if not isinstance(request.user, AnonymousUser) else None
         new_deposit = Deposit(song_id=song, box_id=box, user=user)
 
@@ -144,8 +145,7 @@ class GetBox(APIView):
         }
         successes['default_deposit'] = default_deposit
 
-        # Achievements check :
-        box = Box.objects.filter(name=box_name).get()
+        # Achievements check :        
         # check if it's the first time a user makes a deposit in a specific box
         if is_first_user_deposit(user, box):
             points_to_add += NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
