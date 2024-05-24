@@ -90,7 +90,6 @@ export const checkLocation = async (data, navigate) => {
       "../box-management/verify-location",
       requestOptions
     );
-    // console.log(verificationResponse);
     if (!verificationResponse.ok) {
       navigate("/");
     }
@@ -121,7 +120,6 @@ export const setCurrentBoxName = async (boxName) => {
       "/box-management/current-box-management",
       requestOptions
     );
-    // console.log(response);
   } catch (error) {
     console.error(error);
   }
@@ -139,7 +137,6 @@ export const navigateToCurrentBox = async (navigate) => {
       navigate("/");
     }
     const data = await response.json();
-    // console.log(data);
     navigate("/box/" + data.current_box_name);
   } catch (error) {
     console.error(error);

@@ -73,7 +73,6 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
     getUserDetails(depositedBy, navigate)
       .then((data) => {
         setUserInfo(data);
-        // console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -199,7 +198,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
           </Button>
         </Box>
       ) : (
-        <Typography variant="subtitle1">Utilisateur non conneté</Typography>
+        <Typography variant="subtitle1">Utilisateur non connecté</Typography>
       )}
       {isAuthenticated ? (
         <Typography variant="h6">Succès débloqués :</Typography>
