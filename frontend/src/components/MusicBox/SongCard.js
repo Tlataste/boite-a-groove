@@ -36,7 +36,7 @@ export default function SongCard({
    * Increments the depositIndex if it is less than 1.
    */
   function next() {
-    if (depositIndex < deposits.last_deposits_songs.length - 1) {
+    if (depositIndex < deposits.box.last_deposits.length - 1) {
       setdepositIndex(depositIndex + 1);
     }
   }
@@ -60,19 +60,19 @@ export default function SongCard({
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
-        visible_deposit: deposits.last_deposits_songs[depositIndex],
+        visible_deposit: deposits.box.last_deposits[depositIndex],
         search_deposit: searchSong,
       }),
     };
- 
-      // Replace the visible deposit in the database
+
+    // Replace the visible deposit in the database
     fetch("../box-management/replace-visible-deposits", requestOptions)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
       })
-      .then(() => setDispSong(deposits.last_deposits_songs[depositIndex]))
-      .then(() => setDepositedBy(deposits.last_deposits[depositIndex].user))
+      .then(() => setDispSong(deposits.box.last_deposits[depositIndex]))
+      .then(() => setDepositedBy(deposits.box.last_deposits[depositIndex].user_id))
       .then(() => setStage(5));
     // Update the list of discovered songs in the database
     fetch("../box-management/discovered-songs", requestOptions);
@@ -80,7 +80,7 @@ export default function SongCard({
 
   return (
     <>
-      {Object.keys(deposits.last_deposits_songs).length > 0 ? (
+      {Object.keys(deposits.box.last_deposits).length > 0 ? (
         <Card
           sx={{
             display: "flex",
@@ -126,7 +126,7 @@ export default function SongCard({
             <CardMedia
               component="img"
               sx={{ width: 150 }}
-              image={deposits.last_deposits_songs[depositIndex].image_url}
+              image={deposits.box.last_deposits[depositIndex].image_url}
               alt="Track cover"
             />
           </Box>
