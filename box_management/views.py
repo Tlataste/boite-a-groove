@@ -70,24 +70,40 @@ class GetBox(APIView):
         name = request.GET.get(self.lookup_url_kwarg)
         if name is not None:
             box = Box.objects.filter(url=name)
-            if len(box) > 0:
-                data = BoxSerializer(box[0]).data  # Gets in json the data from the database corresponding to the Box
-                deposit_count = Deposit.objects.filter(box_id=data.get('id')).count()
-                # Get the deposits of the box corresponding to the ones in table VisibleDeposits
-                last_deposit = Deposit.objects.filter(box_id=data.get('id'),
-                                                      id__in=VisibleDeposit.objects
-                                                      .values('deposit_id')).order_by('-deposited_at')
-                # Get the names of the songs corresponding to the deposits
-                songs = Song.objects.filter(id__in=last_deposit.values('song_id')).order_by('-id')
-                # Serialize the objects
-                songs = SongSerializer(songs, many=True).data
-                last_deposit = DepositSerializer(last_deposit, many=True).data
+            if box.exists():
+                box_instance = box.first()
+                data = BoxSerializer(box_instance).data
+                last_deposits = Deposit.objects.filter(
+                    box_id=data.get('id'),
+                    id__in=VisibleDeposit.objects.values('deposit_id')
+                ).order_by('-deposited_at')
 
-                resp = {}
-                resp['last_deposits'] = last_deposit
-                resp['last_deposits_songs'] = songs
-                resp['deposit_count'] = deposit_count
-                resp['box'] = data
+                deposit_count = len(last_deposits)
+
+                # Serialize the deposits with additional image_url field
+                last_deposits_data = []
+
+                for deposit in last_deposits:
+                    user_id = deposit.user.id if deposit.user else "Anonymous User"
+                    profile_picture = deposit.user.profile_picture.url if deposit.user else ""
+
+                    deposit_data = {
+                        'id': deposit.id,
+                        'note': deposit.note,
+                        'image_url': Song.objects.get(pk=deposit.song_id_id).image_url,
+                        'user_id': user_id,
+                        'profile_picture': profile_picture,
+                    }
+                    last_deposits_data.append(deposit_data)
+
+                # Include last_deposits inside the box object in the response
+                data['last_deposits'] = last_deposits_data
+
+                resp = {
+                    'box': data,
+                    'deposit_count': deposit_count,
+                }
+
                 return Response(resp, status=status.HTTP_200_OK)
             else:
                 return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
@@ -231,12 +247,11 @@ class ReplaceVisibleDeposits(APIView):
         """
 
         # Get the box, the visible deposit disclosed by the user and the search deposit
-        box_id = request.data.get('visible_deposit').get('box_id')
+        box_id = request.data.get('search_deposit').get('box_id')
         visible_deposit_id = request.data.get('visible_deposit').get('id')
         search_deposit_id = request.data.get('search_deposit').get('id')
-        visible_deposit_id = Song.objects.filter(id=visible_deposit_id).get()
         # Delete the visible deposit disclosed by the user
-        VisibleDeposit.objects.filter(deposit_id__song_id=visible_deposit_id).delete()
+        VisibleDeposit.objects.filter(deposit_id=visible_deposit_id).delete()
 
         # Get the most recent deposit that is not in the visible deposits
         i = 0
@@ -419,9 +434,10 @@ class ManageDiscoveredSongs(APIView):
                             status=status.HTTP_401_UNAUTHORIZED)
         else:
             # Add the deposit to the user's discovered songs
-            song_id = request.data.get('visible_deposit').get('id')
+            deposit_id = request.data.get('visible_deposit').get('id')
+            deposit = Deposit.objects.get(id=deposit_id)
             # Get the song linked to the id
-            song_id = Song.objects.filter(id=song_id).get()
+            song_id = Song.objects.get(id=deposit.song_id_id)
             # Check if the song is linked to another deposit
             if DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_id.artist,
                                              deposit_id__song_id__title=song_id.title).exists():
