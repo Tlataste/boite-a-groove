@@ -16,6 +16,8 @@ export default function LiveSearch({
   setStage,
   setSearchSong,
   setAchievements,
+  setFavoriteSong = false,
+  onSuccess = () => { }
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
@@ -30,7 +32,6 @@ export default function LiveSearch({
    * @param {Array} dependencies - Triggers the callback function when the user's preferred_platform changes.
    */
   useEffect(() => {
-     console.log("here");
     if (user.preferred_platform) {
       setSelectedStreamingService(user.preferred_platform);
     }
@@ -82,7 +83,6 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
-              // console.log(data);
             });
         }
       }
@@ -96,7 +96,6 @@ export default function LiveSearch({
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                // console.log(data);
               });
           } else {
             setJsonResults([]);
@@ -118,7 +117,6 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
-              // console.log(data);
             });
         }
       }
@@ -138,28 +136,48 @@ export default function LiveSearch({
    * @param boxName - The name of the box.
    */
   function handleButtonClick(option, boxName) {
-    const data = { option, boxName };
-    // console.log(option);
-    const jsonData = JSON.stringify(data);
-    // console.log(jsonData);
-    const csrftoken = getCookie("csrftoken");
-    fetch("/box-management/get-box?name=" + boxName, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrftoken,
-      },
-      body: jsonData,
-    })
-      .then((response) => response.json())
-      .then((data_resp) => {
-        console.log(data_resp);
-        // Set the search song to the new deposit
-        setSearchSong(data_resp.new_deposit);
-        setAchievements(data_resp.achievements);
-      });
-    setIsDeposited(true);
-    setStage(3);
+    if (setFavoriteSong) {
+      const data = { option };
+      const jsonData = JSON.stringify(data);
+      const csrftoken = getCookie("csrftoken");
+      fetch("/users/set-favorite-song", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: jsonData,
+      })
+        .then((response) => response.json())
+        .then((data_resp) => {
+          console.log(data_resp);
+          onSuccess();
+          // Set the search song to the new deposit
+          // setSearchSong(data_resp.new_deposit);
+          // setAchievements(data_resp.achievements);
+        })
+    } else {
+      const data = { option, boxName };
+      const jsonData = JSON.stringify(data);
+      const csrftoken = getCookie("csrftoken");
+      fetch("/box-management/get-box?name=" + boxName, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: jsonData,
+      })
+        .then((response) => response.json())
+        .then((data_resp) => {
+          console.log(data_resp);
+          // Set the search song to the new deposit
+          setSearchSong(data_resp.new_deposit);
+          setAchievements(data_resp.achievements);
+        });
+      setIsDeposited(true);
+      setStage(3);
+    }
   }
 
   /**
@@ -173,9 +191,9 @@ export default function LiveSearch({
   return (
     <Stack>
       <div className="search-song">
-        <h2>Choisi ta chanson à déposer</h2>
+        <h2>{setFavoriteSong == true ? 'Choisis ta chanson préférée' : 'Choisis ta chanson à déposer'}</h2>
         <div className="search-song__wrapper">
-          
+
           <div className="d-flex">
             <button
               className="btn-spotify"
@@ -188,7 +206,7 @@ export default function LiveSearch({
               Spotify
             </button>
             <button
-            className="btn-deezer"
+              className="btn-deezer"
               variant={
                 selectedStreamingService === "deezer" ? "contained" : "outlined"
               }
@@ -200,44 +218,44 @@ export default function LiveSearch({
 
 
           <div className="input-wrapper">
-            <input type="text" 
+            <input type="text"
               placeholder="Search for a song"
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
-          
+
         </div>
       </div>
 
 
 
 
-    <ul className="search-results">
-      {jsonResults.map(option => (
-        <Box component="li" key={option.id}>
-          <div class="img-container">
-            <img
-              src={option.image_url}
-              alt={option.name}
-            />
-          </div>
+      <ul className="search-results">
+        {jsonResults.map(option => (
+          <Box component="li" key={option.id}>
+            <div class="img-container">
+              <img
+                src={option.image_url}
+                alt={option.name}
+              />
+            </div>
 
-          <div class="song">
-            <p className="song-title" variant="h6">{option.name}</p>
-            <p className="song-subtitle" variant="subtitle2">{option.artist}</p>
-          </div>
+            <div class="song">
+              <p className="song-title" variant="h6">{option.name}</p>
+              <p className="song-subtitle" variant="subtitle2">{option.artist}</p>
+            </div>
 
-          <button
-          className="btn-tertiary"
-            variant="contained"
-            onClick={() => handleButtonClick(option, boxName)}
-          >
-            <span>Choisir</span>
-          </button>
-        
-        </Box>
-      ))}
-    </ul>
+            <button
+              className="btn-tertiary"
+              variant="contained"
+              onClick={() => handleButtonClick(option, boxName)}
+            >
+              <span>Choisir</span>
+            </button>
+
+          </Box>
+        ))}
+      </ul>
 
     </Stack>
   );
