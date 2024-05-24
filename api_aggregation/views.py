@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 
 import api_aggregation.util as ut
 from box_management.models import Song
+from box_management.models import Deposit
+from box_management.serializers import SongSerializer
 from box_management.util import normalize_string
 
 
@@ -24,7 +26,8 @@ class ApiAggregation(APIView):
             response: A response object containing the URL of the song on the streaming platform specified in the request.
         """
         # Extract the search query from the request data
-        song = request.data.get('song')
+        deposit = Deposit.objects.get(id=request.data.get('song').get('id'))
+        song = SongSerializer(Song.objects.get(id=deposit.song_id_id)).data
 
         # Extract the id of the streaming platform from the request data
         request_platform = request.data.get('platform')
