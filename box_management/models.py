@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import CustomUser
 
 
@@ -18,6 +19,7 @@ class Box(models.Model):
         client_name : The name of the client.
         max_deposits: The maximum number of deposits allowed in the box.
     """
+
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=150, blank=True)
     url = models.SlugField(blank=True)
@@ -32,6 +34,12 @@ class Box(models.Model):
         Method goal: Returns the name of the box used to display it in the admin interface.
         """
         return self.name
+
+    def save(self, *args, **kwargs):
+        # If url is empty, construct it based on the app's base URL and box name
+        if not self.url:
+            self.url = self.name
+        super().save(*args, **kwargs)
 
 
 class Song(models.Model):
@@ -48,6 +56,7 @@ class Song(models.Model):
         platform_id: The id of the platform on which the song is available.
         n_deposits: The number of deposits of the song.
     """
+
     song_id = models.CharField(max_length=15)
     title = models.CharField(max_length=50)
     artist = models.CharField(max_length=50)
@@ -61,7 +70,7 @@ class Song(models.Model):
         """
         Method goal: Returns the title and the artist of the song used to display it in the admin interface.
         """
-        return self.title + ' - ' + self.artist
+        return self.title + " - " + self.artist
 
 
 class Deposit(models.Model):
@@ -70,17 +79,19 @@ class Deposit(models.Model):
         if not self.pk:  # Check if it's the first save
             self.deposited_at = timezone.now()
 
-        super().save(*args, **kwargs)  # calling the save() method of the parent class (which is User)
+        super().save(
+            *args, **kwargs
+        )  # calling the save() method of the parent class (which is User)
 
     NOTE_CHOICES = [
-        ('calme', 'Cette chanson m\'apaise et me détend !'),
-        ('danse', 'Cette chanson me donne envie de danser !'),
-        ('inspire', 'Cette chanson me pousse à être créatif !'),
-        ('joie', 'Cette chanson me met de bonne humeur !'),
-        ('motive', 'Cette chanson me motive pour la journée !'),
-        ('reflexion', 'Cette chanson me fait réfléchir sur la vie.'),
-        ('rire', 'Cette chanson me fait rire !'),
-        ('triste', 'Cette chanson me rend mélancolique !'),
+        ("calme", "Cette chanson m'apaise et me détend !"),
+        ("danse", "Cette chanson me donne envie de danser !"),
+        ("inspire", "Cette chanson me pousse à être créatif !"),
+        ("joie", "Cette chanson me met de bonne humeur !"),
+        ("motive", "Cette chanson me motive pour la journée !"),
+        ("reflexion", "Cette chanson me fait réfléchir sur la vie."),
+        ("rire", "Cette chanson me fait rire !"),
+        ("triste", "Cette chanson me rend mélancolique !"),
     ]
 
     song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
@@ -91,7 +102,7 @@ class Deposit(models.Model):
     deposited_at = models.DateTimeField()
 
     def __str__(self):
-        return str(self.song_id) + ' - ' + str(self.box_id)
+        return str(self.song_id) + " - " + str(self.box_id)
 
 
 class LocationPoint(models.Model):
@@ -104,9 +115,14 @@ class LocationPoint(models.Model):
         longitude    : The longitude of the location point.
         dist_location: The maximum distance between the user and the location point.
     """
+
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(
+        validators=[MinValueValidator(-90), MaxValueValidator(90)], blank=False
+    )
+    longitude = models.FloatField(
+        validators=[MinValueValidator(-180), MaxValueValidator(180)], blank=False
+    )
     dist_location = models.IntegerField(default=100)
 
     def __str__(self):
@@ -115,7 +131,7 @@ class LocationPoint(models.Model):
         used to display it in the admin interface.
         """
         box_name = Box.objects.get(id=self.box_id_id).name
-        return box_name + ' - ' + str(self.latitude) + ' - ' + str(self.longitude)
+        return box_name + " - " + str(self.latitude) + " - " + str(self.longitude)
 
 
 class VisibleDeposit(models.Model):
@@ -125,10 +141,11 @@ class VisibleDeposit(models.Model):
     Attributes:
         deposit_id: The id of the deposit.
     """
+
     deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id) + '-' + str(self.deposit_id)
+        return str(self.id) + "-" + str(self.deposit_id)
 
 
 class DiscoveredSong(models.Model):
@@ -139,6 +156,7 @@ class DiscoveredSong(models.Model):
         song_id   : The id of the song.
         user_id   : The id of the user.
     """
+
     deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
@@ -146,4 +164,4 @@ class DiscoveredSong(models.Model):
         """
         Method goal: Returns the id of the user and the id of the deposit used to display it in the admin interface.
         """
-        return str(self.user_id) + ' - ' + str(self.deposit_id)
+        return str(self.user_id) + " - " + str(self.deposit_id)
