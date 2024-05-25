@@ -157,24 +157,25 @@ export default function LiveSearch({
           // setAchievements(data_resp.achievements);
         })
     } else {
-      const data = { option, boxName };
-      const jsonData = JSON.stringify(data);
-      const csrftoken = getCookie("csrftoken");
-      fetch("/box-management/get-box?name=" + boxName, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken,
-        },
-        body: jsonData,
-      })
-        .then((response) => response.json())
-        .then((data_resp) => {
-          console.log(data_resp);
-          // Set the search song to the new deposit
-          setSearchSong(data_resp.new_deposit);
-          setAchievements(data_resp.achievements);
-        });
+      // const data = { option, boxName };
+      // const jsonData = JSON.stringify(data);
+      // const csrftoken = getCookie("csrftoken");
+      // fetch("/box-management/get-box?name=" + boxName, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "X-CSRFToken": csrftoken,
+      //   },
+      //   body: jsonData,
+      // })
+      //   .then((response) => response.json())
+      //   .then((data_resp) => {
+      //     console.log(data_resp);
+      //     // Set the search song to the new deposit
+      //     setSearchSong(data_resp.new_deposit);
+      //     setAchievements(data_resp.achievements);
+      //   });
+      setSearchSong(option);
       setIsDeposited(true);
       setStage(3);
     }
@@ -233,14 +234,14 @@ export default function LiveSearch({
       <ul className="search-results">
         {jsonResults.map(option => (
           <Box component="li" key={option.id}>
-            <div class="img-container">
+            <div className="img-container">
               <img
                 src={option.image_url}
                 alt={option.name}
               />
             </div>
 
-            <div class="song">
+            <div className="song">
               <p className="song-title" variant="h6">{option.name}</p>
               <p className="song-subtitle" variant="subtitle2">{option.artist}</p>
             </div>

@@ -97,8 +97,8 @@ class Deposit(models.Model):
     song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
     box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
-    note = models.CharField(max_length=50, choices=NOTE_CHOICES, blank=True)
-    # user_id = models.IntegerField()
+    is_visible = models.BooleanField(default=False)
+    note = models.CharField(max_length=50, choices=NOTE_CHOICES, blank=True, null=True)
     deposited_at = models.DateTimeField()
 
     def __str__(self):

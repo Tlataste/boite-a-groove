@@ -57,7 +57,7 @@ export default function MusicBox() {
     checkSpotifyAuthentication(setIsSpotifyAuthenticated);
     checkDeezerAuthentication(setIsDeezerAuthenticated);
     setCurrentBoxName(boxName);
-    updateVisibleDeposits(boxName);
+    // updateVisibleDeposits(boxName);
     getBoxDetails(boxName, navigate)
       .then((data) => {
         setBoxInfo(data);
@@ -71,16 +71,16 @@ export default function MusicBox() {
     <>
       <MenuAppBar />
       <Box className={`main-content stage-${stage}`}>
-        {(stage === 0 || stage === 1) && 
+        {(stage === 0 || stage === 1) &&
           <>
-            <BoxStartup setStage={setStage} boxInfo={boxInfo} className="startup"/>
+            <BoxStartup setStage={setStage} boxInfo={boxInfo} className="startup" />
             <EnableLocation
               className="enable-location"
               setStage={setStage}
               boxInfo={boxInfo}
               navigate={navigate}
             />
-            <Loader/>
+            <Loader />
           </>
         }
         {stage === 2 && (
@@ -99,7 +99,7 @@ export default function MusicBox() {
           </>
         )}
         {stage === 3 && (
-          <IncentiveNote setStage={setStage} searchSong={searchSong} />
+          <IncentiveNote setStage={setStage} searchSong={searchSong} setSearchSong={setSearchSong} />
         )}
         {stage === 4 && (
           <>
@@ -110,6 +110,7 @@ export default function MusicBox() {
               setDispSong={setDispSong}
               searchSong={searchSong}
               setDepositedBy={setDepositedBy}
+              setAchievements={setAchievements}
             />
           </>
         )}

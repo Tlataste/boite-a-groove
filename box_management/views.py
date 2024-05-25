@@ -75,7 +75,7 @@ class GetBox(APIView):
                 data = BoxSerializer(box_instance).data
                 last_deposits = Deposit.objects.filter(
                     box_id=data.get('id'),
-                    id__in=VisibleDeposit.objects.values('deposit_id')
+                    is_visible=True
                 ).order_by('-deposited_at')
 
                 deposit_count = len(last_deposits)
@@ -84,8 +84,8 @@ class GetBox(APIView):
                 last_deposits_data = []
 
                 for deposit in last_deposits:
-                    user_id = deposit.user.id if deposit.user else "Anonymous User"
-                    profile_picture = deposit.user.profile_picture.url if deposit.user else ""
+                    user_id = deposit.user.id if deposit.user else None
+                    profile_picture = deposit.user.profile_picture.url if deposit.user and deposit.user.profile_picture else ""
 
                     deposit_data = {
                         'id': deposit.id,
@@ -111,47 +111,51 @@ class GetBox(APIView):
             return Response({'Bad Request': 'Name of the box not found in request'}, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, format=None):
-        """
-        Handles the POST request for creating a new deposit.
-        Args:
-            request: The HTTP request object.
-            format (str, optional): The format of the response. Defaults to None.
-        Returns:
-            Response: The HTTP response object containing the new deposit and achievements earned by the user.
-        Raises:
-            Song.DoesNotExist: If the song does not exist.
-        """
         option = request.data.get('option')
         song_id = option.get('id')
-
         song_name = option.get('name')
         song_author = option.get('artist')
         song_platform_id = option.get('platform_id')
-        box_name = request.data.get('boxName')
+        note = option.get('note')
+        box_id = request.data.get('box_id')
+
+        visible_deposit_id = request.data.get('visible_deposit').get('id')
 
         # Verify if the song already exists
         try:
             song = Song.objects.filter(title=song_name, artist=song_author).get()
             song.n_deposits += 1
             song.save()
-
         except Song.DoesNotExist:
             # Create a new song
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
             song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image,
-                        duration=song_duration,
-                        platform_id=song_platform_id, n_deposits=1)
+                        duration=song_duration, platform_id=song_platform_id, n_deposits=1)
             song.save()
 
-        # Create a new deposit
-        # TODO change the namings of the different variable ---> boxName for the url of the box is WRONG 
-        box = Box.objects.filter(url=box_name).get()
-        user = request.user if not isinstance(request.user, AnonymousUser) else None
-        new_deposit = Deposit(song_id=song, box_id=box, user=user)
+        # Check if there is an existing visible deposit for the same song and box
+        box = Box.objects.filter(id=box_id).get()
+        existing_visible_deposit = Deposit.objects.filter(box_id=box, song_id=song, is_visible=True).first()
 
-        # Adding points
+        if existing_visible_deposit:
+            # Return an error response indicating that the song is already visible in this box
+            return Response({'error': 'The song is already visible in this box.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if replaced deposit is still visible
+        deposit_to_replace = Deposit.objects.get(id=visible_deposit_id)
+        if not deposit_to_replace.is_visible:
+            return Response({'error': 'The song is not visible anymore'})
+        elif Deposit.objects.filter(box_id=box, is_visible=True).count() >= 6:
+            deposit_to_replace.is_visible = False
+            deposit_to_replace.save()
+
+        # Create a new deposit and set it as visible
+        user = request.user if not isinstance(request.user, AnonymousUser) else None
+        new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note, is_visible=True)
+        new_deposit.save()
+
         successes: dict = {}
         points_to_add = NB_POINTS_ADD_SONG  # Default minimum points gained by deposit
         default_deposit = {
@@ -173,62 +177,54 @@ class GetBox(APIView):
             }
             successes['first_user_deposit_box'] = first_user_deposit_box
 
-        # check if it's the first time that a song is deposited to a specific box
-        if is_first_song_deposit(song, box):
-            points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_BOX
-            first_song_deposit = {
-                'name': "Far West",
-                'desc': "Ce son n'a jamais été déposé ici",
-                'points': NB_POINTS_FIRST_SONG_DEPOSIT_BOX
-            }
-            successes['first_song_deposit'] = first_song_deposit
-            # if it's the first time that a song is deposited on a box, we check all the network
-            if is_first_song_deposit_global(song):
-                points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
-                first_song_deposit_global = {
+            # check if it's the first time that a song is deposited to a specific box
+            if is_first_song_deposit(song, box):
+                points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+                first_song_deposit = {
                     'name': "Far West",
-                    'desc': "Ce son n'a jamais été déposé sur notre réseau",
-                    'points': NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                    'desc': "Ce son n'a jamais été déposé ici",
+                    'points': NB_POINTS_FIRST_SONG_DEPOSIT_BOX
                 }
-                successes['first_song_deposit_global'] = first_song_deposit_global
+                successes['first_song_deposit'] = first_song_deposit
+                # if it's the first time that a song is deposited on a box, we check all the network
+                if is_first_song_deposit_global(song):
+                    points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                    first_song_deposit_global = {
+                        'name': "Far West",
+                        'desc': "Ce son n'a jamais été déposé sur notre réseau",
+                        'points': NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                    }
+                    successes['first_song_deposit_global'] = first_song_deposit_global
 
-        # check if the user made deposits on consecutive dates
-        nb_consecutive_days: int = get_consecutive_deposit_days(user, box)
-        if nb_consecutive_days:
-            consecutive_days_points = nb_consecutive_days * NB_POINTS_CONSECUTIVE_DAYS_BOX
-            points_to_add += consecutive_days_points
-            nb_consecutive_days += 1  # If we win 2*NB_points it means that we used the box for 3 days so we add 1 for display purposes
-            consecutive_days = {
-                'name': "L'amour fou",
-                'desc': f"{nb_consecutive_days} jours consécutifs avec cette boite",
-                'points': consecutive_days_points
-            }
-            successes['consecutive_days'] = consecutive_days
+            # check if the user made deposits on consecutive dates
+            nb_consecutive_days: int = get_consecutive_deposit_days(user, box)
+            if nb_consecutive_days:
+                consecutive_days_points = nb_consecutive_days * NB_POINTS_CONSECUTIVE_DAYS_BOX
+                points_to_add += consecutive_days_points
+                nb_consecutive_days += 1  # If we win 2*NB_points it means that we used the box for 3 days so we add 1 for display purposes
+                consecutive_days = {
+                    'name': "L'amour fou",
+                    'desc': f"{nb_consecutive_days} jours consécutifs avec cette boite",
+                    'points': consecutive_days_points
+                }
+                successes['consecutive_days'] = consecutive_days
 
-        cookies = request.COOKIES
-        csrf_token = get_token(request)
-        # Get the complete URL for the add-points endpoint using reverse
-        add_points_url = request.build_absolute_uri(reverse('add-points'))
+            # Add points to the user
+        if user is not None:
+            user.points += points_to_add
+            user.save()
+            response_msg = 'Points mis à jour avec succès'
+        if not DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_author,
+                                         deposit_id__song_id__title=song_name).exists():
+            DiscoveredSong(user_id=user, deposit_id=deposit_to_replace).save()
 
-        headers = {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrf_token
-        }
+        else:
+            response_msg = 'Utilisateur non connecté'
 
-        requests.post(add_points_url, cookies=cookies, headers=headers, data=json.dumps({
-            "points": points_to_add
-        })).json()
-
-        new_deposit.save()
-        new_deposit = DepositSerializer(new_deposit).data
-        # Rediriger vers la page de détails de la boîte
-
-        response = {
-            'new_deposit': new_deposit,
-            'achievements': successes
-        }
+        new_deposit_data = DepositSerializer(new_deposit).data
+        song = SongSerializer(deposit_to_replace.song_id).data
+        response = {'new_deposit': new_deposit_data, 'song': song, 'achievements': successes, 'status': response_msg}
         return Response(response, status=status.HTTP_200_OK)
-
 
 class ReplaceVisibleDeposits(APIView):
     """
@@ -361,48 +357,48 @@ class CurrentBoxManagement(APIView):
             return Response({'errors': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class UpdateVisibleDeposits(APIView):
-    """
-    Class goal: Update the visible deposits of a box when the user discloses a deposit after depositing a song
-    """
-
-    def post(self, request):
-        """
-        Function goal: Update the visible deposits of a box
-        Args:
-            request: the request sent by the user
-
-        Returns:
-            Response: the response containing the new visible deposits or an error message
-        """
-        box_name = request.data.get('boxName')
-        box = Box.objects.filter(url=box_name).get()
-
-        # Get the maximum number of deposits to display
-        max_deposits = box.max_deposits
-        # Get the visible deposits of the box
-        visible_deposits = VisibleDeposit.objects.filter(deposit_id__box_id=box).order_by('-deposit_id__deposited_at')
-        # Get the number of visible deposits
-        n_visible_deposits = len(visible_deposits)
-
-        # If the number of visible deposits is more than the maximum number of deposits to display
-        if n_visible_deposits > max_deposits:
-            # Delete the oldest visible deposits
-            for i in range(max_deposits, n_visible_deposits):
-                visible_deposits[i].delete()
-        # If the number of visible deposits is less than the maximum number of deposits to display
-        elif n_visible_deposits < max_deposits:
-            # Get the number of deposits to add
-            n_deposits_to_add = max_deposits - n_visible_deposits
-            # Get the last n_deposits_to_add deposits of the box that are not visible
-            deposits_to_add = Deposit.objects.filter(box_id=box).exclude(
-                song_id__in=visible_deposits.values('deposit_id__song_id')).order_by('-deposited_at')[:n_deposits_to_add]
-            # Add the deposits to the visible deposits
-            for deposit in deposits_to_add:
-                # check if the song is already linked to a visible deposit
-                if not VisibleDeposit.objects.filter(deposit_id__song_id=deposit.song_id).exists():
-                    VisibleDeposit(deposit_id=deposit).save()
-        return Response({'success': True}, status=status.HTTP_200_OK)
+# class UpdateVisibleDeposits(APIView):
+#     """
+#     Class goal: Update the visible deposits of a box when the user discloses a deposit after depositing a song
+#     """
+#
+#     def post(self, request):
+#         """
+#         Function goal: Update the visible deposits of a box
+#         Args:
+#             request: the request sent by the user
+#
+#         Returns:
+#             Response: the response containing the new visible deposits or an error message
+#         """
+#         box_name = request.data.get('boxName')
+#         box = Box.objects.filter(url=box_name).get()
+#
+#         # Get the maximum number of deposits to display
+#         max_deposits = box.max_deposits
+#         # Get the visible deposits of the box
+#         visible_deposits = Deposit.objects.filter(deposit_id__box_id=box, is_visible=True).order_by('-deposited_at')
+#         # Get the number of visible deposits
+#         n_visible_deposits = len(visible_deposits)
+#
+#         # If the number of visible deposits is more than the maximum number of deposits to display
+#         if n_visible_deposits > max_deposits:
+#             # Delete the oldest visible deposits
+#             for i in range(max_deposits, n_visible_deposits):
+#                 visible_deposits[i].delete()
+#         # If the number of visible deposits is less than the maximum number of deposits to display
+#         elif n_visible_deposits < max_deposits:
+#             # Get the number of deposits to add
+#             n_deposits_to_add = max_deposits - n_visible_deposits
+#             # Get the last n_deposits_to_add deposits of the box that are not visible
+#             deposits_to_add = Deposit.objects.filter(box_id=box).exclude(
+#                 song_id__in=visible_deposits.values('deposit_id__song_id')).order_by('-deposited_at')[:n_deposits_to_add]
+#             # Add the deposits to the visible deposits
+#             for deposit in deposits_to_add:
+#                 # check if the song is already linked to a visible deposit
+#                 if not VisibleDeposit.objects.filter(deposit_id__song_id=deposit.song_id).exists():
+#                     VisibleDeposit(deposit_id=deposit).save()
+#         return Response({'success': True}, status=status.HTTP_200_OK)
 
 
 class ManageDiscoveredSongs(APIView):

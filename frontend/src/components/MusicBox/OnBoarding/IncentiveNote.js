@@ -22,7 +22,8 @@ const styles = {
   },
 };
 
-export default function IncentiveNote({ setStage, searchSong }) {
+
+export default function IncentiveNote({ setStage, searchSong, setSearchSong }) {
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {
@@ -35,7 +36,9 @@ export default function IncentiveNote({ setStage, searchSong }) {
    * @returns {void}
    */
   function handleAddNoteButtonClick(note) {
-    setDepositNote(searchSong.id, note).then(() => setStage(4));
+    // setDepositNote(searchSong.id, note).then(() => setStage(4));
+    setSearchSong(currentSearchSong => ({ ...currentSearchSong, note: note }));
+    setStage(4);
   }
 
   /**

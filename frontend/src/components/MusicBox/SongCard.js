@@ -27,6 +27,7 @@ export default function SongCard({
   setDispSong,
   searchSong,
   setDepositedBy,
+  setAchievements,
 }) {
   // States
   const [depositIndex, setdepositIndex] = useState(0);
@@ -55,27 +56,30 @@ export default function SongCard({
    * Handles the click event for the "Reveal" button.
    */
   function replaceVisibleDeposit() {
-    const csrftoken = getCookie("csrftoken");
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      body: JSON.stringify({
-        visible_deposit: deposits.box.last_deposits[depositIndex],
-        search_deposit: searchSong,
-      }),
+    const data = {
+      option: searchSong,
+      box_id: deposits.box.id,
+      visible_deposit: deposits.box.last_deposits[depositIndex],
     };
 
-    // Replace the visible deposit in the database
-    fetch("../box-management/replace-visible-deposits", requestOptions)
+    const jsonData = JSON.stringify(data);
+    const csrftoken = getCookie("csrftoken");
+
+    fetch("/box-management/get-box", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: jsonData,
+    })
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .then(() => setDispSong(deposits.box.last_deposits[depositIndex]))
-      .then(() => setDepositedBy(deposits.box.last_deposits[depositIndex].user_id))
-      .then(() => setStage(5));
-    // Update the list of discovered songs in the database
-    fetch("../box-management/discovered-songs", requestOptions);
+      .then((data_resp) => {
+        setDispSong(data_resp.song);
+        setDepositedBy(deposits.box.last_deposits[depositIndex].user_id)
+        setAchievements(data_resp.achievements);
+        setStage(5);
+      });
   }
 
   return (
