@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from spotify.credentials import CLIENT_ID, CLIENT_SECRET
 from deezer.credentials import LOGIN_APP_ID, LOGIN_APP_SECRET
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +30,7 @@ SECRET_KEY = 'django-insecure-mwb#$xb6cdl#+v*#7_r04r&d7dx#cn@lvhp)syyn-(84k87cvn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.lesboitesagroove.com']
 
 # Application definition
 
@@ -107,8 +108,12 @@ WSGI_APPLICATION = 'la_boite_a_son.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'boite_a_groove',
+        'USER': 'boite_a_groove_django',
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
