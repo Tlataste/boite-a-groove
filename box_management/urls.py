@@ -11,4 +11,5 @@ urlpatterns = [
     # path('update-visible-deposits', UpdateVisibleDeposits.as_view()),
     path('current-box-management', CurrentBoxManagement.as_view()),
     path('discovered-songs', ManageDiscoveredSongs.as_view()),
+    path('create-deposit/', create_deposit_and_get_last, name='create_deposit_and_get_last'),
 ]

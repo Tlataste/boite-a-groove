@@ -6,6 +6,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
+import { getCookie } from "../../Security/TokensUtils";
 import { setDepositNote } from "../BoxUtils";
 
 // Styles
@@ -23,7 +24,15 @@ const styles = {
 };
 
 
-export default function IncentiveNote({ setStage, searchSong, setSearchSong }) {
+export default function IncentiveNote({
+  setStage,
+  searchSong,
+  setSearchSong,
+  boxInfo,
+  setDispSong,
+  setDepositedBy,
+  setAchievements
+}) {
   const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {
@@ -38,8 +47,36 @@ export default function IncentiveNote({ setStage, searchSong, setSearchSong }) {
   function handleAddNoteButtonClick(note) {
     // setDepositNote(searchSong.id, note).then(() => setStage(4));
     setSearchSong(currentSearchSong => ({ ...currentSearchSong, note: note }));
-    setStage(4);
+    const csrftoken = getCookie("csrftoken");
+
+    fetch('/box-management/create-deposit/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify({
+        option: searchSong,
+        box_id: boxInfo.box.id,
+        // visible_deposit: { id: searchSong.visible_deposit_id }
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        const { new_deposit, last_deposit, song, achievements } = data;
+        console.log(data)
+        setDispSong(song);
+        setDepositedBy(last_deposit.user);
+        setAchievements(achievements);
+        // Skip directly to stage 5
+        setStage(5);
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
+  //   setStage(4);
+  // }
 
   /**
    * Item component represents a UI element displaying a note and a button to add the note.

@@ -99,7 +99,14 @@ export default function MusicBox() {
           </>
         )}
         {stage === 3 && (
-          <IncentiveNote setStage={setStage} searchSong={searchSong} setSearchSong={setSearchSong} />
+          <IncentiveNote setStage={setStage}
+            searchSong={searchSong}
+            setSearchSong={setSearchSong}
+            boxInfo={boxInfo}
+            setDispSong={setDispSong}
+            setDepositedBy={setDepositedBy}
+            setAchievements={setAchievements}
+          />
         )}
         {stage === 4 && (
           <>

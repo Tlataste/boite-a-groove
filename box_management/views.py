@@ -3,6 +3,7 @@ from django.middleware.csrf import get_token
 from django.urls import reverse
 from datetime import date, timedelta
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView  # Generic API view
 from .serializers import *
@@ -47,6 +48,107 @@ def get_consecutive_deposit_days(user, box):
 
     return consecutive_days
 
+@api_view(['POST'])
+def create_deposit_and_get_last(request):
+    # Extract data from the request
+    option = request.data.get('option')
+    song_id = option.get('id')
+    song_name = option.get('name')
+    song_author = option.get('artist')
+    song_platform_id = option.get('platform_id')
+    note = option.get('note')
+    box_id = request.data.get('box_id')
+
+    # Verify if the song already exists
+    try:
+        song = Song.objects.filter(title=song_name, artist=song_author).get()
+        song.n_deposits += 1
+        song.save()
+    except Song.DoesNotExist:
+        # Create a new song
+        song_url = option.get('url')
+        song_image = option.get('image_url')
+        song_duration = option.get('duration')
+        song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image,
+                    duration=song_duration, platform_id=song_platform_id, n_deposits=1)
+        song.save()
+
+    box = Box.objects.filter(id=box_id).get()
+
+    # Find the last visible deposit before creating a new one
+    last_deposit = Deposit.objects.filter(box_id=box, is_visible=True).order_by('-deposited_at').first()
+
+    # Create a new deposit and set it as visible
+    user = request.user if not isinstance(request.user, AnonymousUser) else None
+    new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note, is_visible=True)
+    new_deposit.save()
+
+    # Achievements check and points calculation
+    successes: dict = {}
+    points_to_add = NB_POINTS_ADD_SONG  # Default minimum points gained by deposit
+    default_deposit = {
+        'name': "Pépite",
+        'desc': "Tu as partagé une chanson",
+        'points': NB_POINTS_ADD_SONG
+    }
+    successes['default_deposit'] = default_deposit
+
+    points_to_add = NB_POINTS_ADD_SONG
+
+    if is_first_user_deposit(user, box):
+        points_to_add += NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
+        successes['first_user_deposit_box'] = {
+            'name': "Conquérant",
+            'desc': "Tu n'as jamais déposé ici",
+            'points': NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX
+        }
+
+        if is_first_song_deposit(song, box):
+            points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+            successes['first_song_deposit'] = {
+                'name': "Far West",
+                'desc': "Ce son n'a jamais été déposé ici",
+                'points': NB_POINTS_FIRST_SONG_DEPOSIT_BOX
+            }
+            if is_first_song_deposit_global(song):
+                points_to_add += NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                successes['first_song_deposit_global'] = {
+                    'name': "Far West",
+                    'desc': "Ce son n'a jamais été déposé sur notre réseau",
+                    'points': NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL
+                }
+
+        nb_consecutive_days = get_consecutive_deposit_days(user, box)
+        if nb_consecutive_days:
+            consecutive_days_points = nb_consecutive_days * NB_POINTS_CONSECUTIVE_DAYS_BOX
+            points_to_add += consecutive_days_points
+            nb_consecutive_days += 1
+            successes['consecutive_days'] = {
+                'name': "L'amour fou",
+                'desc': f"{nb_consecutive_days} jours consécutifs avec cette boite",
+                'points': consecutive_days_points
+            }
+
+    if user is not None:
+        user.points += points_to_add
+        user.save()
+
+        if not DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_author,
+                                             deposit_id__song_id__title=song_name).exists():
+            DiscoveredSong(user_id=user, deposit_id=new_deposit).save()
+
+    new_deposit_data = DepositSerializer(new_deposit).data
+    last_deposit_data = DepositSerializer(last_deposit).data if last_deposit else None
+    song_data = SongSerializer(last_deposit.song_id).data
+
+    response = {
+        'new_deposit': new_deposit_data,
+        'last_deposit': last_deposit_data,
+        'song': song_data,
+        'achievements': successes
+    }
+    return Response(response, status=status.HTTP_200_OK)
+
 
 class GetBox(APIView):
     lookup_url_kwarg = 'name'
@@ -67,48 +169,85 @@ class GetBox(APIView):
         - HTTP 404 Not Found: If the box name is invalid or not found.
         - HTTP 400 Bad Request: If the name of the box is not found in the request.
         """
+        # name = request.GET.get(self.lookup_url_kwarg)
+        # if name is not None:
+        #     box = Box.objects.filter(url=name)
+        #     if box.exists():
+        #         box_instance = box.first()
+        #         data = BoxSerializer(box_instance).data
+        #         last_deposits = Deposit.objects.filter(
+        #             box_id=data.get('id'),
+        #             is_visible=True
+        #         ).order_by('-deposited_at')
+        #
+        #         deposit_count = len(last_deposits)
+        #
+        #         # Serialize the deposits with additional image_url field
+        #         last_deposits_data = []
+        #
+        #         for deposit in last_deposits:
+        #             user_id = deposit.user.id if deposit.user else None
+        #             profile_picture = deposit.user.profile_picture.url if deposit.user and deposit.user.profile_picture else ""
+        #
+        #             deposit_data = {
+        #                 'id': deposit.id,
+        #                 'note': deposit.note,
+        #                 'image_url': Song.objects.get(pk=deposit.song_id_id).image_url,
+        #                 'user_id': user_id,
+        #                 'profile_picture': profile_picture,
+        #             }
+        #             last_deposits_data.append(deposit_data)
+        #
+        #         # Include last_deposits inside the box object in the response
+        #         data['last_deposits'] = last_deposits_data
+        #
+        #         resp = {
+        #             'box': data,
+        #             'deposit_count': deposit_count,
+        #         }
+        #
+        #         return Response(resp, status=status.HTTP_200_OK)
+        #     else:
+        #         return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
+        # else:
+        #     return Response({'Bad Request': 'Name of the box not found in request'}, status=status.HTTP_400_BAD_REQUEST)
         name = request.GET.get(self.lookup_url_kwarg)
-        if name is not None:
-            box = Box.objects.filter(url=name)
-            if box.exists():
-                box_instance = box.first()
-                data = BoxSerializer(box_instance).data
-                last_deposits = Deposit.objects.filter(
-                    box_id=data.get('id'),
-                    is_visible=True
-                ).order_by('-deposited_at')
-
-                deposit_count = len(last_deposits)
-
-                # Serialize the deposits with additional image_url field
-                last_deposits_data = []
-
-                for deposit in last_deposits:
-                    user_id = deposit.user.id if deposit.user else None
-                    profile_picture = deposit.user.profile_picture.url if deposit.user and deposit.user.profile_picture else ""
-
-                    deposit_data = {
-                        'id': deposit.id,
-                        'note': deposit.note,
-                        'image_url': Song.objects.get(pk=deposit.song_id_id).image_url,
-                        'user_id': user_id,
-                        'profile_picture': profile_picture,
-                    }
-                    last_deposits_data.append(deposit_data)
-
-                # Include last_deposits inside the box object in the response
-                data['last_deposits'] = last_deposits_data
-
-                resp = {
-                    'box': data,
-                    'deposit_count': deposit_count,
-                }
-
-                return Response(resp, status=status.HTTP_200_OK)
-            else:
-                return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
-        else:
+        if name is None:
             return Response({'Bad Request': 'Name of the box not found in request'}, status=status.HTTP_400_BAD_REQUEST)
+
+        box = Box.objects.filter(url=name).first()
+        if not box:
+            return Response({'Bad Request': 'Invalid Box Name'}, status=status.HTTP_404_NOT_FOUND)
+
+        data = BoxSerializer(box).data
+
+        last_deposit = Deposit.objects.filter(
+            box_id=box,
+            is_visible=True
+        ).order_by('-deposited_at').first()
+
+        if last_deposit:
+            user = last_deposit.user
+            deposit_data = {
+                'id': last_deposit.id,
+                'note': last_deposit.note,
+                'image_url': Song.objects.get(pk=last_deposit.song_id_id).image_url,
+                'user_id': user.id if user else None,
+                'profile_picture': user.profile_picture.url if user and user.profile_picture else ""
+            }
+            last_deposits_data = [deposit_data]
+        else:
+            last_deposits_data = []
+
+        data['last_deposits'] = last_deposits_data
+        deposit_count = 1 if last_deposit else 0
+
+        resp = {
+            'box': data,
+            'deposit_count': deposit_count,
+        }
+
+        return Response(resp, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         option = request.data.get('option')
