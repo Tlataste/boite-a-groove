@@ -57,7 +57,7 @@ class Song(models.Model):
         n_deposits: The number of deposits of the song.
     """
 
-    song_id = models.CharField(max_length=15)
+    song_id = models.CharField(max_length=50)
     title = models.CharField(max_length=50)
     artist = models.CharField(max_length=50)
     url = models.URLField(max_length=200)

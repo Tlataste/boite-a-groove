@@ -139,7 +139,7 @@ def create_deposit_and_get_last(request):
 
     new_deposit_data = DepositSerializer(new_deposit).data
     last_deposit_data = DepositSerializer(last_deposit).data if last_deposit else None
-    song_data = SongSerializer(last_deposit.song_id).data
+    song_data = SongSerializer(last_deposit.song_id).data if last_deposit else None
 
     response = {
         'new_deposit': new_deposit_data,
