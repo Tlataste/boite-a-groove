@@ -31,7 +31,8 @@ SECRET_KEY = 'django-insecure-mwb#$xb6cdl#+v*#7_r04r&d7dx#cn@lvhp)syyn-(84k87cvn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.lesboitesagroove.com']
+ALLOWED_HOSTS = ['lesboitesagroove.com', '.lesboitesagroove.com', 'www.lesboitesagroove.com']
+CSRF_TRUSTED_ORIGINS = ['https://lesboitesagroove.com']
 
 # Application definition
 
