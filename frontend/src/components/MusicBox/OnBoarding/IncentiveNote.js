@@ -163,7 +163,7 @@ export default function IncentiveNote({
       <Button
         style={styles.button}
         variant="contained"
-        onClick={() => setStage(4)}
+        onClick={() => handleAddNoteButtonClick("")}
       >
         Continuer sans note
       </Button>
