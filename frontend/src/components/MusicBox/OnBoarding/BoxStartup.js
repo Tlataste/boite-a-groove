@@ -28,10 +28,15 @@ export default function BoxStartup({ setStage, boxInfo, className }) {
                 <span>
                   {boxInfo.box.name}
                 </span>
-              </button>
+              </div>
 
               <h1>Bienvenue !</h1>
-              <p>Pour révéler la chanson déposé dans la boite par le festivalier précedent, déposes-en une a ton tour.</p>
+              <p>Une chanson a été déposée dans cette boîte !</p>
+
+              <ol>
+                <li>Choisi une chanson à déposer pour la prochaine personne</li>
+                <li>Découvre ainsi la chanson déposée par la personne précédente</li>
+              </ol>
 
 
               <button

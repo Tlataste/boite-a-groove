@@ -5,6 +5,11 @@
 
 /* ---------------- DEFAULT -----------------*/
 
+.main-search-wrapper {
+    overflow-y: scroll;
+    height: 100%;
+}
+
 .search-song {
 
     h1 {
@@ -16,7 +21,8 @@
 
     > .d-flex {
         justify-content: center;
-        margin: 14px 0;
+        margin: 12px 0;
+        gap: 10px;
     }
 
     &__wrapper {

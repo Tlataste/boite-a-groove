@@ -22,7 +22,7 @@ export default function EnableLocation({ setStage, boxInfo, navigate, className 
       {boxInfo && Object.keys(boxInfo.box || {}).length > 0 ? (
         <div className={className} >
           <div className="enable-location__wrapper">
-            <button className="btn-secondary">
+            <button className="box-name">
               <span>
                 {boxInfo.box.name}
               </span>

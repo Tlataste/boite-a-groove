@@ -190,7 +190,7 @@ export default function LiveSearch({
   }
 
   return (
-    <Stack>
+    <div className="main-search-wrapper">
       <div className="search-song">
         <h1>Choisi une chanson à déposer</h1>
         {/* <h2>{setFavoriteSong == true ? 'Choisis ta chanson préférée' : 'Choisis ta chanson à déposer'}</h2> */}
@@ -224,7 +224,7 @@ export default function LiveSearch({
 
           <div className="input-wrapper">
             <input type="text"
-              placeholder="Search for a song"
+              placeholder="Rechercher"
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
@@ -251,17 +251,17 @@ export default function LiveSearch({
             </div>
 
             <button
-              className="btn-tertiary"
+              className="btn-secondary"
               variant="contained"
               onClick={() => handleButtonClick(option, boxName)}
             >
-              <span>Choisir</span>
+              <span>Déposer</span>
             </button>
 
           </Box>
         ))}
       </ul>
 
-    </Stack>
+    </div>
   );
 }
