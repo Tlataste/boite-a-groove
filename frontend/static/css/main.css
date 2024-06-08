@@ -641,7 +641,7 @@ header .MuiToolbar-root {
     z-index: 2; }
   .main-content.stage-1 .enable-location {
     transform: translateY(calc(-100% - 20px)); }
-  .main-content.stage-2 {
+  .main-content.stage-2, .main-content.stage-3 {
     overflow: visible; }
 
 /**
@@ -886,6 +886,19 @@ header .MuiToolbar-root {
       position: relative;
       z-index: 2; }
 
+.step-header {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid: 8; }
+  .step-header h1 {
+    margin: 0; }
+  .step-header p {
+    font-weight: 400;
+    text-align: center; }
+
 .enable-location {
   padding: 20px; }
   .enable-location__wrapper {
@@ -927,6 +940,56 @@ header .MuiToolbar-root {
  */
 /* ---------------- DEFAULT -----------------*/
 /* ---------------- CUSTOM  -----------------*/
+.mood {
+  background: rgba(0, 0, 0, 0.03);
+  padding-top: 12px; }
+  .mood .MuiTabs-scroller .MuiTabs-flexContainer {
+    gap: 12px;
+    padding-left: 20px; }
+  .mood .MuiTabs-scroller .MuiButtonBase-root {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.32px;
+    padding: 12px 16px;
+    background: #fff;
+    border-radius: 60px;
+    text-transform: none;
+    color: rgba(0, 0, 0, 0.8); }
+    .mood .MuiTabs-scroller .MuiButtonBase-root.Mui-selected span {
+      background: linear-gradient(to right, #fa9500, #fa4000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; }
+  .mood .MuiTabPanel-root {
+    padding: 16px 10px 0 26px; }
+  .mood .mood-item {
+    display: flex;
+    align-items: center; }
+    .mood .mood-item__content {
+      padding: 12px 26px 12px 12px;
+      color: rgba(0, 0, 0, 0.8);
+      background: #fff;
+      box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+      border-radius: 16px;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      letter-spacing: 0.32px;
+      display: flex;
+      gap: 8px;
+      flex-grow: 2; }
+      .mood .mood-item__content:before {
+        content: "";
+        min-width: 13px;
+        height: 21px;
+        background-image: url(../images/quote.svg);
+        background-size: 13px;
+        background-repeat: no-repeat; }
+    .mood .mood-item .btn-tertiary {
+      transform: translateX(-16px); }
+
 /*************************************************************************************
   Import tous les fichiers _name.scss liés à la navigation.
   NE PAS APPLIQUER DES STYLES ICI.

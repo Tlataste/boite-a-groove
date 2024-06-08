@@ -1,0 +1,73 @@
+.mood {
+    background: $greyBackground;
+    padding-top: 12px;
+
+    .MuiTabs-scroller {
+
+        .MuiTabs-flexContainer {
+            gap: 12px;
+            padding-left: 20px;
+        }
+
+        .MuiButtonBase-root {
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: 0.32px;
+            padding: 12px 16px;
+            background: $white;
+            border-radius: 60px;
+            text-transform: none;
+            color: $blak80;
+
+            &.Mui-selected {
+
+                span {
+                    background: linear-gradient(to right, #fa9500, #fa4000);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                }
+            }
+        }
+    }
+
+
+    .MuiTabPanel-root {
+        padding: 16px 10px 0 26px;
+    }
+
+    .mood-item {
+        display: flex;
+        align-items: center;
+
+        &__content {
+            padding: 12px 26px 12px 12px;
+            color:  $blak80;
+            background: $white;
+            box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+            border-radius: 16px;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            letter-spacing: 0.32px;
+            display: flex;
+            gap: 8px;
+            flex-grow: 2;
+
+            &:before {
+                content: "";
+                min-width: 13px;
+                height: 21px;
+                background-image: url(../images/quote.svg);
+                background-size: 13px;
+                background-repeat: no-repeat;
+            }
+        }
+
+        .btn-tertiary {
+            transform: translateX(-16px);
+        }
+    }
+}

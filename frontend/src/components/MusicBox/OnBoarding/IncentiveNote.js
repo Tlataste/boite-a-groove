@@ -86,50 +86,32 @@ export default function IncentiveNote({
    */
   function Item(note, sentence) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "10px",
-        }}
-      >
-        <Typography variant="subtitle1">{sentence}</Typography>
-        <Button
-          style={styles.button}
-          variant="contained"
+      <div className="mood-item">
+
+        <div className="mood-item__content">
+          {sentence}
+        </div>
+        <button className="btn-tertiary"
           onClick={() => handleAddNoteButtonClick(note)}
         >
-          Ajouter
-        </Button>
-      </Box>
+          <span>Attacher</span>
+        </button>
+      </div>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-      }}
-    >
-      <h1>Attache un mot</h1>
-      <p>...à ta musique décrivant pourquoi tu l’aimes, ça aidera les prochains voyageurs à faire leur choix</p>
+    <div>
 
-      <Box
-        sx={{
-          width: "90%",
-          typography: "body1",
-          backgroundColor: "white",
-          margin: "auto",
-          borderRadius: "20px",
-        }}
+      <div className="step-header">
+        <h1>Attache un mot</h1>
+        <p>...à ta musique décrivant pourquoi tu l’aimes, ça aidera les prochains voyageurs à faire leur choix</p>
+      </div>
+
+      <div className="mood"
       >
         <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Box>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               <Tab label="Moods" value="1" />
               <Tab label="Quelqu'un" value="2" />
@@ -161,7 +143,7 @@ export default function IncentiveNote({
             {Item("triste", "Cette chanson me rend mélancolique !")}
           </TabPanel>
         </TabContext>
-      </Box>
+      </div>
       <Button
         style={styles.button}
         variant="contained"
@@ -169,6 +151,6 @@ export default function IncentiveNote({
       >
         Continuer sans note
       </Button>
-    </Box>
+    </div>
   );
 }
