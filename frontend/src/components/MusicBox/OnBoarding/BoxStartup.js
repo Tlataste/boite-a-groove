@@ -24,7 +24,7 @@ export default function BoxStartup({ setStage, boxInfo, className }) {
 
           <div className="bottom-content">
             <div className="bottom-content__wrapper">
-              <button className="box-name">
+              <div className="box-name">
                 <span>
                   {boxInfo.box.name}
                 </span>
