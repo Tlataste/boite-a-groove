@@ -24,13 +24,14 @@ export default function BoxStartup({ setStage, boxInfo, className }) {
 
           <div className="bottom-content">
             <div className="bottom-content__wrapper">
-              <button className="btn-secondary">
+              <button className="box-name">
                 <span>
                   {boxInfo.box.name}
                 </span>
               </button>
 
-              <h1>{boxInfo.deposit_count} chanson(s) sur cet arrêt, échanges-en une pour la découvrir</h1>
+              <h1>Bienvenue !</h1>
+              <p>Pour révéler la chanson déposé dans la boite par le festivalier précedent, déposes-en une a ton tour.</p>
 
 
               <button

@@ -192,10 +192,10 @@ export default function LiveSearch({
   return (
     <Stack>
       <div className="search-song">
-        <h2>{setFavoriteSong == true ? 'Choisis ta chanson préférée' : 'Choisis ta chanson à déposer'}</h2>
-        <div className="search-song__wrapper">
+        <h1>Choisi une chanson à déposer</h1>
+        {/* <h2>{setFavoriteSong == true ? 'Choisis ta chanson préférée' : 'Choisis ta chanson à déposer'}</h2> */}
 
-          <div className="d-flex">
+        <div className="d-flex">
             <button
               className="btn-spotify"
               variant={
@@ -216,6 +216,10 @@ export default function LiveSearch({
               Deezer
             </button>
           </div>
+
+        <div className="search-song__wrapper">
+
+    
 
 
           <div className="input-wrapper">

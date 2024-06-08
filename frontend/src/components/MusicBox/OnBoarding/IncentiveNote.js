@@ -116,7 +116,9 @@ export default function IncentiveNote({
         gap: "10px",
       }}
     >
-      <Typography variant="h6">Ajoute une note d'incitation</Typography>
+      <h1>Attache un mot</h1>
+      <p>...à ta musique décrivant pourquoi tu l’aimes, ça aidera les prochains voyageurs à faire leur choix</p>
+
       <Box
         sx={{
           width: "90%",

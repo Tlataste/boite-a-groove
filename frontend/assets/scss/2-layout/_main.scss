@@ -17,7 +17,12 @@
 
     .decoration {
         height: 50%;
-        background: $orangeGradient;
+        background: #fa9500;
+        background-image: url(../images/box-bg.svg); /* fallback */
+        background-image: url(../images/box-bg.svg), $orangeGradient; /* W3C */
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
     }
 
     .bottom-content {

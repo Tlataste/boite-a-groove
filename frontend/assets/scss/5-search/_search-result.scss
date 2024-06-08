@@ -13,6 +13,7 @@
     padding-left: 20px;
     padding-right: 20px;
     margin-top: 0;
+    background: $greyBackground;
 
     li {
         display: flex;
@@ -41,9 +42,13 @@
             margin: 0;
         }
 
+        .song {
+            flex-grow: 1;
+        }
+
         .song-title {
             font-size: 1.6rem;
-            font-weight: 700;
+            font-weight: 600;
             letter-spacing: 0.4px;
             color: $black;
         }
