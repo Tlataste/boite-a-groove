@@ -587,12 +587,51 @@ header .MuiToolbar-root {
   .main-content .decoration {
     height: 375px;
     background: #fa9500;
-    background-image: url(../images/box-bg.svg);
-    /* fallback */
-    background-image: url(../images/box-bg.svg), linear-gradient(to right, #fa9500, #fa4000);
-    /* W3C */
-    background-repeat: no-repeat;
-    background-position: center; }
+    background: linear-gradient(to right, #fa9500, #fa4000);
+    /* W3C */ }
+    .main-content .decoration__wrapper {
+      background-image: url(../images/box-bg.svg);
+      /* fallback */
+      background-repeat: no-repeat;
+      background-position: center top 30px;
+      background-size: calc(100vw - 50px);
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+    .main-content .decoration .song-cover {
+      position: relative;
+      left: -30px; }
+      .main-content .decoration .song-cover > svg {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        right: 0;
+        transform: translate(50%, -50%); }
+    .main-content .decoration .cadre {
+      width: 145px;
+      height: 145px;
+      border-radius: 11px;
+      padding: 10px;
+      box-shadow: 0px 5px 0px 0px #E2E2E2;
+      background: #fff;
+      z-index: 2;
+      position: relative; }
+      .main-content .decoration .cadre .image-wrapper {
+        overflow: hidden;
+        border-radius: 11px;
+        position: relative; }
+        .main-content .decoration .cadre .image-wrapper svg {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 3; }
+      .main-content .decoration .cadre img {
+        max-width: 100%;
+        border-radius: 11px;
+        filter: blur(15px); }
   .main-content .bottom-content {
     height: 50%;
     background: #fff; }
@@ -602,6 +641,8 @@ header .MuiToolbar-root {
     z-index: 2; }
   .main-content.stage-1 .enable-location {
     transform: translateY(calc(-100% - 20px)); }
+  .main-content.stage-2 {
+    overflow: visible; }
 
 /**
  * @file
