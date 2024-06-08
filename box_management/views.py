@@ -13,6 +13,7 @@ from utils import NB_POINTS_ADD_SONG, NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX, NB_PO
 from django.shortcuts import render, get_object_or_404
 import json
 import requests
+from api_aggregation.views import ApiAggregation
 
 
 def is_first_user_deposit(user, box):
@@ -71,6 +72,10 @@ def create_deposit_and_get_last(request):
         song_duration = option.get('duration')
         song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image,
                     duration=song_duration, platform_id=song_platform_id, n_deposits=1)
+
+        spotify_id, deezer_id = ApiAggregation(request=request).get_platform_ids(song)
+        song.spotify_id = spotify_id
+        song.deezer_id = deezer_id
         song.save()
 
     box = Box.objects.filter(id=box_id).get()
@@ -80,7 +85,7 @@ def create_deposit_and_get_last(request):
 
     # Create a new deposit and set it as visible
     user = request.user if not isinstance(request.user, AnonymousUser) else None
-    new_deposit = Deposit(song_id=song, box_id=box, user=user, note=note, is_visible=True)
+    new_deposit = Deposit(song_id=song.id, box_id=box_id, user=user, note=note, is_visible=True)
     new_deposit.save()
 
     # Achievements check and points calculation
@@ -139,7 +144,7 @@ def create_deposit_and_get_last(request):
 
     new_deposit_data = DepositSerializer(new_deposit).data
     last_deposit_data = DepositSerializer(last_deposit).data if last_deposit else None
-    song_data = SongSerializer(last_deposit.song_id).data if last_deposit else None
+    song_data = SongSerializer(last_deposit.song).data if last_deposit else None
 
     response = {
         'new_deposit': new_deposit_data,
@@ -231,7 +236,7 @@ class GetBox(APIView):
             deposit_data = {
                 'id': last_deposit.id,
                 'note': last_deposit.note,
-                'image_url': Song.objects.get(pk=last_deposit.song_id_id).image_url,
+                'image_url': Song.objects.get(pk=last_deposit.song_id).image_url,
                 'user_id': user.id if user else None,
                 'profile_picture': user.profile_picture.url if user and user.profile_picture else ""
             }
@@ -251,7 +256,7 @@ class GetBox(APIView):
 
     def post(self, request, format=None):
         option = request.data.get('option')
-        song_id = option.get('id')
+        # song_id = option.get('id')
         song_name = option.get('name')
         song_author = option.get('artist')
         song_platform_id = option.get('platform_id')
@@ -270,7 +275,7 @@ class GetBox(APIView):
             song_url = option.get('url')
             song_image = option.get('image_url')
             song_duration = option.get('duration')
-            song = Song(song_id=song_id, title=song_name, artist=song_author, url=song_url, image_url=song_image,
+            song = Song(title=song_name, artist=song_author, url=song_url, image_url=song_image,
                         duration=song_duration, platform_id=song_platform_id, n_deposits=1)
             song.save()
 
@@ -572,7 +577,7 @@ class ManageDiscoveredSongs(APIView):
             deposit_id = request.data.get('visible_deposit').get('id')
             deposit = Deposit.objects.get(id=deposit_id)
             # Get the song linked to the id
-            song_id = Song.objects.get(id=deposit.song_id_id)
+            song_id = Song.objects.get(id=deposit.song_id)
             # Check if the song is linked to another deposit
             if DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_id.artist,
                                              deposit_id__song_id__title=song_id.title).exists():

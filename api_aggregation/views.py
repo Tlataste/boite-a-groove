@@ -27,7 +27,7 @@ class ApiAggregation(APIView):
         """
         # Extract the search query from the request data
         deposit = Deposit.objects.get(id=request.data.get('song').get('id'))
-        song = SongSerializer(Song.objects.get(id=deposit.song_id_id)).data
+        song = SongSerializer(Song.objects.get(id=deposit.song_id)).data
 
         # Extract the id of the streaming platform from the request data
         request_platform = request.data.get('platform')
@@ -41,7 +41,7 @@ class ApiAggregation(APIView):
             general_url = "spotify://track/"
         else:
             platform_req_id = 2
-            general_url = "deezer://www.deezer.com/track/"
+            general_url = "https://www.deezer.com/track/"
 
         try:  # The song already exists in the database
             final_song = Song.objects.filter(title=song['title'], artist=song['artist'],
@@ -65,3 +65,20 @@ class ApiAggregation(APIView):
             else:
                 # Return an error response if the platform ID is invalid
                 return Response({'error': 'Invalid platform ID.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_platform_ids(self, song):
+        """
+        Helper method to retrieve Spotify and Deezer IDs.
+        """
+        song = SongSerializer(song).data
+        search_query = normalize_string(song['title'] + ' ' + song['artist'])
+
+        # Search for the song on Spotify
+        spotify_song = ut.search_on_spotify(search_query, song)
+        spotify_id = spotify_song['id'] if spotify_song else None
+
+        # Search for the song on Deezer
+        deezer_song = ut.search_on_deezer(search_query, song, self.request.session.session_key)
+        deezer_id = deezer_song['id'] if deezer_song else None
+
+        return spotify_id, deezer_id
