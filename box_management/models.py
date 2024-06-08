@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import CustomUser
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 
 class Box(models.Model):
@@ -42,6 +44,13 @@ class Box(models.Model):
         super().save(*args, **kwargs)
 
 
+def validate_spotify_or_deezer_id(value):
+    if not value['spotify_id'] and not value['deezer_id']:
+        raise ValidationError(
+            _('At least one of Spotify ID or Deezer ID must be present.'),
+            params={'value': value},
+        )
+
 class Song(models.Model):
     """
     Class goal: This class represents a song.
@@ -55,6 +64,8 @@ class Song(models.Model):
         duration  : The duration of the song.
         platform_id: The id of the platform on which the song is available.
         n_deposits: The number of deposits of the song.
+        spotify_id: The Spotify ID of the song.
+        deezer_id : The Deezer ID of the song.
     """
 
     song_id = models.CharField(max_length=50)
@@ -65,6 +76,8 @@ class Song(models.Model):
     duration = models.IntegerField(default=0)  # Duration in seconds
     platform_id = models.IntegerField(default=0)
     n_deposits = models.IntegerField(default=0)
+    spotify_id = models.CharField(max_length=50, blank=True, null=True, validators=[validate_spotify_or_deezer_id])
+    deezer_id = models.CharField(max_length=50, blank=True, null=True, validators=[validate_spotify_or_deezer_id])
 
     def __str__(self):
         """
@@ -74,15 +87,6 @@ class Song(models.Model):
 
 
 class Deposit(models.Model):
-    # Overriding of the save() method in order to avoid 'auto_now_add=True' which makes DateTimeField uneditable
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Check if it's the first save
-            self.deposited_at = timezone.now()
-
-        super().save(
-            *args, **kwargs
-        )  # calling the save() method of the parent class (which is User)
-
     NOTE_CHOICES = [
         ("calme", "Cette chanson m'apaise et me détend !"),
         ("danse", "Cette chanson me donne envie de danser !"),
@@ -94,15 +98,15 @@ class Deposit(models.Model):
         ("triste", "Cette chanson me rend mélancolique !"),
     ]
 
-    song_id = models.ForeignKey(Song, on_delete=models.CASCADE)
-    box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    box = models.ForeignKey(Box, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     is_visible = models.BooleanField(default=False)
     note = models.CharField(max_length=50, choices=NOTE_CHOICES, blank=True, null=True)
-    deposited_at = models.DateTimeField()
+    deposited_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.song_id) + " - " + str(self.box_id)
+        return f"{self.song} - {self.box}"
 
 
 class LocationPoint(models.Model):
@@ -130,7 +134,7 @@ class LocationPoint(models.Model):
         Method goal: Returns the name of the box, the latitude and the longitude of the location point
         used to display it in the admin interface.
         """
-        box_name = Box.objects.get(id=self.box_id_id).name
+        box_name = Box.objects.get(id=self.box_id).name
         return box_name + " - " + str(self.latitude) + " - " + str(self.longitude)
 
 
