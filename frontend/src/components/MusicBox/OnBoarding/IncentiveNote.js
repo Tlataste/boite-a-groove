@@ -119,7 +119,7 @@ export default function IncentiveNote({
               <Tab label="Moods" value="1" />
               <Tab label="Quelqu'un" value="2" />
               <Tab label="Période de vie" value="3" />
-              <Tab label="4ème onglet" value="4" />
+              <Tab label="Lorem ipsum" value="4" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -177,7 +177,7 @@ export default function IncentiveNote({
         </button>
 
         <div className="bottom-panel">
-        <ul className="search-results">
+          <ul className="search-results">
             <li>
             <div className="img-container">
               <img

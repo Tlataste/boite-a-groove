@@ -38,6 +38,10 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
 
   const navigate = useNavigate();
 
+  setTimeout(() => {
+    document.querySelector('.reveal__notification').classList.add('active');
+  }, "1000");
+
   /**
    * Handles the click event for the "Go to link" button.
    */
@@ -80,54 +84,63 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
     checkUserStatus(setUser, setIsAuthenticated);
   }, []); // Empty dependency array ensures the effect is only run once
 
+  //
+
+  function fakeSelect(event) {
+
+      let spotify = document.querySelector('#fake-select li.spotify');
+      let deezer = document.querySelector('#fake-select li.deezer');
+      let newSelected = document.querySelector('#fake-select li.'+ event.target.classList);
+      let realSelect = document.querySelector('.reveal select');
+      let realSelectWrapper = document.querySelector('.select');
+  
+      if(realSelectWrapper.classList.contains('open')) {
+        realSelectWrapper.classList.remove('open');
+        if (newSelected.classList.contains('spotify')) {
+          spotify.classList.add('selected');
+          deezer.classList.remove('selected');
+          realSelect.value = "spotify";
+          setSelectedProvider("spotify");
+        } else {
+          spotify.classList.remove('selected');
+          deezer.classList.add('selected');
+          realSelect.value = "deezer";
+          setSelectedProvider("deezer");
+        }
+      } else {
+        realSelectWrapper.classList.add('open');
+      }
+  }
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "20px",
-      }}
-    >
-      <Card
-        sx={{
-          display: "flex",
-          margin: "auto",
-          maxWidth: "fit-content",
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", width: 200 }}>
-          <CardContent sx={{ flex: "1 0 auto" }}>
-            <Typography component="div" variant="h5">
-              {dispSong.title}
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              component="div"
-            >
-              {dispSong.artist}
-            </Typography>
-          </CardContent>
-          <Box
-            sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
-          ></Box>
-          <Box
-            sx={{
-              flex: "1 0 auto",
-              display: "flex",
-              alignItems: "center",
-              pl: 1,
-              pb: 1,
-            }}
-          >
-            <select value={selectedProvider} onChange={handleProviderChange}>
-              <option value="spotify">Spotify</option>
-              <option value="deezer">Deezer</option>
-            </select>
-          </Box>
-          <Box sx={{ flex: "1 0 auto" }}>
-            <button
+
+    <div className="reveal">
+
+        <div className="reveal__notification">
+          Ta chanson a été déposée avec succès 👍
+        </div>
+
+
+        <div className="song__cover">
+          <div className="song__cover__image">
+            <CardMedia
+                component="img"
+                sx={{ width: 168 }}
+                image={dispSong.image_url}
+                alt="Track cover"
+              />
+            <p className="song__title">{dispSong.title}</p>
+          </div>
+        </div>
+
+        <div className="song__information">
+          <h1>{dispSong.title}</h1>
+          <p>{dispSong.artist}</p>
+        </div>
+
+        <div className="select">
+
+          <button className="label"
               onClick={() => {
                 redirectToLink();
               }}
@@ -137,104 +150,136 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
                 cursor: "pointer",
               }}
             >
-              Aller vers ...
-            </button>
-          </Box>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <CardMedia
-            component="img"
-            sx={{ width: 150 }}
-            image={dispSong.image_url}
-            alt="Track cover"
-          />
-        </Box>
-      </Card>
-      <Typography variant="h6">Auteur du dépôt :</Typography>
-      {userInfo ? (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "5px",
-          }}
-        >
-          <Avatar
-            src={userInfo.profile_picture}
-            alt={userInfo.username}
-            sx={{
-              width: "40px",
-              height: "40px",
-            }}
-          />
+              Ecouter sur
+          </button>
+
+          <ul id="fake-select">
+            <li className="spotify selected">
+              <button onClick={fakeSelect}>
+                <span className="sr-only">Spotify</span>
+                <img className="spotify" src="/static/images/spotify-logo.svg" alt=""/>
+              </button>
+            </li>
+            <li className="deezer">
+              <button onClick={fakeSelect}>
+                <span className="sr-only">Deezer</span>
+                <img className="deezer" src="/static/images/deezer-logo.svg" alt=""/>
+              </button>
+            </li>
+          </ul>
+  
+        </div>
+
+        <select value={selectedProvider} onChange={handleProviderChange}>
+            <option value="spotify">Spotify</option>
+            <option value="deezer">Deezer</option>
+        </select>
+
+        
+ 
+
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
+
+
+
+        <Typography variant="h6">Auteur du dépôt :</Typography>
+        {userInfo ? (
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "left",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
             }}
           >
-            <Typography variant="subtitle1">{userInfo.username}</Typography>
-            <Typography variant="subtitle2">
-              {userInfo.total_deposits + "ème dépôt"}
-            </Typography>
-          </Box>
-          <Button
-            variant="outlined"
-            onClick={() => navigate("/profile/" + depositedBy)}
-            sx={{
-              borderRadius: "20px",
-              backgroundColor: "white",
-              color: "orange",
-              border: "none",
-              textTransform: "none",
-              "&:hover": {
+            <Avatar
+              src={userInfo.profile_picture}
+              alt={userInfo.username}
+              sx={{
+                width: "40px",
+                height: "40px",
+              }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "left",
+              }}
+            >
+              <Typography variant="subtitle1">{userInfo.username}</Typography>
+              <Typography variant="subtitle2">
+                {userInfo.total_deposits + "ème dépôt"}
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/profile/" + depositedBy)}
+              sx={{
+                borderRadius: "20px",
+                backgroundColor: "white",
+                color: "orange",
                 border: "none",
-              },
-            }}
-          >
-            Profil
-          </Button>
-        </Box>
-      ) : (
-        <Typography variant="subtitle1">Utilisateur non connecté</Typography>
-      )}
-      {isAuthenticated ? (
-        <Typography variant="h6">Succès débloqués :</Typography>
-      ) : (
-        <Typography variant="subtitle1">
-          Succès débloqués si vous étiez connecté :
-        </Typography>
-      )}
-      <Box
-        sx={{
-          marginTop: 2,
-          overflow: "auto",
-          maxHeight: 200,
-          borderRadius: "borderRadius",
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <List sx={{ padding: 1 }}>
-          {Object.keys(achievements).map((achievementKey) => {
-            const achievement = achievements[achievementKey];
+                textTransform: "none",
+                "&:hover": {
+                  border: "none",
+                },
+              }}
+            >
+              Profil
+            </Button>
+          </Box>
+        ) : (
+          <Typography variant="subtitle1">Utilisateur non connecté</Typography>
+        )}
+        {isAuthenticated ? (
+          <Typography variant="h6">Succès débloqués :</Typography>
+        ) : (
+          <Typography variant="subtitle1">
+            Succès débloqués si vous étiez connecté :
+          </Typography>
+        )}
+        <Box
+          sx={{
+            marginTop: 2,
+            overflow: "auto",
+            maxHeight: 200,
+            borderRadius: "borderRadius",
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <List sx={{ padding: 1 }}>
+            {Object.keys(achievements).map((achievementKey) => {
+              const achievement = achievements[achievementKey];
 
-            return (
-              <ListItem key={achievementKey} disablePadding>
-                <ListItemText
-                  primary={achievement.name}
-                  secondary={achievement.desc}
-                />
-                <Typography variant="body2">
-                  Points gagnés: {achievement.points}
-                </Typography>
-              </ListItem>
-            );
-          })}
-        </List>
+              return (
+                <ListItem key={achievementKey} disablePadding>
+                  <ListItemText
+                    primary={achievement.name}
+                    secondary={achievement.desc}
+                  />
+                  <Typography variant="body2">
+                    Points gagnés: {achievement.points}
+                  </Typography>
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
       </Box>
-    </Box>
+
+    </div>
+
+
+
   );
 }

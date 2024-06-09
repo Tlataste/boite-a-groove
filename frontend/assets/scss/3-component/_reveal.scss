@@ -1,0 +1,167 @@
+.reveal {
+    padding: 110px 40px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__notification {
+        padding: 20px;
+        border-radius: 26px;
+        border: 2px solid $orange;
+        background: #f6f6f6;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #000;
+        position: absolute;
+        top: -100px;
+        left: 20px;
+        right: 20px;
+        text-align: center;
+        z-index: 3;
+        box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+
+        &.active {
+            top: 80px;
+        }
+    }
+
+    .song__cover {
+        width: 243px;
+        height: 243px;
+        background-image: url(../images/vinyl-lg.png);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: contain;
+        background-position: center;
+        z-index: 2;
+
+        &__image {
+            width: 168px;
+            height: 168px;
+            border-radius: 15.342px;
+            border: 2.877px solid $white;
+            box-shadow: 0px 3.5px 0px 0px #E2E2E2, 0px 14px 12.25px 0px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            margin-top: -25px;
+        }
+    }
+
+    .song__information {
+        padding: 60px 20px;
+        background: $orangeGradient;
+        border-radius: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: $white;
+        letter-spacing: 0.64px;
+        text-align: center;
+        width: calc(100% - 40px);
+        margin-top: -67px;
+        z-index: 1;
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 0;
+            color: $white;
+        }
+    }
+
+    .select {
+        padding: 16px 24px 16px 26px;
+        background: $white;
+        border-radius: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+        width: calc(100% - 12px);
+        box-sizing: border-box;
+        margin-top: -30px;
+        z-index: 2;
+
+        .label {
+            padding: 0;
+            background: none;
+            border: none;
+            color: $black;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.32px;
+            line-height: 1;
+            margin: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            position: relative;
+            margin: 0;
+            padding-right: 30px;
+
+            &:after {
+                content: "";
+                width: 0;
+                display: block;
+                height: 0;
+                border-style: solid;
+                border-right: 5px solid transparent;
+                border-left: 5px solid transparent;
+                border-top: 6px solid #000000;
+                border-bottom: 0;
+                position: absolute;
+                top: 50%;
+                right: 0;
+                transform: translateY(-50%);
+            }
+
+            li {
+
+                button {
+                    border: none;
+                    padding: 0;
+                    background: none;
+                }
+
+                img {
+                    width: 110px;
+                }
+
+                &:not(.selected) {
+                    display: none;
+                }
+            }
+        }
+
+        &.open {
+            border-radius: 80px 80px 0 80px;
+
+            li:not(.selected) {
+                display: block;
+                position: absolute;
+                bottom: -70px;
+                left: -40px;
+                padding: 10px 20px 20px 40px;
+                background: $white;
+                border-radius: 0 0 80px 80px;
+                right: -24px;
+                box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+            }
+        }
+    }
+
+    select {
+        display: none;
+    }
+}
