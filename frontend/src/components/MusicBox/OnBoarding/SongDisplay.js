@@ -176,77 +176,27 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
         </select>
 
         
- 
-
-
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
-
-
-
-        <Typography variant="h6">Auteur du dépôt :</Typography>
-        {userInfo ? (
-          <Box
+        <div className="author d-flex">
+        <Avatar
+            src={userInfo.profile_picture}
+            alt={userInfo.username}
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "5px",
+              width: "68px",
+              height: "68px",
             }}
-          >
-            <Avatar
-              src={userInfo.profile_picture}
-              alt={userInfo.username}
-              sx={{
-                width: "40px",
-                height: "40px",
-              }}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "left",
-              }}
-            >
-              <Typography variant="subtitle1">{userInfo.username}</Typography>
-              <Typography variant="subtitle2">
-                {userInfo.total_deposits + "ème dépôt"}
-              </Typography>
-            </Box>
-            <Button
-              variant="outlined"
-              onClick={() => navigate("/profile/" + depositedBy)}
-              sx={{
-                borderRadius: "20px",
-                backgroundColor: "white",
-                color: "orange",
-                border: "none",
-                textTransform: "none",
-                "&:hover": {
-                  border: "none",
-                },
-              }}
-            >
-              Profil
-            </Button>
-          </Box>
-        ) : (
-          <Typography variant="subtitle1">Utilisateur non connecté</Typography>
-        )}
-        {isAuthenticated ? (
-          <Typography variant="h6">Succès débloqués :</Typography>
-        ) : (
-          <Typography variant="subtitle1">
-            Succès débloqués si vous étiez connecté :
-          </Typography>
-        )}
+          />
+          <div className="author__informations">
+            <p className="author__informations__name">{userInfo.username}</p>
+            <button onClick={() => navigate("/profile/" + depositedBy)}
+                    className="author__informations__link">
+                      Voir le profil
+            </button>
+          </div>
+          <p className="deposit-number">{userInfo.total_deposits + "ème dépôt"}</p>
+        </div>
+
+
+     
         <Box
           sx={{
             marginTop: 2,
@@ -275,7 +225,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
             })}
           </List>
         </Box>
-      </Box>
+ 
 
     </div>
 

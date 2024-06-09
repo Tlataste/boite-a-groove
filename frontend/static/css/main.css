@@ -1058,7 +1058,8 @@ header .MuiToolbar-root {
     right: 20px;
     text-align: center;
     z-index: 3;
-    box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07); }
+    box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
+    transition: all .3s ease-in-out; }
     .reveal__notification.active {
       top: 80px; }
   .reveal .song__cover {
@@ -1167,6 +1168,71 @@ header .MuiToolbar-root {
         box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07); }
   .reveal select {
     display: none; }
+  .reveal .author {
+    width: calc(100% - 12px);
+    margin-top: 36px;
+    gap: 16px; }
+    .reveal .author__informations {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      flex-grow: 2; }
+      .reveal .author__informations__name {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: #000;
+        margin: 0;
+        justify-content: center; }
+      .reveal .author__informations button {
+        background: var(--Main-Color, linear-gradient(92deg, #F90 0%, #FF6900 52.6%, #FF3D00 100%));
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border: none;
+        padding: 0;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-align: left; }
+
+.author-profil-wrapper {
+  min-height: calc(100vh - 66px);
+  display: flex;
+  flex-direction: column; }
+  .author-profil-wrapper .favorite-song {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 26px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 2; }
+
+.author-profil {
+  padding: 26px 36px; }
+  .author-profil .author {
+    gap: 16px; }
+    .author-profil .author__informations {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      flex-grow: 2; }
+      .author-profil .author__informations__name {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: 0.64px;
+        color: #000;
+        margin: 0;
+        justify-content: center; }
+    .author-profil .author .deposit-number {
+      font-size: 1.6rem;
+      color: rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.32px;
+      font-weight: 400;
+      margin: 0; }
 
 /*************************************************************************************
   Import tous les fichiers _name.scss liés à la navigation.
