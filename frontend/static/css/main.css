@@ -105,7 +105,6 @@ h6 {
 
 p {
   color: rgba(0, 0, 0, 0.4);
-  text-shadow: 0px 4px 4px #fff;
   /* Paragraph */
   font-family: Dosis;
   font-size: 1.6rem;
@@ -543,6 +542,9 @@ body {
   display: flex;
   gap: 8px; }
 
+.MuiAppBar-root {
+  box-shadow: none !important; }
+
 /**
  * @file
  * Branding Styling
@@ -643,6 +645,10 @@ header .MuiToolbar-root {
     transform: translateY(calc(-100% - 20px)); }
   .main-content.stage-2, .main-content.stage-3 {
     overflow: visible; }
+  .main-content.stage-3 .stage-3__wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column; }
 
 /**
  * @file
@@ -892,12 +898,13 @@ header .MuiToolbar-root {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid: 8; }
+  gap: 8px; }
   .step-header h1 {
     margin: 0; }
   .step-header p {
     font-weight: 400;
-    text-align: center; }
+    text-align: center;
+    margin: 0; }
 
 .enable-location {
   padding: 20px; }
@@ -907,11 +914,18 @@ header .MuiToolbar-root {
     border-radius: 26px;
     height: 50vh;
     padding: 26px;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px; }
   .enable-location h1 {
+    margin: 0; }
+    .enable-location h1 + p {
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.8); }
+  .enable-location p {
+    font-size: 1.4rem;
     margin: 0; }
 
 /**
@@ -942,7 +956,18 @@ header .MuiToolbar-root {
 /* ---------------- CUSTOM  -----------------*/
 .mood {
   background: rgba(0, 0, 0, 0.03);
-  padding-top: 12px; }
+  padding-bottom: 20px;
+  flex-grow: 2; }
+  .mood .MuiTabs-scroller .MuiTabs-flexContainer {
+    padding: 12px; }
+  .mood .MuiTabs-scroller .MuiTabs-indicator {
+    background: #fff;
+    border-radius: 60px;
+    z-index: 1;
+    transition: none;
+    height: calc(100% - 24px);
+    transition: none;
+    transform: translateY(-12px); }
   .mood .MuiTabs-scroller .MuiTabs-flexContainer {
     gap: 12px;
     padding-left: 20px; }
@@ -956,8 +981,9 @@ header .MuiToolbar-root {
     background: #fff;
     border-radius: 60px;
     text-transform: none;
-    color: rgba(0, 0, 0, 0.8); }
-    .mood .MuiTabs-scroller .MuiButtonBase-root.Mui-selected span {
+    color: rgba(0, 0, 0, 0.8);
+    z-index: 2; }
+    .mood .MuiTabs-scroller .MuiButtonBase-root.Mui-selected {
       background: linear-gradient(to right, #fa9500, #fa4000);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent; }
@@ -989,6 +1015,10 @@ header .MuiToolbar-root {
         background-repeat: no-repeat; }
     .mood .mood-item .btn-tertiary {
       transform: translateX(-16px); }
+  .mood .btn-primary {
+    margin: 20px auto;
+    width: auto;
+    display: block; }
 
 /*************************************************************************************
   Import tous les fichiers _name.scss liés à la navigation.
@@ -1055,22 +1085,57 @@ header .MuiToolbar-root {
   overflow-y: scroll;
   height: 100%; }
 
-.search-song h1 {
-  background: #fff;
-  padding: 20px;
-  text-align: center;
-  margin: 0; }
-
-.search-song > .d-flex {
-  justify-content: center;
-  margin: 12px 0;
-  gap: 10px; }
-
-.search-song__wrapper {
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 13px; }
+.search-song {
+  gap: 20px;
+  transition: .2s all ease-in; }
+  .search-song h1 {
+    background: #fff;
+    text-align: center;
+    margin: 0;
+    font-size: 3.2rem;
+    height: 70px;
+    transition: .2s all ease-in; }
+  .search-song > .d-flex {
+    justify-content: center;
+    margin: 12px 0;
+    gap: 10px; }
+  .search-song__wrapper {
+    width: 100%;
+    display: flex;
+    transition: .2s all ease-in; }
+  .search-song .cancel-search {
+    opacity: 0;
+    width: 0;
+    transition: .2s all ease-in;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.32px; }
+  .search-song p {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.28px;
+    color: rgba(0, 0, 0, 0.3);
+    transition: .2s all ease-in;
+    opacity: 0;
+    height: 0; }
+  .search-song.has-results p {
+    display: none; }
+  .search-song.active {
+    margin-top: -20px; }
+    .search-song.active h1 {
+      opacity: 0;
+      height: 0; }
+    .search-song.active .search-song__wrapper {
+      gap: 10px; }
+    .search-song.active .cancel-search {
+      opacity: 1;
+      width: 80px; }
+    .search-song.active p {
+      opacity: 1;
+      height: 60px; }
 
 /**
  * @file
@@ -1089,26 +1154,26 @@ header .MuiToolbar-root {
   list-style-type: none;
   padding-left: 20px;
   padding-right: 20px;
-  margin-top: 0;
-  background: rgba(0, 0, 0, 0.03); }
+  margin-top: 0; }
   .search-results li {
     display: flex;
     gap: 17px;
     align-items: center;
     padding: 16px 0; }
+    .search-results li:first-child {
+      padding-top: 0; }
     .search-results li .img-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-image: url(../images/vinyl.png);
+      background-image: url(../images/vinyl.svg);
       background-repeat: no-repeat;
       background-size: cover;
-      min-width: 76px;
-      height: 76px; }
+      min-width: 56px;
+      height: 56px; }
       .search-results li .img-container img {
-        width: 17px;
-        border-radius: 50%;
-        margin-top: -3px; }
+        width: 20px;
+        border-radius: 50%; }
     .search-results li p {
       margin: 0; }
     .search-results li .song {

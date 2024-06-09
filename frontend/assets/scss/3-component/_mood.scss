@@ -1,8 +1,23 @@
 .mood {
     background: $greyBackground;
-    padding-top: 12px;
+    padding-bottom: 20px;
+    flex-grow: 2;
 
     .MuiTabs-scroller {
+
+        .MuiTabs-flexContainer {
+            padding: 12px;
+        }
+
+        .MuiTabs-indicator {
+            background: #fff;
+            border-radius: 60px;
+            z-index: 1;
+            transition: none;
+            height: calc(100% - 24px);
+            transition: none;
+            transform: translateY(-12px);
+        }
 
         .MuiTabs-flexContainer {
             gap: 12px;
@@ -20,14 +35,12 @@
             border-radius: 60px;
             text-transform: none;
             color: $blak80;
+            z-index: 2;
 
             &.Mui-selected {
-
-                span {
-                    background: linear-gradient(to right, #fa9500, #fa4000);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
+                background: linear-gradient(to right, #fa9500, #fa4000);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
         }
     }
@@ -69,5 +82,11 @@
         .btn-tertiary {
             transform: translateX(-16px);
         }
+    }
+
+    .btn-primary {
+        margin: 20px auto;
+        width: auto;
+        display: block;
     }
 }

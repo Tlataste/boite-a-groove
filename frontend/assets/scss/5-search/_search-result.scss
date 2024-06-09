@@ -13,7 +13,6 @@
     padding-left: 20px;
     padding-right: 20px;
     margin-top: 0;
-    background: $greyBackground;
 
     li {
         display: flex;
@@ -21,20 +20,23 @@
         align-items: center;
         padding: 16px 0;
 
+        &:first-child {
+            padding-top: 0;
+        }
+
         .img-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: url(../images/vinyl.png);
+            background-image: url(../images/vinyl.svg);
             background-repeat: no-repeat;
             background-size: cover;
-            min-width: 76px;
-            height: 76px;
+            min-width: 56px;
+            height: 56px;
 
             img {
-                width: 17px;
+                width: 20px;
                 border-radius: 50%;
-                margin-top: -3px;
             }
         }
 

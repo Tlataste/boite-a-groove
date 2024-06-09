@@ -100,4 +100,12 @@
     &.stage-3 {
         overflow: visible;
     }
+
+    &.stage-3 {
+        .stage-3__wrapper {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+    }
  }

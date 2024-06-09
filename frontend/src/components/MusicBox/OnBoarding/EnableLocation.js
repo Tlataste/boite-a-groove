@@ -28,9 +28,11 @@ export default function EnableLocation({ setStage, boxInfo, navigate, className 
               </span>
             </button>
 
-            <h1>Autoriser la localisation</h1>
+            <h1>Nous avons besoin de ta localisation</h1>
 
-            <p>Confirme que tu es bien à l'arrêt en partageant ta localisation. Ta localisation est uniquement utilisée à l'ouverture d'une boîte.</p>
+            <p>Pour éviter les petits tricheurs, les boîtes ne peuvent être ouvertes qu’en étant sur place.</p>
+
+            <p>Ta localisation est uniquement utilisée à l’ouverture d’une boîte</p>
 
             <button
               className="btn-primary"

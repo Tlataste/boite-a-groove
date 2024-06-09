@@ -101,7 +101,7 @@ export default function IncentiveNote({
   }
 
   return (
-    <div>
+    <div className="stage-3__wrapper">
 
       <div className="step-header">
         <h1>Attache un mot</h1>
@@ -112,10 +112,14 @@ export default function IncentiveNote({
       >
         <TabContext value={value}>
           <Box>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
+            <TabList 
+                    onChange={handleChange} 
+                    variant="scrollable"
+                    aria-label="lab API tabs example">
               <Tab label="Moods" value="1" />
               <Tab label="Quelqu'un" value="2" />
               <Tab label="Période de vie" value="3" />
+              <Tab label="4ème onglet" value="4" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -127,30 +131,30 @@ export default function IncentiveNote({
           <TabPanel value="1">
             {Item("inspire", "Cette chanson me pousse à être créatif !")}
           </TabPanel>
-          <TabPanel value="1">
+          <TabPanel value="2">
             {Item("joie", "Cette chanson me met de bonne humeur !")}
           </TabPanel>
-          <TabPanel value="1">
+          <TabPanel value="3">
             {Item("motive", "Cette chanson me motive pour la journée !")}
           </TabPanel>
-          <TabPanel value="1">
+          <TabPanel value="3">
             {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
           </TabPanel>
-          <TabPanel value="1">
+          <TabPanel value="4">
             {Item("rire", "Cette chanson me fait rire !")}
           </TabPanel>
-          <TabPanel value="1">
+          <TabPanel value="4">
             {Item("triste", "Cette chanson me rend mélancolique !")}
           </TabPanel>
         </TabContext>
+
+        <button className="btn-primary"
+          variant="contained"
+          onClick={() => handleAddNoteButtonClick("")}
+        >
+          <span>Continuer sans note</span>
+        </button>
       </div>
-      <Button
-        style={styles.button}
-        variant="contained"
-        onClick={() => handleAddNoteButtonClick("")}
-      >
-        Continuer sans note
-      </Button>
     </div>
   );
 }

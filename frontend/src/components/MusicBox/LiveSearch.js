@@ -50,18 +50,20 @@ export default function LiveSearch({
     const getData = setTimeout(() => {
       // Check if the user has selected spotify or deezer
       if (selectedStreamingService === "spotify") {
-        console.log(searchValue);
+        // console.log(searchValue);
         // Check if the search bar is empty
         if (searchValue === "") {
           console.log('search empty');
+          toggleSearchResults('remove');
           // Check if the user is authenticated with spotify
           if (isSpotifyAuthenticated) {
-            console.log('authenticated');
+            // console.log('authenticated');
             fetch("/spotify/recent-tracks")
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
-                console.log(data);
+                // console.log(data);
+                toggleSearchResults('add');
               });
           } else {
             setJsonResults([]);
@@ -83,6 +85,7 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
+              toggleSearchResults('add');
             });
         }
       }
@@ -96,6 +99,7 @@ export default function LiveSearch({
               .then((response) => response.json())
               .then((data) => {
                 setJsonResults(data);
+                toggleSearchResults('add');
               });
           } else {
             setJsonResults([]);
@@ -117,10 +121,13 @@ export default function LiveSearch({
             .then((response) => response.json())
             .then((data) => {
               setJsonResults(data);
+              toggleSearchResults('add');
             });
         }
       }
     }, 400);
+
+    // console.log(getData);
 
     return () => clearTimeout(getData);
   }, [
@@ -150,7 +157,7 @@ export default function LiveSearch({
       })
         .then((response) => response.json())
         .then((data_resp) => {
-          console.log(data_resp);
+          // console.log(data_resp);
           onSuccess();
           // Set the search song to the new deposit
           // setSearchSong(data_resp.new_deposit);
@@ -189,9 +196,35 @@ export default function LiveSearch({
     setSelectedStreamingService(service);
   }
 
+  /**
+   * Toggle animation class on search input click
+   */
+  function toggleSearch(action) {
+    let headerSearch = document.querySelector('.search-song');
+    if(action == 'add') {
+      headerSearch.classList.add('active')
+    }
+    else if (action == "remove") {
+      headerSearch.classList.remove('active')
+    }
+  }
+
+  /**
+   * Toggle animation class search results
+   */
+  function toggleSearchResults(action) {
+    let headerSearch = document.querySelector('.search-song');
+    if(action == 'add') {
+      headerSearch.classList.add('has-results')
+    }
+    else if (action == "remove") {
+      headerSearch.classList.remove('has-results')
+    }
+  }
+
   return (
     <div className="main-search-wrapper">
-      <div className="search-song">
+      <div className="search-song step-header">
         <h1>Choisi une chanson à déposer</h1>
         {/* <h2>{setFavoriteSong == true ? 'Choisis ta chanson préférée' : 'Choisis ta chanson à déposer'}</h2> */}
 
@@ -218,18 +251,20 @@ export default function LiveSearch({
           </div>
 
         <div className="search-song__wrapper">
-
-    
-
-
           <div className="input-wrapper">
             <input type="text"
               placeholder="Rechercher"
               onChange={(e) => setSearchValue(e.target.value)}
+              onClick={() => toggleSearch('add')}
             />
           </div>
 
+          <button className="cancel-search"
+            onClick={() => toggleSearch('remove')}
+          >Annuler</button>
         </div>
+
+        <p>Recherche une chanson par son titre ou le nom de son artiste</p>
       </div>
 
 
