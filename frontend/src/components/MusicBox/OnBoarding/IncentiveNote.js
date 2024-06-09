@@ -140,6 +140,27 @@ export default function IncentiveNote({
           <TabPanel value="3">
             {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
           </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
+          <TabPanel value="3">
+            {Item("reflexion", "Cette chanson me fait réfléchir sur la vie.")}
+          </TabPanel>
           <TabPanel value="4">
             {Item("rire", "Cette chanson me fait rire !")}
           </TabPanel>
@@ -154,6 +175,32 @@ export default function IncentiveNote({
         >
           <span>Continuer sans note</span>
         </button>
+
+        <div className="bottom-panel">
+        <ul className="search-results">
+            <li>
+            <div className="img-container">
+              <img
+                src={searchSong.image_url}
+                alt={searchSong.name}
+              />
+            </div>
+
+            <div className="song">
+              <p className="song-title" variant="h6">{searchSong.name}</p>
+              <p className="song-subtitle" variant="subtitle2">{searchSong.artist}</p>
+            </div>
+
+            <button
+              onClick={() => setStage(2)}
+            >
+              <span>Changer</span>
+            </button>
+
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
   );

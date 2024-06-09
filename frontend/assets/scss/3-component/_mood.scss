@@ -1,6 +1,6 @@
 .mood {
     background: $greyBackground;
-    padding-bottom: 20px;
+    padding-bottom: 96px;
     flex-grow: 2;
 
     .MuiTabs-scroller {
@@ -45,7 +45,6 @@
         }
     }
 
-
     .MuiTabPanel-root {
         padding: 16px 10px 0 26px;
     }
@@ -88,5 +87,30 @@
         margin: 20px auto;
         width: auto;
         display: block;
+    }
+
+    .bottom-panel {
+        position: fixed;
+        bottom: 0;
+        background: white;
+        width: 100%;
+
+        .search-results {
+            padding: 20px;
+            margin: 0;
+
+            li {
+                padding-bottom: 0;
+            }
+        }
+
+        button {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.32px;
+            color: $grey3;
+            border: none;
+            background: none;
+        }
     }
 }

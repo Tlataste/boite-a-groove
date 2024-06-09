@@ -956,7 +956,7 @@ header .MuiToolbar-root {
 /* ---------------- CUSTOM  -----------------*/
 .mood {
   background: rgba(0, 0, 0, 0.03);
-  padding-bottom: 20px;
+  padding-bottom: 96px;
   flex-grow: 2; }
   .mood .MuiTabs-scroller .MuiTabs-flexContainer {
     padding: 12px; }
@@ -1019,6 +1019,23 @@ header .MuiToolbar-root {
     margin: 20px auto;
     width: auto;
     display: block; }
+  .mood .bottom-panel {
+    position: fixed;
+    bottom: 0;
+    background: white;
+    width: 100%; }
+    .mood .bottom-panel .search-results {
+      padding: 20px;
+      margin: 0; }
+      .mood .bottom-panel .search-results li {
+        padding-bottom: 0; }
+    .mood .bottom-panel button {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.32px;
+      color: rgba(0, 0, 0, 0.3);
+      border: none;
+      background: none; }
 
 /*************************************************************************************
   Import tous les fichiers _name.scss liés à la navigation.
