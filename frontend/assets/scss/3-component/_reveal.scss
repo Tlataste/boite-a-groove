@@ -13,18 +13,18 @@
         font-weight: 700;
         letter-spacing: 0.4px;
         color: #000;
-        position: absolute;
-        top: -100px;
+        position: fixed;
+        top: -200px;
         left: 20px;
         right: 20px;
         text-align: center;
         z-index: 3;
         box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
         transition: all .3s ease-in-out;
-
-        &.active {
-            top: 80px;
-        }
+        animation-duration: .3s;
+        animation-delay: 1s;
+        animation-name: slidein;
+        animation-fill-mode: forwards;
     }
 
     .song__cover {
@@ -254,4 +254,13 @@
 
 .favorite-song {
 
+}
+
+@keyframes slidein {
+    from {
+      transform: translateY(-300px);
+    }  
+    to {
+        transform: translateY(300px);
+    }
 }

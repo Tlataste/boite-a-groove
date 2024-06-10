@@ -38,10 +38,6 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
 
   const navigate = useNavigate();
 
-  setTimeout(() => {
-    document.querySelector('.reveal__notification').classList.add('active');
-  }, "1000");
-
   /**
    * Handles the click event for the "Go to link" button.
    */
