@@ -644,7 +644,7 @@ header .MuiToolbar-root {
     z-index: 2; }
   .main-content.stage-1 .enable-location {
     transform: translateY(calc(-100% - 20px)); }
-  .main-content.stage-2, .main-content.stage-3 {
+  .main-content.stage-2, .main-content.stage-3, .main-content.stage-5 {
     overflow: visible; }
   .main-content.stage-3 .stage-3__wrapper {
     height: 100%;

@@ -197,7 +197,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
 
 
      
-        <Box
+        {/* <Box
           sx={{
             marginTop: 2,
             overflow: "auto",
@@ -224,7 +224,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
               );
             })}
           </List>
-        </Box>
+        </Box> */}
  
 
     </div>
