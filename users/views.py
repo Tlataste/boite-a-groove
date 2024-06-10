@@ -270,7 +270,7 @@ class GetUserInfo(APIView):
 
     def get(self, request, format=None):
         user_id = request.GET.get(self.lookup_url_kwarg)
-        if user_id is not None or user_id != 'null':
+        if user_id is not None and user_id != 'null':
             user = get_object_or_404(CustomUser, id=user_id)
             serializer = CustomUserSerializer(user)
             total_deposits = Deposit.objects.filter(user=user).count()
