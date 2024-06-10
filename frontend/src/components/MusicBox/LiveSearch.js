@@ -230,7 +230,7 @@ export default function LiveSearch({
 
         <div className="d-flex">
             <button
-              className="btn-spotify"
+              className={"btn-spotify " + (selectedStreamingService === "spotify" ? "active" : "")}
               variant={
                 selectedStreamingService === "spotify" ? "contained" : "outlined"
               }
@@ -240,7 +240,7 @@ export default function LiveSearch({
               Spotify
             </button>
             <button
-              className="btn-deezer"
+              className={"btn-deezer " + (selectedStreamingService === "deezer" ? "active" : "")}
               variant={
                 selectedStreamingService === "deezer" ? "contained" : "outlined"
               }
@@ -263,12 +263,9 @@ export default function LiveSearch({
             onClick={() => toggleSearch('remove')}
           >Annuler</button>
         </div>
-
-        <p>Recherche une chanson par son titre ou le nom de son artiste</p>
       </div>
 
-
-
+      <p>Recherche une chanson par son titre ou le nom de son artiste</p>
 
       <ul className="search-results">
         {jsonResults.map(option => (

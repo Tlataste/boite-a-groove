@@ -8,10 +8,12 @@
 .main-search-wrapper {
     overflow-y: scroll;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .search-song {
-    gap: 20px;
+    gap: 16px;
     transition: .2s all ease-in;
 
     h1 {
@@ -25,7 +27,6 @@
 
     > .d-flex {
         justify-content: center;
-        margin: 12px 0;
         gap: 10px;
     }
 
@@ -47,20 +48,26 @@
         letter-spacing: 0.32px;
     }
 
-    p {
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.28px;
-        color: $grey3;
+    & + p {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        letter-spacing: 0.32px;
+        color: $blak80;
         transition: .2s all ease-in;
         opacity: 0;
         height: 0;
+        box-sizing: content-box;
+        text-align: left;
+        padding: 16px 20px;
+        background: $greyBackground;
+        margin: 0;
+        flex-grow: 2;
     }
 
-    &.has-results {
-        p {
-            display: none;
-        }
+    & ~ .search-results {
+        padding: 0;
     }
 
     &.active {
@@ -80,9 +87,19 @@
             width: 80px;
         }
 
-        p {
+        & + p {
             opacity: 1;
             height: 60px;
+        }
+    }
+
+    &.has-results {
+        & + p {
+            display: none;
+        }
+
+        & ~ .search-results {
+            padding: 16px 20px 0 20px;
         }
     }
 }

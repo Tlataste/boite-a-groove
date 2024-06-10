@@ -582,13 +582,13 @@ header .MuiToolbar-root {
  * Main Layout Styling
  */
 .main-content {
-  height: calc(100vh - 64px);
-  overflow: hidden; }
+  height: calc(100vh - 58px); }
   .main-content .startup {
     height: 100%;
-    overflow-y: scroll; }
+    box-shadow: none;
+    border-radius: 0; }
   .main-content .decoration {
-    height: 375px;
+    height: 300px;
     background: #fa9500;
     background: linear-gradient(to right, #fa9500, #fa4000);
     /* W3C */ }
@@ -597,7 +597,7 @@ header .MuiToolbar-root {
       /* fallback */
       background-repeat: no-repeat;
       background-position: center top 30px;
-      background-size: calc(100vw - 50px);
+      background-size: 300px;
       height: 100%;
       width: 100%;
       display: flex;
@@ -605,13 +605,22 @@ header .MuiToolbar-root {
       justify-content: center; }
     .main-content .decoration .song-cover {
       position: relative;
-      left: -30px; }
+      left: -30px;
+      top: -25px; }
       .main-content .decoration .song-cover > svg {
         position: absolute;
         z-index: 1;
         top: 50%;
         right: 0;
-        transform: translate(50%, -50%); }
+        transform: translate(10%, -50%);
+        -webkit-animation-duration: .3s;
+                animation-duration: .3s;
+        -webkit-animation-delay: 1s;
+                animation-delay: 1s;
+        -webkit-animation-name: SlideVinyl;
+                animation-name: SlideVinyl;
+        -webkit-animation-fill-mode: forwards;
+                animation-fill-mode: forwards; }
     .main-content .decoration .cadre {
       width: 145px;
       height: 145px;
@@ -640,7 +649,8 @@ header .MuiToolbar-root {
     background: #fff; }
   .main-content .enable-location {
     transition: .3s all ease-in-out;
-    position: relative;
+    position: fixed;
+    top: 100%;
     z-index: 2; }
   .main-content.stage-1 .enable-location {
     transform: translateY(calc(-100% - 20px)); }
@@ -650,6 +660,18 @@ header .MuiToolbar-root {
     height: 100%;
     display: flex;
     flex-direction: column; }
+
+@-webkit-keyframes SlideVinyl {
+  from {
+    transform: translate(10%, -50%); }
+  to {
+    transform: translate(43%, -50%); } }
+
+@keyframes SlideVinyl {
+  from {
+    transform: translate(10%, -50%); }
+  to {
+    transform: translate(43%, -50%); } }
 
 /**
  * @file
@@ -806,11 +828,14 @@ header .MuiToolbar-root {
   font-weight: 700;
   line-height: normal;
   letter-spacing: 0.32px;
-  color: #1ED760;
+  color: #fff;
   border-radius: 70px;
   border: 2px solid #1ED760;
   padding: 10px 12px;
-  background: none; }
+  background: #1ED760; }
+  .btn-spotify.active {
+    background: #fff;
+    color: #1ED760; }
 
 .btn-deezer {
   font-size: 16px;
@@ -823,6 +848,9 @@ header .MuiToolbar-root {
   border: 2px solid #9C42F3;
   padding: 10px 12px;
   background: #9C42F3; }
+  .btn-deezer.active {
+    background: #fff;
+    color: #9C42F3; }
 
 .bottom-content {
   padding: 0 20px;
@@ -846,14 +874,14 @@ header .MuiToolbar-root {
     .bottom-content__wrapper h1 {
       width: 100%;
       text-align: left;
-      margin: 80px 0 16px 0; }
+      margin: 75px 0 8px 0; }
       .bottom-content__wrapper h1 + p {
         margin-top: 0;
         color: black;
         font-weight: 700; }
     .bottom-content__wrapper ol {
       padding-left: 0;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
       counter-reset: orderedlist; }
       .bottom-content__wrapper ol li {
         font-size: 16px;
@@ -863,7 +891,7 @@ header .MuiToolbar-root {
         letter-spacing: 0.32px;
         color: rgba(0, 0, 0, 0.8);
         list-style-type: none;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         display: flex;
         align-items: center;
         gap: 12px; }
@@ -894,7 +922,7 @@ header .MuiToolbar-root {
       z-index: 2; }
 
 .step-header {
-  padding: 20px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1315,10 +1343,12 @@ header .MuiToolbar-root {
 /* ---------------- DEFAULT -----------------*/
 .main-search-wrapper {
   overflow-y: scroll;
-  height: 100%; }
+  height: 100%;
+  display: flex;
+  flex-direction: column; }
 
 .search-song {
-  gap: 20px;
+  gap: 16px;
   transition: .2s all ease-in; }
   .search-song h1 {
     background: #fff;
@@ -1329,7 +1359,6 @@ header .MuiToolbar-root {
     transition: .2s all ease-in; }
   .search-song > .d-flex {
     justify-content: center;
-    margin: 12px 0;
     gap: 10px; }
   .search-song__wrapper {
     width: 100%;
@@ -1345,16 +1374,24 @@ header .MuiToolbar-root {
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 0.32px; }
-  .search-song p {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.28px;
-    color: rgba(0, 0, 0, 0.3);
+  .search-song + p {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.32px;
+    color: rgba(0, 0, 0, 0.8);
     transition: .2s all ease-in;
     opacity: 0;
-    height: 0; }
-  .search-song.has-results p {
-    display: none; }
+    height: 0;
+    box-sizing: content-box;
+    text-align: left;
+    padding: 16px 20px;
+    background: rgba(0, 0, 0, 0.03);
+    margin: 0;
+    flex-grow: 2; }
+  .search-song ~ .search-results {
+    padding: 0; }
   .search-song.active {
     margin-top: -20px; }
     .search-song.active h1 {
@@ -1365,9 +1402,13 @@ header .MuiToolbar-root {
     .search-song.active .cancel-search {
       opacity: 1;
       width: 80px; }
-    .search-song.active p {
+    .search-song.active + p {
       opacity: 1;
       height: 60px; }
+  .search-song.has-results + p {
+    display: none; }
+  .search-song.has-results ~ .search-results {
+    padding: 16px 20px 0 20px; }
 
 /**
  * @file
@@ -1384,9 +1425,9 @@ header .MuiToolbar-root {
 /* ---------------- CUSTOM -----------------*/
 .search-results {
   list-style-type: none;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-top: 0; }
+  padding: 16px 20px 0 20px;
+  background: rgba(0, 0, 0, 0.03);
+  margin: 0; }
   .search-results li {
     display: flex;
     gap: 17px;
@@ -1400,7 +1441,7 @@ header .MuiToolbar-root {
       justify-content: center;
       background-image: url(../images/vinyl.svg);
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: contain;
       min-width: 56px;
       height: 56px; }
       .search-results li .img-container img {

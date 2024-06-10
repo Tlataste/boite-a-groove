@@ -10,9 +10,9 @@
 
 .search-results {
     list-style-type: none;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-top: 0;
+    padding: 16px 20px 0 20px;
+    background: $greyBackground;
+    margin: 0;
 
     li {
         display: flex;
@@ -30,7 +30,7 @@
             justify-content: center;
             background-image: url(../images/vinyl.svg);
             background-repeat: no-repeat;
-            background-size: cover;
+            background-size: contain;
             min-width: 56px;
             height: 56px;
 

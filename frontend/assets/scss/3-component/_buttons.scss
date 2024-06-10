@@ -85,11 +85,16 @@
     font-weight: 700;
     line-height: normal;
     letter-spacing: 0.32px;
-    color: $spotify;
+    color: $white;
     border-radius: 70px;
     border: 2px solid $spotify;
     padding: 10px 12px;
-    background: none;
+    background: $spotify;
+
+    &.active {
+        background: $white;
+        color: $spotify;
+    }
 }
 
 .btn-deezer {
@@ -103,4 +108,9 @@
     border: 2px solid $deezer;
     padding: 10px 12px;
     background: $deezer;
+
+    &.active {
+        background: $white;
+        color: $deezer;
+    }
 }
