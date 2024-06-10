@@ -120,7 +120,7 @@ class LocationPoint(models.Model):
         dist_location: The maximum distance between the user and the location point.
     """
 
-    box_id = models.ForeignKey(Box, on_delete=models.CASCADE)
+    box = models.ForeignKey(Box, on_delete=models.CASCADE)
     latitude = models.FloatField(
         validators=[MinValueValidator(-90), MaxValueValidator(90)], blank=False
     )
@@ -134,8 +134,7 @@ class LocationPoint(models.Model):
         Method goal: Returns the name of the box, the latitude and the longitude of the location point
         used to display it in the admin interface.
         """
-        box_name = Box.objects.get(id=self.box_id).name
-        return box_name + " - " + str(self.latitude) + " - " + str(self.longitude)
+        return f"{self.box.name} - {self.latitude} - {self.longitude}"
 
 
 class VisibleDeposit(models.Model):
