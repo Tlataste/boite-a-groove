@@ -3,28 +3,50 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+
+    > h1 {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: 0.64px;
+        color: $blak80;
+        margin: 0 0 8px;
+    }
+
+    > p {
+        font-weight: 400;
+        margin: 0 0 16px;
+        color: $greyText;
+        text-align: center;
+    }
+
+    > h3 {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: $black;
+        margin-top: 16px;
+        width: 100%;
+    }
 
     &__notification {
         padding: 20px;
         border-radius: 26px;
-        border: 2px solid $orange;
-        background: #f6f6f6;
+        border: 2px solid $greenGradient;
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 0.4px;
-        color: #000;
-        position: fixed;
+        color: #1DCC00;
+        position: absolute;
         top: -200px;
         left: 20px;
         right: 20px;
         text-align: center;
         z-index: 3;
         box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
-        transition: all .3s ease-in-out;
-        animation-duration: .3s;
-        animation-delay: 1s;
-        animation-name: slidein;
-        animation-fill-mode: forwards;
+        transition: all .3s ease-in;
+        animation: .6s linear 1s 1 slidein forwards;
+        //
     }
 
     .song__cover {
@@ -51,7 +73,7 @@
 
     .song__information {
         padding: 60px 20px;
-        background: $orangeGradient;
+        background: $greyBackground;
         border-radius: 40px;
         display: flex;
         flex-direction: column;
@@ -69,13 +91,14 @@
             font-size: 32px;
             font-weight: 800;
             margin: 0;
+            color: $black;
         }
 
         p {
             font-size: 16px;
             font-weight: 800;
             margin: 0;
-            color: $white;
+            color: $black;
         }
     }
 
@@ -168,7 +191,7 @@
 
     .author {
         width: calc(100% - 12px);
-        margin-top: 36px;
+        margin-top: 16px;
         gap: 16px;
 
         &__informations {
@@ -258,9 +281,17 @@
 
 @keyframes slidein {
     from {
-      transform: translateY(-300px);
+        top: -300px;
     }  
+    33% {
+        top: 0px;
+    }
     to {
-        transform: translateY(300px);
+        top: 0px;
+        border-color: transparent;
+        border-radius: 0;
+        left: 0;
+        right: 0;
+        box-shadow: none;
     }
 }

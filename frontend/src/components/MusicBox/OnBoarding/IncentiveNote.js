@@ -43,8 +43,6 @@ export default function IncentiveNote({
 
     const csrftoken = getCookie("csrftoken");
 
-    console.log(note)
-
     fetch('/box-management/create-deposit/', {
       method: 'POST',
       headers: {

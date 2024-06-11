@@ -116,6 +116,9 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
         Ta chanson a été déposée avec succès 👍
       </div>
 
+      <h1>Bonne écoute !</h1>
+      <p>Découvre la chanson qui était dans la boîte avant que tu la remplaces.</p>
+
 
       <div className="song__cover">
         <div className="song__cover__image">
@@ -171,6 +174,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
         <option value="deezer">Deezer</option>
       </select>
 
+      <h3>Chanson déposée par</h3>
 
       <div className="author d-flex">
         <Avatar
