@@ -84,116 +84,116 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
 
   function fakeSelect(event) {
 
-      let spotify = document.querySelector('#fake-select li.spotify');
-      let deezer = document.querySelector('#fake-select li.deezer');
-      let newSelected = document.querySelector('#fake-select li.'+ event.target.classList);
-      let realSelect = document.querySelector('.reveal select');
-      let realSelectWrapper = document.querySelector('.select');
-  
-      if(realSelectWrapper.classList.contains('open')) {
-        realSelectWrapper.classList.remove('open');
-        if (newSelected.classList.contains('spotify')) {
-          spotify.classList.add('selected');
-          deezer.classList.remove('selected');
-          realSelect.value = "spotify";
-          setSelectedProvider("spotify");
-        } else {
-          spotify.classList.remove('selected');
-          deezer.classList.add('selected');
-          realSelect.value = "deezer";
-          setSelectedProvider("deezer");
-        }
+    let spotify = document.querySelector('#fake-select li.spotify');
+    let deezer = document.querySelector('#fake-select li.deezer');
+    let newSelected = document.querySelector('#fake-select li.' + event.target.classList);
+    let realSelect = document.querySelector('.reveal select');
+    let realSelectWrapper = document.querySelector('.select');
+
+    if (realSelectWrapper.classList.contains('open')) {
+      realSelectWrapper.classList.remove('open');
+      if (newSelected.classList.contains('spotify')) {
+        spotify.classList.add('selected');
+        deezer.classList.remove('selected');
+        realSelect.value = "spotify";
+        setSelectedProvider("spotify");
       } else {
-        realSelectWrapper.classList.add('open');
+        spotify.classList.remove('selected');
+        deezer.classList.add('selected');
+        realSelect.value = "deezer";
+        setSelectedProvider("deezer");
       }
+    } else {
+      realSelectWrapper.classList.add('open');
+    }
   }
 
   return (
 
     <div className="reveal">
 
-        <div className="reveal__notification">
-          Ta chanson a été déposée avec succès 👍
-        </div>
+      <div className="reveal__notification">
+        Ta chanson a été déposée avec succès 👍
+      </div>
 
 
-        <div className="song__cover">
-          <div className="song__cover__image">
-            <CardMedia
-                component="img"
-                sx={{ width: 168 }}
-                image={dispSong.image_url}
-                alt="Track cover"
-              />
-            <p className="song__title">{dispSong.title}</p>
-          </div>
-        </div>
-
-        <div className="song__information">
-          <h1>{dispSong.title}</h1>
-          <p>{dispSong.artist}</p>
-        </div>
-
-        <div className="select">
-
-          <button className="label"
-              onClick={() => {
-                redirectToLink();
-              }}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Ecouter sur
-          </button>
-
-          <ul id="fake-select">
-            <li className="spotify selected">
-              <button onClick={fakeSelect}>
-                <span className="sr-only">Spotify</span>
-                <img className="spotify" src="/static/images/spotify-logo.svg" alt=""/>
-              </button>
-            </li>
-            <li className="deezer">
-              <button onClick={fakeSelect}>
-                <span className="sr-only">Deezer</span>
-                <img className="deezer" src="/static/images/deezer-logo.svg" alt=""/>
-              </button>
-            </li>
-          </ul>
-  
-        </div>
-
-        <select value={selectedProvider} onChange={handleProviderChange}>
-            <option value="spotify">Spotify</option>
-            <option value="deezer">Deezer</option>
-        </select>
-
-        
-        <div className="author d-flex">
-        <Avatar
-            src={userInfo.profile_picture}
-            alt={userInfo.username}
-            sx={{
-              width: "68px",
-              height: "68px",
-            }}
+      <div className="song__cover">
+        <div className="song__cover__image">
+          <CardMedia
+            component="img"
+            sx={{ width: 168 }}
+            image={dispSong.image_url}
+            alt="Track cover"
           />
-          <div className="author__informations">
-            <p className="author__informations__name">{userInfo.username}</p>
-            <button onClick={() => navigate("/profile/" + depositedBy)}
-                    className="author__informations__link">
-                      Voir le profil
-            </button>
-          </div>
-          <p className="deposit-number">{userInfo.total_deposits + "ème dépôt"}</p>
+          <p className="song__title">{dispSong.title}</p>
         </div>
+      </div>
+
+      <div className="song__information">
+        <h1>{dispSong.title}</h1>
+        <p>{dispSong.artist}</p>
+      </div>
+
+      <div className="select">
+
+        <button className="label"
+          onClick={() => {
+            redirectToLink();
+          }}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Ecouter sur
+        </button>
+
+        <ul id="fake-select">
+          <li className="spotify selected">
+            <button onClick={fakeSelect}>
+              <span className="sr-only">Spotify</span>
+              <img className="spotify" src="/static/images/spotify-logo.svg" alt="" />
+            </button>
+          </li>
+          <li className="deezer">
+            <button onClick={fakeSelect}>
+              <span className="sr-only">Deezer</span>
+              <img className="deezer" src="/static/images/deezer-logo.svg" alt="" />
+            </button>
+          </li>
+        </ul>
+
+      </div>
+
+      <select value={selectedProvider} onChange={handleProviderChange}>
+        <option value="spotify">Spotify</option>
+        <option value="deezer">Deezer</option>
+      </select>
 
 
-     
-        {/* <Box
+      <div className="author d-flex">
+        <Avatar
+          src={userInfo?.profile_picture}
+          alt={userInfo?.username}
+          sx={{
+            width: "68px",
+            height: "68px",
+          }}
+        />
+        <div className="author__informations">
+          <p className="author__informations__name">{userInfo?.username}</p>
+          <button onClick={() => navigate("/profile/" + depositedBy)}
+            className="author__informations__link">
+            Voir le profil
+          </button>
+        </div>
+        <p className="deposit-number">{userInfo?.total_deposits + "ème dépôt"}</p>
+      </div>
+
+
+
+      {/* <Box
           sx={{
             marginTop: 2,
             overflow: "auto",
@@ -221,7 +221,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
             })}
           </List>
         </Box> */}
- 
+
 
     </div>
 
