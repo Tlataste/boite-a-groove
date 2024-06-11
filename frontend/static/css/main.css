@@ -881,7 +881,7 @@ header .MuiToolbar-root {
         font-weight: 700; }
     .bottom-content__wrapper ol {
       padding-left: 0;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       counter-reset: orderedlist; }
       .bottom-content__wrapper ol li {
         font-size: 16px;
@@ -933,7 +933,8 @@ header .MuiToolbar-root {
   .step-header p {
     font-weight: 400;
     text-align: center;
-    margin: 0; }
+    margin: 0;
+    color: rgba(0, 0, 0, 0.8); }
 
 .enable-location {
   padding: 20px; }
@@ -1020,7 +1021,8 @@ header .MuiToolbar-root {
     padding: 16px 10px 0 26px; }
   .mood .mood-item {
     display: flex;
-    align-items: center; }
+    align-items: center;
+    margin-bottom: 16px; }
     .mood .mood-item__content {
       padding: 12px 26px 12px 12px;
       color: rgba(0, 0, 0, 0.8);
@@ -1051,20 +1053,38 @@ header .MuiToolbar-root {
   .mood .bottom-panel {
     position: fixed;
     bottom: 0;
-    background: white;
-    width: 100%; }
-    .mood .bottom-panel .search-results {
-      padding: 20px;
-      margin: 0; }
-      .mood .bottom-panel .search-results li {
-        padding-bottom: 0; }
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    background: white; }
     .mood .bottom-panel button {
+      padding: 12px;
+      border: none;
+      background: var(--Main-Color, linear-gradient(92deg, #F90 0%, #FF6900 52.6%, #FF3D00 100%));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       font-size: 16px;
       font-weight: 700;
-      letter-spacing: 0.32px;
-      color: rgba(0, 0, 0, 0.3);
-      border: none;
-      background: none; }
+      letter-spacing: 0.32px; }
+
+.selected-song {
+  width: 100%;
+  border-top: 2px solid rgba(0, 0, 0, 0.03); }
+  .selected-song .search-results {
+    padding: 12px 8px 12px 16px;
+    margin: 0;
+    background: #fff; }
+    .selected-song .search-results li {
+      padding-bottom: 0; }
+  .selected-song button {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.32px;
+    color: rgba(0, 0, 0, 0.3);
+    border: none;
+    background: none; }
 
 .reveal {
   padding: 110px 40px 40px 40px;

@@ -43,6 +43,8 @@ export default function IncentiveNote({
 
     const csrftoken = getCookie("csrftoken");
 
+    console.log(note)
+
     fetch('/box-management/create-deposit/', {
       method: 'POST',
       headers: {
@@ -82,10 +84,36 @@ export default function IncentiveNote({
     <div className="stage-3__wrapper">
       <div className="step-header">
         <h1>Attache un mot</h1>
-        <p>...à ta musique décrivant pourquoi tu l’aimes, ça aidera les prochains voyageurs à faire leur choix</p>
+        <p>Explique pourquoi tu as choisis cette chanson</p>
       </div>
 
-      <div className="mood">
+      <div className="selected-song">
+          <ul className="search-results">
+            <li>
+            <div className="img-container">
+              <img
+                src={searchSong.image_url}
+                alt={searchSong.name}
+              />
+            </div>
+
+            <div className="song">
+              <p className="song-title" variant="h6">{searchSong.name}</p>
+              <p className="song-subtitle" variant="subtitle2">{searchSong.artist}</p>
+            </div>
+
+            <button
+              onClick={() => setStage(2)}
+            >
+              <span>Changer</span>
+            </button>
+
+            </li>
+          </ul>
+        </div>
+
+      <div className="mood"
+      >
         <TabContext value={value}>
           <Box>
             <TabList
@@ -116,25 +144,10 @@ export default function IncentiveNote({
           </TabPanel>
         </TabContext>
 
-        <button className="btn-primary" variant="contained" onClick={() => handleAddNoteButtonClick("")}>
-          <span>Continuer sans note</span>
-        </button>
-
         <div className="bottom-panel">
-          <ul className="search-results">
-            <li>
-              <div className="img-container">
-                <img src={searchSong.image_url} alt={searchSong.name} />
-              </div>
-              <div className="song">
-                <p className="song-title" variant="h6">{searchSong.name}</p>
-                <p className="song-subtitle" variant="subtitle2">{searchSong.artist}</p>
-              </div>
-              <button onClick={() => setStage(2)}>
-                <span>Changer</span>
-              </button>
-            </li>
-          </ul>
+          <button  variant="contained" onClick={() => handleAddNoteButtonClick("")}>
+            <span>Continuer sans note</span>
+          </button>
         </div>
       </div>
     </div>

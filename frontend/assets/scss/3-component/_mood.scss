@@ -52,6 +52,7 @@
     .mood-item {
         display: flex;
         align-items: center;
+        margin-bottom: 16px;
 
         &__content {
             padding: 12px 26px 12px 12px;
@@ -92,25 +93,46 @@
     .bottom-panel {
         position: fixed;
         bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
         background: white;
-        width: 100%;
-
-        .search-results {
-            padding: 20px;
-            margin: 0;
-
-            li {
-                padding-bottom: 0;
-            }
-        }
 
         button {
+            padding: 12px;
+            border: none;
+            background: var(--Main-Color, linear-gradient(92deg, #F90 0%, #FF6900 52.6%, #FF3D00 100%));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-size: 16px;
             font-weight: 700;
             letter-spacing: 0.32px;
-            color: $grey3;
-            border: none;
-            background: none;
         }
+    }
+}
+
+.selected-song {
+    width: 100%;
+    border-top: 2px solid $greyBackground;
+
+    .search-results {
+        padding: 12px 8px 12px 16px;
+        margin: 0;
+        background: $white;
+
+        li {
+            padding-bottom: 0;
+        }
+    }
+
+    button {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.32px;
+        color: $grey3;
+        border: none;
+        background: none;
     }
 }
