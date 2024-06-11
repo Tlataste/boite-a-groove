@@ -90,11 +90,12 @@ export const checkLocation = async (data, navigate) => {
       "../box-management/verify-location",
       requestOptions
     );
+
     if (!verificationResponse.ok) {
-      navigate("/");
+      window.location.reload();
     }
   } catch {
-    navigate("/");
+    window.location.reload();
   }
 };
 
