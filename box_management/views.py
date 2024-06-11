@@ -10,10 +10,18 @@ from .serializers import *
 from .models import *
 from .util import calculate_distance, normalize_string, calculate_distance
 from utils import NB_POINTS_ADD_SONG, NB_POINTS_FIRST_DEPOSIT_USER_ON_BOX, NB_POINTS_FIRST_SONG_DEPOSIT_BOX, NB_POINTS_FIRST_SONG_DEPOSIT_GLOBAL, NB_POINTS_CONSECUTIVE_DAYS_BOX
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 import json
 import requests
 from api_aggregation.views import ApiAggregation
+
+
+def cardboard_redirect(request, unique_url):
+    """
+    View goal: Redirects to the associated box URL based on the cardboard's unique URL.
+    """
+    cardboard = get_object_or_404(Cardboard, unique_url=unique_url)
+    return redirect(f'/box/{cardboard.box.name}')
 
 
 def is_first_user_deposit(user, box):

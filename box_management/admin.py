@@ -185,3 +185,8 @@ admin.site.register(Song)
 admin.site.register(LocationPoint, LocationPointAdmin)
 admin.site.register(VisibleDeposit)
 admin.site.register(DiscoveredSong)
+
+@admin.register(Cardboard)
+class CardboardAdmin(admin.ModelAdmin):
+    list_display = ('box', 'unique_url')
+    search_fields = ('box__name', 'unique_url')

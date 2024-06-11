@@ -168,3 +168,26 @@ class DiscoveredSong(models.Model):
         Method goal: Returns the id of the user and the id of the deposit used to display it in the admin interface.
         """
         return str(self.user_id) + " - " + str(self.deposit_id)
+
+class Cardboard(models.Model):
+    """
+    Class goal: This class represents a Cardboard linked to a Box.
+    
+    Attributes:
+        box       : Foreign key to the associated Box.
+        unique_url: A unique URL slug for the Cardboard.
+    """
+    box = models.ForeignKey(Box, on_delete=models.CASCADE)
+    unique_url = models.SlugField(unique=True)
+
+    def __str__(self):
+        """
+        Method goal: Returns the unique URL of the cardboard used to display it in the admin interface.
+        """
+        return f"Cardboard for {self.box.name} with URL {self.unique_url}"
+
+    def get_absolute_url(self):
+        """
+        Method goal: Returns the absolute URL for the cardboard.
+        """
+        return reverse('cardboard_redirect', kwargs={'unique_url': self.unique_url})
