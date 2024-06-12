@@ -1439,19 +1439,18 @@ header .MuiToolbar-root {
     flex-grow: 2; }
   .search-song ~ .search-results {
     padding: 0; }
-  .search-song.active {
-    margin-top: -20px; }
-    .search-song.active h1 {
-      opacity: 0;
-      height: 0; }
-    .search-song.active .search-song__wrapper {
-      gap: 10px; }
-    .search-song.active .cancel-search {
-      opacity: 1;
-      width: 80px; }
-    .search-song.active + p {
-      opacity: 1;
-      height: 60px; }
+  .search-song.active h1 {
+    opacity: 0;
+    height: 0;
+    visibility: hidden; }
+  .search-song.active .search-song__wrapper {
+    gap: 10px; }
+  .search-song.active .cancel-search {
+    opacity: 1;
+    width: 80px; }
+  .search-song.active + p {
+    opacity: 1;
+    height: 60px; }
   .search-song.has-results + p {
     display: none; }
   .search-song.has-results ~ .search-results {

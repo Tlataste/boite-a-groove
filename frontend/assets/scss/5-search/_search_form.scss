@@ -71,11 +71,11 @@
     }
 
     &.active {
-        margin-top: -20px;
 
         h1 {
             opacity: 0;
             height: 0;
+            visibility: hidden;
         }
 
         .search-song__wrapper {
