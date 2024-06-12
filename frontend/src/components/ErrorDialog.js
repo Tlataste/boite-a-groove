@@ -23,6 +23,14 @@ const ErrorDialog = () => {
     window.location.reload();
   };
 
+  let title = "Erreur";
+  let message = error;
+
+  if (typeof error === "object" && error !== null) {
+    title = error.title || title;
+    message = error.message || message;
+  }
+
   return (
     <Dialog
       open={!!error}
@@ -33,10 +41,12 @@ const ErrorDialog = () => {
       fullWidth
       PaperProps={{ sx: { borderRadius: "26px", paddingBottom: "20px" } }}
     >
-      <DialogTitle style={{ fontSize: '2.8rem', fontFamily: 'Dosis', fontWeight: 800 }}>Erreur</DialogTitle>
+      <DialogTitle style={{ fontSize: '2.8rem', fontFamily: 'Dosis', fontWeight: 800 }}>
+        {title}
+      </DialogTitle>
       <DialogContent>
         <DialogContentText id="error-dialog-description" style={{ fontSize: '16px' }}>
-          {error}
+          {message}
         </DialogContentText>
       </DialogContent>
       <DialogActions style={{ justifyContent: 'center' }}>
