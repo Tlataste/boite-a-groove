@@ -201,7 +201,7 @@ export default function LiveSearch({
    */
   function toggleSearch(action) {
     let headerSearch = document.querySelector('.search-song');
-    if(action == 'add') {
+    if (action == 'add') {
       headerSearch.classList.add('active')
     }
     else if (action == "remove") {
@@ -214,7 +214,7 @@ export default function LiveSearch({
    */
   function toggleSearchResults(action) {
     let headerSearch = document.querySelector('.search-song');
-    if(action == 'add') {
+    if (action == 'add') {
       headerSearch.classList.add('has-results')
     }
     else if (action == "remove") {
@@ -225,30 +225,30 @@ export default function LiveSearch({
   return (
     <div className="main-search-wrapper">
       <div className="search-song step-header">
-        <h1>Choisi une chanson à déposer</h1>
+        <h1>Choisis une chanson à déposer</h1>
         {/* <h2>{setFavoriteSong == true ? 'Choisis ta chanson préférée' : 'Choisis ta chanson à déposer'}</h2> */}
 
         <div className="d-flex">
-            <button
-              className={"btn-spotify " + (selectedStreamingService === "spotify" ? "active" : "")}
-              variant={
-                selectedStreamingService === "spotify" ? "contained" : "outlined"
-              }
-              onClick={() => handleStreamingServiceChange("spotify")}
-              sx={{ marginRight: "5px" }}
-            >
-              Spotify
-            </button>
-            <button
-              className={"btn-deezer " + (selectedStreamingService === "deezer" ? "active" : "")}
-              variant={
-                selectedStreamingService === "deezer" ? "contained" : "outlined"
-              }
-              onClick={() => handleStreamingServiceChange("deezer")}
-            >
-              Deezer
-            </button>
-          </div>
+          <button
+            className={"btn-spotify " + (selectedStreamingService === "spotify" ? "active" : "")}
+            variant={
+              selectedStreamingService === "spotify" ? "contained" : "outlined"
+            }
+            onClick={() => handleStreamingServiceChange("spotify")}
+            sx={{ marginRight: "5px" }}
+          >
+            Spotify
+          </button>
+          <button
+            className={"btn-deezer " + (selectedStreamingService === "deezer" ? "active" : "")}
+            variant={
+              selectedStreamingService === "deezer" ? "contained" : "outlined"
+            }
+            onClick={() => handleStreamingServiceChange("deezer")}
+          >
+            Deezer
+          </button>
+        </div>
 
         <div className="search-song__wrapper">
           <div className="input-wrapper">
