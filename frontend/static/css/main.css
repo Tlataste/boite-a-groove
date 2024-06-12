@@ -695,7 +695,7 @@ header .MuiToolbar-root {
 /* ---------------- CUSTOM -----------------*/
 .input-wrapper {
   width: 100%;
-  padding: 15px 20px;
+  padding: 6px 20px;
   box-sizing: border-box;
   border-radius: 66px;
   background: white;
@@ -870,7 +870,8 @@ header .MuiToolbar-root {
     z-index: 2;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; }
+    align-items: flex-start;
+    gap: 8px; }
     .bottom-content__wrapper h1 {
       width: 100%;
       text-align: left;
@@ -1456,7 +1457,7 @@ header .MuiToolbar-root {
     text-align: center;
     margin: 0;
     font-size: 3.2rem;
-    height: 70px;
+    height: 90px;
     transition: .2s all ease-in; }
   .search-song > .d-flex {
     justify-content: center;
@@ -1493,18 +1494,20 @@ header .MuiToolbar-root {
     flex-grow: 2; }
   .search-song ~ .search-results {
     padding: 0; }
-  .search-song.active h1 {
-    opacity: 0;
-    height: 0;
-    visibility: hidden; }
-  .search-song.active .search-song__wrapper {
-    gap: 10px; }
-  .search-song.active .cancel-search {
-    opacity: 1;
-    width: 80px; }
-  .search-song.active + p {
-    opacity: 1;
-    height: 60px; }
+  .search-song.active {
+    padding-top: 0; }
+    .search-song.active h1 {
+      opacity: 0;
+      height: 0;
+      visibility: hidden; }
+    .search-song.active .search-song__wrapper {
+      gap: 10px; }
+    .search-song.active .cancel-search {
+      opacity: 1;
+      width: 80px; }
+    .search-song.active + p {
+      opacity: 1;
+      height: 60px; }
   .search-song.has-results + p {
     display: none; }
   .search-song.has-results ~ .search-results {
