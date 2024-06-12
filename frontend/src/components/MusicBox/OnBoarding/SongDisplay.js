@@ -41,14 +41,14 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
   /**
    * Handles the click event for the "Go to link" button.
    */
-  function redirectToLink() {
+  function redirectToLink(provider) {
     const csrftoken = getCookie("csrftoken");
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
       body: JSON.stringify({
         song: dispSong,
-        platform: selectedProvider,
+        platform: provider,
       }),
     };
 
@@ -58,14 +58,6 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
         console.log(data);
         window.open(data);
       });
-  }
-
-  /**
-   * Handles the change event for the provider selection dropdown.
-   * @param {React.ChangeEvent<HTMLSelectElement>} event - The change event object.
-   */
-  function handleProviderChange(event) {
-    setSelectedProvider(event.target.value);
   }
 
   // Gets the info of the user who has depisoted the song discovered and update the points of the current user
@@ -79,34 +71,6 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
       });
     checkUserStatus(setUser, setIsAuthenticated);
   }, []); // Empty dependency array ensures the effect is only run once
-
-  //
-
-  function fakeSelect(event) {
-
-    let spotify = document.querySelector('#fake-select li.spotify');
-    let deezer = document.querySelector('#fake-select li.deezer');
-    let newSelected = document.querySelector('#fake-select li.' + event.target.classList);
-    let realSelect = document.querySelector('.reveal select');
-    let realSelectWrapper = document.querySelector('.select');
-
-    if (realSelectWrapper.classList.contains('open')) {
-      realSelectWrapper.classList.remove('open');
-      if (newSelected.classList.contains('spotify')) {
-        spotify.classList.add('selected');
-        deezer.classList.remove('selected');
-        realSelect.value = "spotify";
-        setSelectedProvider("spotify");
-      } else {
-        spotify.classList.remove('selected');
-        deezer.classList.add('selected');
-        realSelect.value = "deezer";
-        setSelectedProvider("deezer");
-      }
-    } else {
-      realSelectWrapper.classList.add('open');
-    }
-  }
 
   return (
 
@@ -137,11 +101,11 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
         <p>{dispSong.artist}</p>
       </div>
 
-      <div className="select">
+      <div className="select-service-provider">
 
         <button className="label"
           onClick={() => {
-            redirectToLink();
+            handleSelectProvider('spotify')
           }}
           style={{
             background: "none",
@@ -149,30 +113,31 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
             cursor: "pointer",
           }}
         >
-          Ecouter sur
+          Ecouter la chanson sur...
         </button>
 
-        <ul id="fake-select">
-          <li className="spotify selected">
-            <button onClick={fakeSelect}>
+        <div className="wrapper">
+          <div className="d-flex">
+            <button onClick={() => {
+              redirectToLink('spotify')
+            }}>
               <span className="sr-only">Spotify</span>
               <img className="spotify" src="/static/images/spotify-logo.svg" alt="" />
             </button>
-          </li>
-          <li className="deezer">
-            <button onClick={fakeSelect}>
+            <button onClick={() => {
+              redirectToLink('deezer')
+            }}>
               <span className="sr-only">Deezer</span>
               <img className="deezer" src="/static/images/deezer-logo.svg" alt="" />
             </button>
-          </li>
-        </ul>
+          </div>
+        </div>     
 
+        <button className="copy-to-clipboard">
+          Copier le nom de la chanson et de l'artiste
+        </button>     
+      
       </div>
-
-      <select value={selectedProvider} onChange={handleProviderChange}>
-        <option value="spotify">Spotify</option>
-        <option value="deezer">Deezer</option>
-      </select>
 
       <h3>Chanson déposée par</h3>
 
