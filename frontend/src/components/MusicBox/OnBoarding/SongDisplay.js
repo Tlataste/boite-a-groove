@@ -60,6 +60,10 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
       });
   }
 
+  function copyToClipboard(title, artist) {
+    navigator.clipboard.writeText(title + ' : ' + artist);
+  }
+
   // Gets the info of the user who has depisoted the song discovered and update the points of the current user
   useEffect(() => {
     getUserDetails(depositedBy, navigate)
@@ -133,7 +137,10 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
           </div>
         </div>     
 
-        <button className="copy-to-clipboard">
+        <button className="copy-to-clipboard"
+                onClick={() => {
+                  copyToClipboard(dispSong.title, dispSong.artist)
+        }}>
           Copier le nom de la chanson et de l'artiste
         </button>     
       
