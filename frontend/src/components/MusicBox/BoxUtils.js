@@ -92,10 +92,11 @@ export const checkLocation = async (data, navigate) => {
     );
 
     if (!verificationResponse.ok) {
-      window.location.reload();
+      return "Vous êtes trop loin de la box";
     }
-  } catch {
-    window.location.reload();
+    return "success";
+  } catch (error) {
+    return "Veuillez autoriser la localisation via votre navigateur";
   }
 };
 
