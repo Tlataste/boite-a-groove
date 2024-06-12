@@ -1,13 +1,13 @@
 import React from 'react';
-import './homepage.css';
+// import './homepage.css';
 
 const HomePage = () => {
   return (
     <>
-      <header>
+      <div className="landing-header">
         <img src="../../../media/homepage/icon/qr.svg" alt="" />
         <p>Scanne une boîte pour l'ouvrir</p>
-      </header>
+      </div>
       <main>
         <section className="hero">
           <div className="content">
