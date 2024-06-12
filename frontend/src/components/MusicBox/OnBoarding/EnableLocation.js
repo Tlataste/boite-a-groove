@@ -13,7 +13,7 @@ export default function EnableLocation({ setStage, boxInfo, navigate, className 
     if (status === "success") {
       setStage(2);
     } else {
-      setError(status);
+      setError({ title: "Oops !", message: status });
     }
     document.getElementById('loader').style.display = "flex";
   }
