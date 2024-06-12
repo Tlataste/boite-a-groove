@@ -21,7 +21,7 @@ def cardboard_redirect(request, unique_url):
     View goal: Redirects to the associated box URL based on the cardboard's unique URL.
     """
     cardboard = get_object_or_404(Cardboard, unique_url=unique_url)
-    return redirect(f'/box/{cardboard.box.name}')
+    return redirect(f'/box/{cardboard.box.url}')
 
 
 def is_first_user_deposit(user, box):
