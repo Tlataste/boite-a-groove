@@ -177,22 +177,42 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
       <h3>Chanson déposée par</h3>
 
       <div className="author d-flex">
-        <Avatar
-          src={userInfo?.profile_picture}
-          alt={userInfo?.username}
-          sx={{
-            width: "68px",
-            height: "68px",
-          }}
-        />
-        <div className="author__informations">
-          <p className="author__informations__name">{userInfo?.username}</p>
-          <button onClick={() => navigate("/profile/" + depositedBy)}
-            className="author__informations__link">
-            Voir le profil
-          </button>
-        </div>
-        <p className="deposit-number">{userInfo?.total_deposits + "ème dépôt"}</p>
+        {userInfo ? (
+          <>
+            <Avatar
+              src={userInfo.profile_picture}
+              alt={userInfo.username}
+              sx={{
+                width: "68px",
+                height: "68px",
+              }}
+            />
+            <div className="author__informations">
+              <p className="author__informations__name">{userInfo.username}</p>
+              <button
+                onClick={() => navigate("/profile/" + depositedBy)}
+                className="author__informations__link"
+              >
+                Voir le profil
+              </button>
+            </div>
+            <p className="deposit-number">
+              {userInfo.total_deposits + "ème dépôt"}
+            </p>
+          </>
+        ) : (
+          <>
+            <Avatar
+              sx={{
+                width: "68px",
+                height: "68px",
+              }}
+            />
+            <div className="author__informations">
+              <p className="author__informations__name">Utilisateur anonyme</p>
+            </div>
+          </>
+        )}
       </div>
 
 
