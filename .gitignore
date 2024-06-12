@@ -229,3 +229,4 @@ bin/xml2odf
 include/site/python3.12/greenlet/greenlet.h
 share/man/man1/
 pyvenv.cfg
+frontend/package-lock.json
