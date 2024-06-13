@@ -32,10 +32,15 @@ export default function SongCard({
   // States
   const [depositIndex, setdepositIndex] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState("spotify");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   /**
-   * Handles the click event for the "Next" button.
-   * Increments the depositIndex if it is less than 1.
-   */
+    * Handles the click event for the "Next" button.
+    * Increments the depositIndex if it is less than 1.
+    */
   function next() {
     if (depositIndex < deposits.box.last_deposits.length - 1) {
       setdepositIndex(depositIndex + 1);

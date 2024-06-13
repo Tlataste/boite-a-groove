@@ -26,7 +26,7 @@ import { UserContext } from "../../UserContext";
  * @param searchSong
  * @returns {JSX.Element} - JSX element representing the SongCard component.
  */
-export default function SongDisplay({ dispSong, depositedBy, achievements }) {
+export default function SongDisplay({ dispSong, depositedBy, achievements, revealedDeposit }) {
   // States
   const [selectedProvider, setSelectedProvider] = useState("spotify");
 
@@ -37,6 +37,10 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
   const [userInfo, setUserInfo] = useState({});
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   /**
    * Handles the click event for the "Go to link" button.
@@ -55,7 +59,6 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
     fetch("../api_agg/aggreg", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         window.open(data);
       });
   }
@@ -135,15 +138,15 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
               <img className="deezer" src="/static/images/deezer-logo.svg" alt="" />
             </button>
           </div>
-        </div>     
+        </div>
 
         <button className="copy-to-clipboard"
-                onClick={() => {
-                  copyToClipboard(dispSong.title, dispSong.artist)
-        }}>
+          onClick={() => {
+            copyToClipboard(dispSong.title, dispSong.artist)
+          }}>
           Copier le nom de la chanson et de l'artiste
-        </button>     
-      
+        </button>
+
       </div>
 
       <h3>Chanson déposée par</h3>
@@ -187,10 +190,11 @@ export default function SongDisplay({ dispSong, depositedBy, achievements }) {
         )}
       </div>
 
-      <div className="last-deposit">
-      J’écoute cette chanson la nuit quand tout le monde dors
-      </div>
-
+      {revealedDeposit?.note_display && (
+        <div className="last-deposit">
+          {revealedDeposit.note_display}
+        </div>
+      )}
 
       {/* <Box
           sx={{

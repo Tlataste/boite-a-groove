@@ -137,6 +137,10 @@ export default function LiveSearch({
     isSpotifyAuthenticated,
   ]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   /**
    * Handles the deposit of a song to a box.
    * @param option - The selected option.

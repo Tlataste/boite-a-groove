@@ -48,6 +48,7 @@ export default function MusicBox() {
 
   // The achievements the user obtains
   const [achievements, setAchievements] = useState({});
+  const [revealedDeposit, setRevealedDeposit] = useState({});
 
   /**
    * Function to be executed when the component is mounted and the page is loaded
@@ -106,6 +107,7 @@ export default function MusicBox() {
             setDispSong={setDispSong}
             setDepositedBy={setDepositedBy}
             setAchievements={setAchievements}
+            setRevealedDeposit={setRevealedDeposit}
           />
         )}
         {stage === 4 && (
@@ -125,6 +127,7 @@ export default function MusicBox() {
           <>
             <SongDisplay
               dispSong={dispSong}
+              revealedDeposit={revealedDeposit}
               depositedBy={depositedBy}
               achievements={achievements}
             />

@@ -27,13 +27,18 @@ export default function IncentiveNote({
   boxInfo,
   setDispSong,
   setDepositedBy,
-  setAchievements
+  setAchievements,
+  setRevealedDeposit
 }) {
   const [value, setValue] = useState("1");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   function handleAddNoteButtonClick(note) {
     setSearchSong(currentSearchSong => {
@@ -57,6 +62,7 @@ export default function IncentiveNote({
       .then(response => response.json())
       .then(data => {
         const { new_deposit, last_deposit, song, achievements } = data;
+        setRevealedDeposit(last_deposit);
         setDispSong(song);
         setDepositedBy(last_deposit.user);
         setAchievements(achievements);
