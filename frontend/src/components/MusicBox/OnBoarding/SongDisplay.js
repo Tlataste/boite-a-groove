@@ -59,7 +59,19 @@ export default function SongDisplay({ dispSong, depositedBy, achievements, revea
     fetch("../api_agg/aggreg", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        window.open(data);
+        const deepLink = data; // Assuming the API returns the deep link
+
+        // Create and append an iFrame element for app opening attempt
+        const iframe = document.createElement('iframe');
+        iframe.src = deepLink;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        // After a short delay, remove the iFrame and open the web version in a new tab/window
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+          window.open(deepLink.replace(`${provider}://`, `https://open.${provider}.com/`), '_blank');
+        }, 2000);
       });
   }
 
