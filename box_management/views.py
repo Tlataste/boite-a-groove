@@ -147,9 +147,9 @@ def create_deposit_and_get_last(request):
         user.points += points_to_add
         user.save()
 
-        if not DiscoveredSong.objects.filter(user_id=user, deposit_id__song_id__artist=song_author,
-                                             deposit_id__song_id__title=song_name).exists():
-            DiscoveredSong(user_id=user, deposit_id=new_deposit).save()
+        if not DiscoveredSong.objects.filter(user=user, deposit__song__artist=song_author,
+                                             deposit__song__title=song_name).exists():
+            DiscoveredSong(user=user, deposit=new_deposit).save()
 
     new_deposit_data = DepositSerializer(new_deposit).data
     last_deposit_data = DepositSerializer(last_deposit).data if last_deposit else None
