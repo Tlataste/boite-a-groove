@@ -81,7 +81,7 @@ def create_deposit_and_get_last(request):
     if not song.spotify_id or not song.deezer_id:
         try:
             print("BEFORE: ", song.__dict__)
-            song.spotify_id, song.deezer_id = ApiAggregation().get_platform_ids(song)
+            song.spotify_id, song.deezer_id = ApiAggregation().get_platform_ids(song, request)
             print("AFTER: ", song)
         except Exception as e:
             pass

@@ -61,7 +61,7 @@ class ApiAggregation(APIView):
             # Return an error response if the platform is not supported
             return Response({'error': 'Invalid platform.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get_platform_ids(self, song):
+    def get_platform_ids(self, song, request):
         """
         Helper method to retrieve Spotify and Deezer IDs.
         """
@@ -73,7 +73,7 @@ class ApiAggregation(APIView):
         spotify_id = spotify_song['id'] if spotify_song else None
 
         # Search for the song on Deezer
-        deezer_song = ut.search_on_deezer(search_query, song, self.request.session.session_key)
+        deezer_song = ut.search_on_deezer(search_query, song, request.session.session_key)
         deezer_id = deezer_song['id'] if deezer_song else None
 
         return spotify_id, deezer_id
