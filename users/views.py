@@ -306,7 +306,6 @@ class SetFavoriteSong(APIView):
         if not search_song:
             return Response({"error": "No song provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-        song_id = search_song.get('id')
         song_name = search_song.get('name')
         song_author = search_song.get('artist')
         song_platform_id = search_song.get('platform_id')
@@ -319,7 +318,6 @@ class SetFavoriteSong(APIView):
             song_duration = search_song.get('duration')
 
             song = Song(
-                song_id=song_id,
                 title=song_name,
                 artist=song_author,
                 url=song_url,

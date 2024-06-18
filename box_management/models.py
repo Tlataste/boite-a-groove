@@ -56,7 +56,6 @@ class Song(models.Model):
     Class goal: This class represents a song.
 
     Attributes:
-        song_id   : The id of the song.
         title     : The title of the song.
         artist    : The artist of the song.
         url       : The URL of the song.
@@ -68,14 +67,12 @@ class Song(models.Model):
         deezer_id : The Deezer ID of the song.
     """
 
-    song_id = models.CharField(max_length=50)
     title = models.CharField(max_length=50)
     artist = models.CharField(max_length=50)
     url = models.URLField(max_length=200)
     image_url = models.URLField(max_length=200, blank=True)
     duration = models.IntegerField(default=0)  # Duration in seconds
     platform_id = models.IntegerField(default=0)
-    n_deposits = models.IntegerField(default=0)
     spotify_id = models.CharField(max_length=50, blank=True, null=True, validators=[validate_spotify_or_deezer_id])
     deezer_id = models.CharField(max_length=50, blank=True, null=True, validators=[validate_spotify_or_deezer_id])
 
@@ -84,6 +81,10 @@ class Song(models.Model):
         Method goal: Returns the title and the artist of the song used to display it in the admin interface.
         """
         return self.title + " - " + self.artist
+
+    @property
+    def n_deposits(self):
+        return self.deposits.count()
 
 
 class Deposit(models.Model):
@@ -178,7 +179,7 @@ class Deposit(models.Model):
         ("regarderetoiles", "Cette chanson est parfaite pour écouter en regardant les étoiles"),
     ]
 
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='deposits')
     box = models.ForeignKey(Box, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     is_visible = models.BooleanField(default=False)
@@ -240,14 +241,14 @@ class DiscoveredSong(models.Model):
         user_id   : The id of the user.
     """
 
-    deposit_id = models.ForeignKey(Deposit, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    deposit = models.ForeignKey(Deposit, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         """
         Method goal: Returns the id of the user and the id of the deposit used to display it in the admin interface.
         """
-        return str(self.user_id) + " - " + str(self.deposit_id)
+        return str(self.user) + " - " + str(self.deposit)
 
 class Cardboard(models.Model):
     """
