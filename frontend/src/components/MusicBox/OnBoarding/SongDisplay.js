@@ -61,17 +61,20 @@ export default function SongDisplay({ dispSong, depositedBy, achievements, revea
       .then((data) => {
         const deepLink = data; // Assuming the API returns the deep link
 
-        // Create and append an iFrame element for app opening attempt
-        const iframe = document.createElement('iframe');
-        iframe.src = deepLink;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-        // After a short delay, remove the iFrame and open the web version in a new tab/window
-        setTimeout(() => {
-          document.body.removeChild(iframe);
-          window.open(deepLink.replace(`${provider}://`, `https://open.${provider}.com/`), '_blank');
-        }, 2000);
+        if (isIOS) {
+          window.location = deepLink;
+
+          // After a short delay, check if the app is opened and fallback to the web version in a new tab/window
+          setTimeout(() => {
+            const webVersion = deepLink.replace(`${provider}://`, `https://open.${provider}.com/`);
+            window.location = webVersion;
+          }, 6000);
+        } else {
+          // For other platforms, open the deep link in a new tab/window
+          window.open(deepLink, '_blank');
+        }
       });
   }
 
