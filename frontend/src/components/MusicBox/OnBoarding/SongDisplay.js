@@ -59,20 +59,33 @@ export default function SongDisplay({ dispSong, depositedBy, achievements, revea
     fetch("../api_agg/aggreg", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        const deepLink = data; // Assuming the API returns the deep link
+        const deepLink = data;
 
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
         if (isIOS) {
           window.location = deepLink;
 
-          // After a short delay, check if the app is opened and fallback to the web version in a new tab/window
-          setTimeout(() => {
-            const webVersion = deepLink.replace(`${provider}://`, `https://open.${provider}.com/`);
-            window.location = webVersion;
-          }, 6000);
+          let navigationTimer;
+
+          const checkNavigationTimeout = () => {
+            clearTimeout(navigationTimer);
+            setTimeout(() => {
+              window.removeEventListener("pageshow", checkNavigationTimeout);
+              const webVersion = deepLink.replace(`${provider}://`, `https://open.${provider}.com/`);
+              window.location = webVersion;
+            }, 2000); // Fallback to external URL if the app didn't open within 2 seconds
+          };
+
+          window.addEventListener("pageshow", () => {
+            clearTimeout(navigationTimer);
+            window.removeEventListener("pageshow", checkNavigationTimeout);
+          });
+
+          navigationTimer = setTimeout(() => {
+            checkNavigationTimeout(); // Check for successful navigation to the deep link after 2 seconds
+          }, 2000);
         } else {
-          // For other platforms, open the deep link in a new tab/window
           window.open(deepLink, '_blank');
         }
       });
@@ -92,7 +105,7 @@ export default function SongDisplay({ dispSong, depositedBy, achievements, revea
         console.error(error);
       });
     checkUserStatus(setUser, setIsAuthenticated);
-  }, []); // Empty dependency array ensures the effect is only run once
+  }, []);
 
   return (
 
