@@ -22,6 +22,8 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import '../../assets/scss/main.scss';
+
 export default function App() {
   const [user, setUser] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);

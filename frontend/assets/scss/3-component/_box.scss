@@ -1,3 +1,5 @@
+@use '../0-init/color' as *;
+
 .bottom-content {
     padding: 0 20px;
     position: relative;
@@ -27,7 +29,7 @@
             text-align: left;
             margin: 75px 0 8px 0;
 
-            & + p {
+            &+p {
                 margin-top: 0;
                 color: black;
                 font-weight: 700;
@@ -83,7 +85,7 @@
     .box-name {
         margin: -50px auto;
         z-index: 2;
-        
+
 
         span {
             position: relative;
@@ -131,7 +133,7 @@
     h1 {
         margin: 0;
 
-        & + p {
+        &+p {
             font-weight: 400;
             color: $blak80;
         }

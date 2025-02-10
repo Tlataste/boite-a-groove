@@ -5,10 +5,10 @@ const HomePage = () => {
   return (
     <>
       <div className="landing-header">
-        <img src="../../../media/homepage/icon/qr.svg" alt="" />
+        <img src="media/homepage/icon/qr.svg" alt="" />
         <p>Scanne une boîte pour l'ouvrir</p>
       </div>
-      <main>
+      <div className="homepage">
         <section className="hero">
           <div className="content">
             <h1>Les Boîtes à Groove</h1>
@@ -22,7 +22,7 @@ const HomePage = () => {
             <h3>Comment ça marche ?</h3>
             <ol>
               <li className="step1"><p>Scanne le Qr code de la boite pour l'ouvrir</p></li>
-              <li className="step2"><p>Comfirme que tu es à coté de la boîte</p></li>
+              <li className="step2"><p>Confirme que tu es à coté de la boîte</p></li>
               <li className="step3"><p>Choisis la chanson que tu veux déposer</p></li>
               <li className="step4"><p>Attache une petite phrase à ta chanson</p></li>
               <li className="step5"><p>Écoute la chanson qui a été déposée par la personne précédente et découvre son petit mot</p></li>
@@ -66,7 +66,7 @@ const HomePage = () => {
             <div className="reponse"><strong>Non !</strong> Aucun compte n'est nécessaire. Tu pourras écouter la chanson que tu découvriras dans ton application Spotify ou Deezer, mais aussi copier le nom de la chanson précedente pour la trouver sur une plateforme de streaming.</div>
           </div>
         </section>
-      </main>
+      </div>
       <footer>
         <p>&copy; 2024 Les Boîtes à Groove. Tous droits réservés.</p>
       </footer>

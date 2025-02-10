@@ -1,3 +1,5 @@
+@use '../0-init/color' as *;
+
 .reveal {
     padding: 110px 40px 40px 40px;
     display: flex;
@@ -5,7 +7,7 @@
     align-items: center;
     position: relative;
 
-    > h1 {
+    >h1 {
         font-size: 32px;
         font-weight: 800;
         letter-spacing: 0.64px;
@@ -13,14 +15,14 @@
         margin: 0 0 8px;
     }
 
-    > p {
+    >p {
         font-weight: 400;
         margin: 0 0 16px;
         color: $greyText;
         text-align: center;
     }
 
-    > h3 {
+    >h3 {
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 0.4px;
@@ -227,7 +229,7 @@
 
     .last-deposit {
         padding: 12px 26px 12px 12px;
-        color:  $blak80;
+        color: $blak80;
         background: $white;
         box-shadow: 0px 7px 14px 0px rgba(0, 0, 0, 0.07);
         border-radius: 16px;
@@ -358,7 +360,7 @@
             max-width: 100%;
         }
     }
-    
+
     .copy-to-clipboard {
         border: none;
         background: $white;
@@ -374,10 +376,12 @@
 @keyframes slidein {
     from {
         top: -300px;
-    }  
+    }
+
     33% {
         top: 0px;
     }
+
     to {
         top: 0px;
         border-color: transparent;
