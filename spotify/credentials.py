@@ -8,5 +8,6 @@ try:
         CLIENT_SECRET = data['Credentials'][0]['client_secret']
         REDIRECT_URI = data['Credentials'][0]['redirect_uri']
 except FileNotFoundError as fnfe:
-    print(f'\'credential.json\' not found.')
+    print(f'\'credential.json\' not found. (in spotify/credential.py)')
     exit()
+
