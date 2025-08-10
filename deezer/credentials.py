@@ -1,5 +1,8 @@
 import json
 
+import os
+print("Looking for JSON in:", os.getcwd())
+
 # Credentials
 try:
     # Load credential.json
@@ -22,4 +25,5 @@ try:
 except FileNotFoundError as fnfe:
     print(f'\'credential.json\' not found.')
     exit()
+
 
