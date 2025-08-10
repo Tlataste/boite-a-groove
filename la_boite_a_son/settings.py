@@ -112,22 +112,7 @@ DATABASES = {
     }
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.security.Authentication': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -195,6 +180,7 @@ SOCIAL_AUTH_DEEZER_KEY = LOGIN_APP_ID
 SOCIAL_AUTH_DEEZER_SECRET = LOGIN_APP_SECRET
 SOCIAL_AUTH_DEEZER_SCOPE = ['user-read-email']
 SOCIAL_AUTH_DEEZER_EXTRA_DATA = [('email', 'email')]
+
 
 
 
