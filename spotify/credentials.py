@@ -18,8 +18,9 @@ except FileNotFoundError as fnfe:
 
 except json.JSONDecodeError:
     print("'credential.json' is invalid or empty. (in spotify/credential.py)")
-    
+    print(data)
     exit()
+
 
 
 
