@@ -1,5 +1,8 @@
 import json
 
+import os
+print("spotify/credentials.py Looking for JSON in:", os.getcwd())
+
 try:
     with open("credential.json") as json_data_file:
         data = json.load(json_data_file)
@@ -13,8 +16,9 @@ except FileNotFoundError as fnfe:
     exit()
 
 except json.JSONDecodeError:
-    print("'credential.json' is invalid or empty.")
+    print("'credential.json' is invalid or empty. (in spotify/credential.py)")
     exit()
+
 
 
 
