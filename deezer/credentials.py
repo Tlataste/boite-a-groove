@@ -1,7 +1,6 @@
 import json
 
-import os
-print("deezer/credentials.py Looking for JSON in:", os.getcwd())
+
 
 # Credentials
 try:
@@ -25,6 +24,7 @@ try:
 except FileNotFoundError as fnfe:
     print(f'\'credential.json\' not found.')
     exit()
+
 
 
 
