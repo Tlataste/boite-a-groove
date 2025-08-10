@@ -9,7 +9,7 @@ try:
         APP_SECRET = data['Credentials'][1]['app_secret']
         REDIRECT_URI = data['Credentials'][1]['redirect_uri']
 except FileNotFoundError as fnfe:
-    print(f'\'credential.json\' not found.')
+    print(f'\'credential.json\' not found. (in deezer/credential.py)')
     exit()
 
 try:
@@ -22,3 +22,4 @@ try:
 except FileNotFoundError as fnfe:
     print(f'\'credential.json\' not found.')
     exit()
+
