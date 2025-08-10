@@ -1,12 +1,10 @@
 import json
 
-import os
-print("spotify/credentials.py Looking for JSON in:", os.getcwd())
 
 try:
     with open("credential.json") as json_data_file:
         data = json.load(json_data_file)
-        print(data)
+
 
         CLIENT_ID = data['Credentials'][0]['client_id']
         CLIENT_SECRET = data['Credentials'][0]['client_secret']
@@ -18,8 +16,9 @@ except FileNotFoundError as fnfe:
 
 except json.JSONDecodeError:
     print("'credential.json' is invalid or empty. (in spotify/credential.py)")
-    print(data)
+
     exit()
+
 
 
 
