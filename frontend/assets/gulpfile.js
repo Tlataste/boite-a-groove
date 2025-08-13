@@ -14,7 +14,10 @@ const log = require('fancy-log');
 const lazypipe = require('lazypipe');
 const mergeStream = require('merge-stream');
 const currentVersion = require('node-version');
-const sass = require('gulp-sass')(require('node-sass'));
+
+// >>> Remplacement: utiliser dart-sass avec gulp-sass@5
+const dartSass = require('sass');
+const gulpSass = require('gulp-sass')(dartSass); // <-- important
 
 /**
  * ---------------------------------------
@@ -84,8 +87,9 @@ let tools = {
             .pipe(() => {
                 return $.if((compiler === 'less'), $.less());
             })
+            // >>> Remplacement: utiliser gulpSass (dart-sass) au lieu de $.sass/node-sass
             .pipe(() => {
-                return $.if((compiler === 'sass'), sass({ precision: 10 }));
+                return $.if((compiler === 'sass'), gulpSass({ /* outputStyle géré par cleanCss ensuite */ }));
             })
             .pipe(() => {
                 return $.autoprefixer()
@@ -157,19 +161,20 @@ log.info(chalk.green('#########################################'));
 log.info(chalk.green('##    Module Themer KI SASS & LESS     ##'));
 log.info(chalk.green('#########################################'));
 log.info('This module version ', configFile.version);
-if (currentVersion.major < 14 || currentVersion.major > 16) {
-    log.info('Node Version', process.version, chalk.red.bold('Not supported'), chalk.reset(' '));
+
+// >>> Assouplir la contrainte de version Node (dart-sass supporte Node 14+)
+if (currentVersion.major < 14) {
+    log.info('Node Version', process.version, chalk.red.bold('Not supported (<14)'), chalk.reset(' '));
     log.warn(chalk.reset('-----------------------'));
     log.warn(chalk.red.bold('!! Your Node version is not supported !!'), chalk.reset(' '));
-    log.warn(chalk.red.bold('(supported v14 up to v16)'), chalk.reset(' '));
-    log.warn(chalk.red.bold('Proceed with caution !'), chalk.reset(' '));
+    log.warn(chalk.red.bold('(requires Node >= 14)'), chalk.reset(' '));
     log.warn(chalk.reset('-----------------------'));
 } else {
     log.info('Node Version', process.version, chalk.green.bold('OK'), chalk.reset(' '));
 }
 log.info(chalk.green('## Preparation...'));
 
-// Prepares projects and there files
+// Prepares projects and their files
 let projectsPrepared = tools.createProjectsArray(_projects);
 
 /**
@@ -180,8 +185,8 @@ let projectsPrepared = tools.createProjectsArray(_projects);
 
 /**
  * Compiler tous les projets en mode de dev
- * Minification désactivé
- * SourceMap activé
+ * Minification désactivée
+ * SourceMap activée
  *
  * $> gulp dev
  */
@@ -191,8 +196,8 @@ gulp.task('dev', () => {
 
 /**
  * Compiler tous les projets en mode de dev
- * Minification désactivé
- * SourceMap désactivé
+ * Minification désactivée
+ * SourceMap désactivée
  *
  * $> gulp dev-sans-sourcemap
  */
@@ -202,8 +207,8 @@ gulp.task('dev-sans-sourcemap', () => {
 
 /**
  * Compiler tous les projets en mode de production
- * Minification activé
- * SourceMap désactivé
+ * Minification activée
+ * SourceMap désactivée
  *
  * $> gulp prod
  */
@@ -214,13 +219,12 @@ gulp.task('prod', () => {
 /**
  * Lance le watcher avec la tâche dev
  *
- * $> gulp watcher
+ * $> gulp watcher-dev
  */
 gulp.task('watcher-dev', () => {
     // Compiler config
     let sourcemap = true,
         minify = false;
-
 
     projectsPrepared.forEach((project) => {
         gulp.watch(
@@ -235,8 +239,8 @@ gulp.task('watcher-dev', () => {
 /**
  * Activation du mode watcher
  * Adapter sur un environnement de dev
- * Minification désactivé
- * SourceMap activé
+ * Minification désactivée
+ * SourceMap activée
  *
  * $> gulp
  */
