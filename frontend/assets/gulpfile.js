@@ -103,7 +103,7 @@ let tools = {
             return $.if(sourcemap, $.sourcemaps.write('.'))
         });
 },
-    },
+
     printTaskState(project, type) {
         return through2({ objectMode: true }, function (chunk, enc, callback) {
             // Print project and file involved
