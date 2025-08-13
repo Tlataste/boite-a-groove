@@ -97,15 +97,15 @@ export default function App() {
             />
             <Route
               path="/box/:boxName"
-              element= /* {isMobile ? */
+              element= { /*isMobile ? */
                 <MusicBox /> 
-              /*: <RedirectToMobile />}*/
+              /*: <RedirectToMobile />*/}
             />
             <Route
               path="/profile/:userID"
-              element= /* {isMobile ? */
-                       <UserPublicProfile /> 
-                       /* : <RedirectToMobile />} */
+              element=  {/*isMobile ? */ 
+                <UserPublicProfile /> 
+                /*: <RedirectToMobile /> */ }
             />
           </Routes>
         </UserContext.Provider>
@@ -117,4 +117,5 @@ export default function App() {
 
 const appDiv = document.getElementById("app");
 createRoot(appDiv).render(<App />);
+
 
