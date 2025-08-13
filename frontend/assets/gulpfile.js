@@ -14,7 +14,6 @@ const log = require('fancy-log');
 const lazypipe = require('lazypipe');
 const mergeStream = require('merge-stream');
 const currentVersion = require('node-version');
-const autoprefixer = require('gulp-autoprefixer');
 
 // >>> Remplacement: utiliser dart-sass avec gulp-sass@5
 const dartSass = require('sass');
@@ -80,30 +79,28 @@ let tools = {
                 return $.if((sassLintEnabled && _config.lint.failOnError), $.sassLint.failOnError())
             });
     },
-   cssCompilerPipelineBuilder(compiler, sourcemap, minify) {
-    return lazypipe()
-        .pipe(() => {
-            return $.if(sourcemap, $.sourcemaps.init())
-        })
-        .pipe(() => {
-            return $.if((compiler === 'less'), $.less());
-        })
-        // Utilise gulp-sass (dart-sass) au lieu de $.sass/node-sass
-        .pipe(() => {
-            return $.if((compiler === 'sass'), gulpSass({}));
-        })
-        // Autoprefixer importé explicitement (pas via gulp-load-plugins)
-        .pipe(() => {
-            return autoprefixer();
-        })
-        .pipe(() => {
-            return $.if(minify, $.cleanCss())
-        })
-        .pipe(() => {
-            return $.if(sourcemap, $.sourcemaps.write('.'))
-        });
-},
-
+    cssCompilerPipelineBuilder(compiler, sourcemap, minify) {
+        return lazypipe()
+            .pipe(() => {
+                return $.if(sourcemap, $.sourcemaps.init())
+            })
+            .pipe(() => {
+                return $.if((compiler === 'less'), $.less());
+            })
+            // >>> Remplacement: utiliser gulpSass (dart-sass) au lieu de $.sass/node-sass
+            .pipe(() => {
+                return $.if((compiler === 'sass'), gulpSass({ /* outputStyle géré par cleanCss ensuite */ }));
+            })
+            .pipe(() => {
+                return $.autoprefixer()
+            })
+            .pipe(() => {
+                return $.if(minify, $.cleanCss())
+            })
+            .pipe(() => {
+                return $.if(sourcemap, $.sourcemaps.write('.'))
+            });
+    },
     printTaskState(project, type) {
         return through2({ objectMode: true }, function (chunk, enc, callback) {
             // Print project and file involved
