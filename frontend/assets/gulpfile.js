@@ -15,9 +15,13 @@ const lazypipe = require('lazypipe');
 const mergeStream = require('merge-stream');
 const currentVersion = require('node-version');
 
-// >>> Remplacement: utiliser dart-sass avec gulp-sass@5
+// --- Remplacements/ajouts importants ---
+const autoprefixer = require('gulp-autoprefixer'); // import explicite
+const cleanCSS = require('gulp-clean-css');        // import explicite
+
+// Utiliser dart-sass via gulp-sass@5 (plus de node-sass/libsass)
 const dartSass = require('sass');
-const gulpSass = require('gulp-sass')(dartSass); // <-- important
+const gulpSass = require('gulp-sass')(dartSass);
 
 /**
  * ---------------------------------------
@@ -87,39 +91,49 @@ let tools = {
             .pipe(() => {
                 return $.if((compiler === 'less'), $.less());
             })
-            // >>> Remplacement: utiliser gulpSass (dart-sass) au lieu de $.sass/node-sass
+            // Compilation SCSS avec dart-sass
             .pipe(() => {
-                return $.if((compiler === 'sass'), gulpSass({ /* outputStyle géré par cleanCss ensuite */ }));
+                return $.if((compiler === 'sass'),
+                    gulpSass({ /* outputStyle non compressé, on minifie ensuite avec cleanCSS si demandé */ })
+                    .on('error', gulpSass.logError)
+                );
             })
+            // Autoprefixer (appel direct, pas via gulp-load-plugins)
             .pipe(() => {
-                return $.autoprefixer()
+                return autoprefixer();
             })
+            // Minification conditionnelle
             .pipe(() => {
-                return $.if(minify, $.cleanCss())
+                return $.if(minify, cleanCSS());
             })
+            // Sourcemaps en fin de pipeline si demandé
             .pipe(() => {
                 return $.if(sourcemap, $.sourcemaps.write('.'))
             });
     },
     printTaskState(project, type) {
         return through2({ objectMode: true }, function (chunk, enc, callback) {
-            // Print project and file involved
-            log(chalk.blue.bold('[Compiling] \t'), chalk.green(project.name ? project.name : 'n/a') + chalk.magenta(' =>', path.join(chunk.base, chunk.basename)) + chalk.reset(' '));
-
-            // Transform default outputs
+            log(
+                chalk.blue.bold('[Compiling]\t'),
+                chalk.green(project.name ? project.name : 'n/a') +
+                chalk.magenta(' => ', path.join(chunk.base, chunk.basename)) +
+                chalk.reset(' ')
+            );
             this.push(chunk);
-            callback()
-        })
+            callback();
+        });
     },
     printLintTaskState(project, type) {
         return through2({ objectMode: true }, function (chunk, enc, callback) {
-            // Print project and file involved
-            log(chalk.red.bold('[Linting] \t'), chalk.green(project.name ? project.name : 'n/a') + chalk.grey(' =>', path.join(chunk.base, chunk.basename)) + chalk.reset(' '));
-
-            // Transform default outputs
+            log(
+                chalk.red.bold('[Linting]\t'),
+                chalk.green(project.name ? project.name : 'n/a') +
+                chalk.grey(' => ', path.join(chunk.base, chunk.basename)) +
+                chalk.reset(' ')
+            );
             this.push(chunk);
-            callback()
-        })
+            callback();
+        });
     },
     prepareProjectPipes(projects, sourcemap, minify) {
         const _this = this;
@@ -130,22 +144,18 @@ let tools = {
             if (project.lint) {
                 const lintStream = gulp.src(
                         path.join(project.path, project.dir.src) + '/**/*' + _config.extension[project.compiler],
-                        { base: (path.join(project.path, project.dir.src)),
-                        allowEmpty: true })
-                    .pipe(_this.printLintTaskState(project)) // print project name and file + path
-                    .pipe(_this.lintSassPipelineBuilder(project.compiler)()); // Compilation routine
-
-                // Add in task wrapper
+                        { base: (path.join(project.path, project.dir.src)), allowEmpty: true })
+                    .pipe(_this.printLintTaskState(project))
+                    .pipe(_this.lintSassPipelineBuilder(project.compiler)());
                 mainStream.add(lintStream);
             }
 
             // Compiler
             const tmpStream = gulp.src(project.filePathList, { base: (path.join(project.path, project.dir.src)), allowEmpty: true })
-                .pipe(_this.printTaskState(project)) // print project name and file + path
-                .pipe(_this.cssCompilerPipelineBuilder(project.compiler, sourcemap, minify)()) // Compilation routine
+                .pipe(_this.printTaskState(project))
+                .pipe(_this.cssCompilerPipelineBuilder(project.compiler, sourcemap, minify)())
                 .pipe(gulp.dest(path.join(project.path, project.dir.dest)));
 
-            // Add in task wrapper
             mainStream.add(tmpStream);
         });
 
@@ -162,7 +172,7 @@ log.info(chalk.green('##    Module Themer KI SASS & LESS     ##'));
 log.info(chalk.green('#########################################'));
 log.info('This module version ', configFile.version);
 
-// >>> Assouplir la contrainte de version Node (dart-sass supporte Node 14+)
+// dart-sass supporte Node >=14
 if (currentVersion.major < 14) {
     log.info('Node Version', process.version, chalk.red.bold('Not supported (<14)'), chalk.reset(' '));
     log.warn(chalk.reset('-----------------------'));
@@ -183,48 +193,24 @@ let projectsPrepared = tools.createProjectsArray(_projects);
  * ---------------------------------------
  */
 
-/**
- * Compiler tous les projets en mode de dev
- * Minification désactivée
- * SourceMap activée
- *
- * $> gulp dev
- */
+// Dev: sourcemaps oui, minify non
 gulp.task('dev', () => {
-    return tools.prepareProjectPipes(projectsPrepared, true, false)
+    return tools.prepareProjectPipes(projectsPrepared, true, false);
 });
 
-/**
- * Compiler tous les projets en mode de dev
- * Minification désactivée
- * SourceMap désactivée
- *
- * $> gulp dev-sans-sourcemap
- */
+// Dev sans sourcemaps
 gulp.task('dev-sans-sourcemap', () => {
-    return tools.prepareProjectPipes(projectsPrepared, false, false)
+    return tools.prepareProjectPipes(projectsPrepared, false, false);
 });
 
-/**
- * Compiler tous les projets en mode de production
- * Minification activée
- * SourceMap désactivée
- *
- * $> gulp prod
- */
+// Prod: minify oui, sourcemaps non
 gulp.task('prod', () => {
-    return tools.prepareProjectPipes(projectsPrepared, false, true)
+    return tools.prepareProjectPipes(projectsPrepared, false, true);
 });
 
-/**
- * Lance le watcher avec la tâche dev
- *
- * $> gulp watcher-dev
- */
+// Watcher
 gulp.task('watcher-dev', () => {
-    // Compiler config
-    let sourcemap = true,
-        minify = false;
+    let sourcemap = true, minify = false;
 
     projectsPrepared.forEach((project) => {
         gulp.watch(
@@ -232,16 +218,10 @@ gulp.task('watcher-dev', () => {
             { usePolling: _config.partageReseau },
             function compilation () {
                 return tools.prepareProjectPipes([project], sourcemap, minify);
-            });
+            }
+        );
     });
 });
 
-/**
- * Activation du mode watcher
- * Adapter sur un environnement de dev
- * Minification désactivée
- * SourceMap activée
- *
- * $> gulp
- */
+// Par défaut: dev + watcher
 gulp.task('default', gulp.series('dev', 'watcher-dev'));
