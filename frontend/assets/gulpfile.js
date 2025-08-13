@@ -14,6 +14,7 @@ const log = require('fancy-log');
 const lazypipe = require('lazypipe');
 const mergeStream = require('merge-stream');
 const currentVersion = require('node-version');
+const autoprefixer = require('gulp-autoprefixer');
 
 // >>> Remplacement: utiliser dart-sass avec gulp-sass@5
 const dartSass = require('sass');
