@@ -93,7 +93,7 @@ let tools = {
                 return $.if((compiler === 'sass'), gulpSass({ /* outputStyle géré par cleanCss ensuite */ }));
             })
             .pipe(() => {
-                return $.autoprefixer()
+                return autoprefixer()
             })
             .pipe(() => {
                 return $.if(minify, $.cleanCss())
