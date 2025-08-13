@@ -80,27 +80,15 @@ let tools = {
                 return $.if((sassLintEnabled && _config.lint.failOnError), $.sassLint.failOnError())
             });
     },
-    cssCompilerPipelineBuilder(compiler, sourcemap, minify) {
-        return lazypipe()
-            .pipe(() => {
-                return $.if(sourcemap, $.sourcemaps.init())
-            })
-            .pipe(() => {
-                return $.if((compiler === 'less'), $.less());
-            })
-            // >>> Remplacement: utiliser gulpSass (dart-sass) au lieu de $.sass/node-sass
-            .pipe(() => {
-                return $.if((compiler === 'sass'), gulpSass({ /* outputStyle géré par cleanCss ensuite */ }));
-            })
-            .pipe(() => {
-                return autoprefixer()
-            })
-            .pipe(() => {
-                return $.if(minify, $.cleanCss())
-            })
-            .pipe(() => {
-                return $.if(sourcemap, $.sourcemaps.write('.'))
-            });
+    function cssCompilerPipelineBuilder(compiler, sourcemap, minify) {
+      return lazypipe()
+        .pipe(() => $.if(sourcemap, $.sourcemaps.init()))
+        .pipe(() => $.if((compiler === 'less'), $.less()))
+        .pipe(() => $.if((compiler === 'sass'), gulpSass({})))
+        .pipe(() => autoprefixer())
+        .pipe(() => $.if(minify, $.cleanCss()))
+        .pipe(() => $.if(sourcemap, $.sourcemaps.write('.')));
+    }
     },
     printTaskState(project, type) {
         return through2({ objectMode: true }, function (chunk, enc, callback) {
