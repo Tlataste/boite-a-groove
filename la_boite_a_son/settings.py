@@ -152,6 +152,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = Path("/var/www/boite-a-groove/static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -185,4 +186,5 @@ SOCIAL_AUTH_DEEZER_KEY = LOGIN_APP_ID
 SOCIAL_AUTH_DEEZER_SECRET = LOGIN_APP_SECRET
 SOCIAL_AUTH_DEEZER_SCOPE = ['user-read-email']
 SOCIAL_AUTH_DEEZER_EXTRA_DATA = [('email', 'email')]
+
 
