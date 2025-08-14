@@ -1,8 +1,4 @@
-# Sauvegarde l'actuel au cas où
-cp package.json package.json.bak
 
-# ECRASE package.json par ce contenu propre :
-cat > package.json <<'JSON'
 {
   "name": "module-themer",
   "version": "2.1.4",
@@ -39,4 +35,4 @@ cat > package.json <<'JSON'
     "through2": "^4.0.2"
   }
 }
-JSON
+
