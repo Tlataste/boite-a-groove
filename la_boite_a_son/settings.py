@@ -159,9 +159,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# Là où les fichiers collectés vont etre posé pour etre accessible à NGINX
 STATIC_ROOT = Path("/var/www/boite-a-groove/static")
+# Là où tu mets tes assets “sources” prêts à être collectés STATICFILES_DIRS = [ BASE_DIR / "frontend" / "static", # ex: .../static/css/main.css, .../static/js/app.js ]
 STATICFILES_DIRS = [
-    BASE_DIR / Path("../media"),
+    BASE_DIR / Path("../media/homepage"),
+    BASE_DIR / Path("../media/homepage/icon")
 ]
 
 
@@ -197,6 +200,7 @@ SOCIAL_AUTH_DEEZER_KEY = LOGIN_APP_ID
 SOCIAL_AUTH_DEEZER_SECRET = LOGIN_APP_SECRET
 SOCIAL_AUTH_DEEZER_SCOPE = ['user-read-email']
 SOCIAL_AUTH_DEEZER_EXTRA_DATA = [('email', 'email')]
+
 
 
 
