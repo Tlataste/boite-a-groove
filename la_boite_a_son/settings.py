@@ -32,7 +32,12 @@ SECRET_KEY = 'django-insecure-mwb#$xb6cdl#+v*#7_r04r&d7dx#cn@lvhp)syyn-(84k87cvn
 DEBUG = True
 
 ALLOWED_HOSTS = ['boiteachanson.fr', 'www.boiteachanson.fr', "musikmap.com", "www.musikmap.com" ,'46.202.175.139']
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://boiteachanson.fr",
+    "https://www.boiteachanson.fr",
+    "https://musikmap.com",
+    "https://www.musikmap.com",
+]
 
 # Application definition
 
@@ -168,6 +173,7 @@ STATICFILES_DIRS = [
 ]
 
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -200,6 +206,7 @@ SOCIAL_AUTH_DEEZER_KEY = LOGIN_APP_ID
 SOCIAL_AUTH_DEEZER_SECRET = LOGIN_APP_SECRET
 SOCIAL_AUTH_DEEZER_SCOPE = ['user-read-email']
 SOCIAL_AUTH_DEEZER_EXTRA_DATA = [('email', 'email')]
+
 
 
 
