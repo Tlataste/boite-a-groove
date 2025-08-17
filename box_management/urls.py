@@ -4,7 +4,6 @@ from .views import *
 
 
 urlpatterns = [
-    path('add-note', AddDepositNote.as_view()),
     path('get-box', GetBox.as_view()),
     path('verify-location', Location.as_view()),
     path('replace-visible-deposits', ReplaceVisibleDeposits.as_view()),
@@ -13,3 +12,4 @@ urlpatterns = [
     path('discovered-songs', ManageDiscoveredSongs.as_view()),
     path('create-deposit/', create_deposit_and_get_last, name='create_deposit_and_get_last'),
 ]
+
