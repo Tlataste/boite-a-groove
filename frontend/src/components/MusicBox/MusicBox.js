@@ -99,17 +99,6 @@ export default function MusicBox() {
             />
           </>
         )}
-        {stage === 3 && (
-          <IncentiveNote setStage={setStage}
-            searchSong={searchSong}
-            setSearchSong={setSearchSong}
-            boxInfo={boxInfo}
-            setDispSong={setDispSong}
-            setDepositedBy={setDepositedBy}
-            setAchievements={setAchievements}
-            setRevealedDeposit={setRevealedDeposit}
-          />
-        )}
         {stage === 4 && (
           <>
             <SongCard
@@ -137,3 +126,4 @@ export default function MusicBox() {
     </>
   );
 }
+
