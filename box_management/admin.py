@@ -33,8 +33,8 @@ class DepositAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     From the admin interface, it is possible to export the deposits by box and month in order to study the statistics
     and create graphs.
     """
-    list_display = ('id', 'song', 'box_id', 'deposited_at', 'user', 'note')
-    list_filter = ('id', 'song_id', 'box_id', 'deposited_at', 'user', 'note')
+    list_display = ('id', 'song', 'box_id', 'deposited_at', 'user')
+    list_filter = ('id', 'song_id', 'box_id', 'deposited_at', 'user')
     search_fields = ('id', 'song_id__title', 'box_id__name', 'user')
     ordering = ('-deposited_at',)
 
@@ -195,3 +195,4 @@ admin.site.register(DiscoveredSong)
 class CardboardAdmin(admin.ModelAdmin):
     list_display = ('box', 'unique_url')
     search_fields = ('box__name', 'unique_url')
+
